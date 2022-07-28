@@ -1,0 +1,18 @@
+
+<div class="table-box">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" style="width: 100%">
+
+        <ng-container *ngFor="let column of displayedColumns">
+            <ng-container [matColumnDef]="column.name">
+                <th class="text-center" mat-header-cell *matHeaderCellDef [ngStyle]="column?.style"> {{column.name}} </th>
+                <td class="text-center" mat-cell *matCellDef="let element" [ngStyle]="column?.style">
+                    <span>{{element[column.name]}}</span>
+                </td>
+            </ng-container>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+
+    </table>
+</div>
