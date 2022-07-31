@@ -26,6 +26,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import {MatTabsModule} from '@angular/material/tabs';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
 	imports: [
@@ -56,7 +57,8 @@ import {MatTabsModule} from '@angular/material/tabs';
 		MatChipsModule,
 		MatExpansionModule,
 		MatDatepickerModule,
-		MatNativeDateModule
+		MatNativeDateModule,
+		ReactiveFormsModule
 	],
 	declarations: [],
 	exports: [
@@ -86,7 +88,8 @@ import {MatTabsModule} from '@angular/material/tabs';
 		MatChipsModule,
 		MatExpansionModule,
 		MatDatepickerModule,
-		MatNativeDateModule
+		MatNativeDateModule,
+		ReactiveFormsModule
 	],
 	providers: []
 })
