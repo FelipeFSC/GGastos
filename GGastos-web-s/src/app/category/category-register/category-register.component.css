@@ -1,0 +1,21 @@
+.form-box {
+    box-shadow: 2px 2px 7px #b9b1b1;
+    padding: 20px;
+    width: 50%;
+    height: auto;
+    margin: auto;
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+
+::ng-deep .mat-form-field-appearance-fill .mat-form-field-flex {
+    background-color: #fff;
+}
+
+.input {
+    width: 100%;
+}
+
+button {
+    width: 100%;
+}

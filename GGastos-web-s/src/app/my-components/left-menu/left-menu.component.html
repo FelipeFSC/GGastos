@@ -1,0 +1,29 @@
+<header>
+    <mat-toolbar color="primary">
+        <mat-toolbar-row>
+            <span>GGastos</span>
+            <div class="button-box">
+                <button mat-button (click)="onHome()">Principal</button>
+
+                <button mat-button>Agenda</button>
+
+                <button mat-button>Dashboard</button>
+                <button mat-button [matMenuTriggerFor]="menu">Cadastros</button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="onCategory()">Categorias</button>
+                    <button mat-menu-item>Despesas</button>
+                    <button mat-menu-item>Recebimentos</button>
+                </mat-menu>
+            </div>
+
+            <span class="example-spacer"></span>
+
+            <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+                <mat-icon>settings</mat-icon>
+            </button>
+            <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+                <mat-icon>logout</mat-icon>
+            </button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+</header>
