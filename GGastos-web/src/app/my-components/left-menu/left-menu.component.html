@@ -2,18 +2,9 @@
     <mat-toolbar color="primary">
         <mat-toolbar-row>
             <span>GGastos</span>
-            <div class="button-box">
-                <button mat-button (click)="onHome()">Principal</button>
-
-                <button mat-button>Agenda</button>
-
-                <button mat-button>Dashboard</button>
-                <button mat-button [matMenuTriggerFor]="menu">Cadastros</button>
-                <mat-menu #menu="matMenu">
-                    <button mat-menu-item (click)="onCategory()">Categorias</button>
-                    <button mat-menu-item>Despesas</button>
-                    <button mat-menu-item>Recebimentos</button>
-                </mat-menu>
+            <div class="menu-box">
+                <button mat-button (click)="onHome()">Visão Geral</button>
+                <button mat-button (click)="onReleases()">Lançamentos</button>
             </div>
 
             <span class="example-spacer"></span>

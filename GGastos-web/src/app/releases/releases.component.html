@@ -1,0 +1,133 @@
+<app-left-menu></app-left-menu>
+
+
+<mat-card>
+    <div class="release-box">
+        <div class="xxxxxxx">
+            <span> Lançamentos </span>
+            &nbsp;&nbsp;&nbsp;
+            <button class="addButton">
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
+
+        <div class="asdasdasdasd">
+
+            <button mat-icon-button aria-label="icon-button with a heart icon">
+                <mat-icon class="cinza">chevron_left</mat-icon>
+            </button>
+            <span class="cinza"> setembroaaa 2022 </span>
+            <button mat-icon-button aria-label="icon-button with a heart icon">
+                <mat-icon class="cinza">chevron_right</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <hr>
+    <br>
+
+    <mat-accordion class="headers-align" multi>
+
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-description class="receita">
+                    Receita
+                    &nbsp;&nbsp;&nbsp;
+                    <mat-icon>favorite</mat-icon>
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+
+
+            <table mat-table [dataSource]="dataSource" class="sdadadadadadaad">
+                <ng-container matColumnDef="select">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox (change)="$event ? masterToggle() : null"
+                            [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()"
+                            [aria-label]="checkboxLabel()">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let row">
+                        <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(row) : null"
+                            [checked]="selection.isSelected(row)"
+                            [aria-label]="checkboxLabel(row)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef> Categoria </th>
+                    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="description">
+                    <th mat-header-cell *matHeaderCellDef> Descrição </th>
+                    <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="value">
+                    <th mat-header-cell *matHeaderCellDef> Valor </th>
+                    <td mat-cell *matCellDef="let element"> {{element.value}} </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                        (click)="selection.toggle(row)">
+                </tr>
+            </table>
+
+        </mat-expansion-panel>
+
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-description class="despesas">
+                    Despesas
+                    <mat-icon>article</mat-icon>
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+
+
+            <table mat-table [dataSource]="dataSource" class="sdadadadadadaad">
+                <ng-container matColumnDef="select">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox (change)="$event ? masterToggle() : null"
+                            [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()"
+                            [aria-label]="checkboxLabel()">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let row">
+                        <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(row) : null"
+                            [checked]="selection.isSelected(row)"
+                            [aria-label]="checkboxLabel(row)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef> Categoria </th>
+                    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="description">
+                    <th mat-header-cell *matHeaderCellDef> Descrição </th>
+                    <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="value">
+                    <th mat-header-cell *matHeaderCellDef> Valor </th>
+                    <td mat-cell *matCellDef="let element"> {{element.value}} </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                        (click)="selection.toggle(row)">
+                </tr>
+            </table>
+
+        </mat-expansion-panel>
+    </mat-accordion>
+
+</mat-card>

@@ -1,21 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CategoryComponent } from './category.component';
+import { ReleasesComponent } from './releases.component';
 import { MaterialModule } from '../material/material.module';
-import { CategoryRoutingModule } from './category-routing.module';
 import { MyComponentsModule } from '../my-components/my-components.module';
-import { CategoryRegisterComponent } from './category-register/category-register.component';
+import { ReleasesRoutingModule } from './releases-routing.module';
 
 @NgModule({
     declarations: [
-        CategoryComponent,
-        CategoryRegisterComponent
+        ReleasesComponent
     ],
     imports: [
-        CategoryRoutingModule,
+        ReleasesRoutingModule,
         CommonModule,
         MaterialModule,
         MyComponentsModule
     ]
 })
-export class CategoryModule { }
+export class ReleasesModule { }
