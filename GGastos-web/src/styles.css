@@ -4,6 +4,18 @@ html, body { height: 100%; }
 body {
     margin: 0;
     font-family: monospace;
+    background-color: #edeaed;
+}
+
+::-webkit-scrollbar-track {
+    background-color: white;
+}
+::-webkit-scrollbar {
+    width: 7px;
+    background: #F4F4F4;
+}
+::-webkit-scrollbar-thumb {
+    background: #001bb0;
 }
 
 .done {
@@ -12,4 +24,14 @@ body {
     right: 20px;
     color: white;
     z-index: 1000;
+}
+
+mat-card {
+    border-radius: 1px !important;
+}
+
+mat-expansion-panel {
+    border-radius: 0px !important;
+    box-shadow: none !important;
+    border: solid 1px #00000033;
 }
