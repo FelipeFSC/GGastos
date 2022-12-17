@@ -4,6 +4,7 @@ import { HomeComponent } from './home.component';
 import { MaterialModule } from '../material/material.module';
 import { MyComponentsModule } from '../my-components/my-components.module';
 import { HomeRoutingModule } from './home-routing.module';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 @NgModule({
     declarations: [
@@ -13,7 +14,10 @@ import { HomeRoutingModule } from './home-routing.module';
         HomeRoutingModule,
         CommonModule,
         MaterialModule,
-        MyComponentsModule
+        MyComponentsModule,
+        NgxEchartsModule.forRoot({
+			echarts: () => import('echarts'),
+		}),
     ]
 })
 export class HomeModule { }
