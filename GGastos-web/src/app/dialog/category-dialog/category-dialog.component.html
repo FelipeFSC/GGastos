@@ -1,0 +1,40 @@
+<div mat-dialog-content>
+
+    <div class="example-box">
+        <span class="category-icon-circle" [ngStyle]="styleColor"><mat-icon class="icon">{{category.icone.toLowerCase()}}</mat-icon></span>
+        &nbsp;
+        <span>{{category.name}}</span>
+    </div>
+
+    <br><br>
+
+    <label for="favcolor">Selecione a cor do circulo:</label>&nbsp;
+    <input type="color" (change)="changeColor()" [(ngModel)]="category.color">
+
+    <br><br>
+
+    <mat-form-field appearance="legacy">
+        <mat-label>Icone</mat-label>
+        <input [(ngModel)]="category.icone" matInput placeholder="Exemplo: love">
+    </mat-form-field>
+    Icones:&nbsp;
+    <a href="https://fonts.google.com/icons">google icons</a>
+
+    <br>
+
+    <mat-form-field appearance="legacy" class="full-width">
+        <mat-label>Categoria</mat-label>
+        <input [(ngModel)]="category.name" matInput placeholder="Exemplo: Casa">
+    </mat-form-field>
+
+</div>
+<br>
+<br>
+
+<div>
+    <button *ngIf="isDelete" (click)="onClose()">DELETE</button>
+    &nbsp;
+    <button (click)="onClose()">Cancel</button>
+    &nbsp;
+    <button [mat-dialog-close]="category">Salvar</button>
+</div>

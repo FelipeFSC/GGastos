@@ -9,6 +9,34 @@ import { EChartsCoreOption } from 'echarts';
 
 export class HomeComponent implements OnInit {
 
+    option: any = {
+        series: [
+          {
+            name: 'Access From',
+            type: 'pie',
+            radius: ['60%', '40%'],
+            height: 65,
+            left: 0,
+            avoidLabelOverlap: false,
+            label: {
+              show: false,
+              position: 'center'
+            },
+            labelLine: {
+              show: false
+            },
+            color: [
+                '#62cd98',
+                '#eaeded',
+            ],
+            data: [
+              { value: 200, name: 'meta' },
+              { value: 1800, name: 'gasto' },
+            ]
+          }
+        ]
+    };
+
     options: any = {
         textStyle: {
             fontFamily: "monospace",
@@ -35,21 +63,14 @@ export class HomeComponent implements OnInit {
                     '#9FE6B8',
                     '#FFDB5C',
                     '#ff9f7f',
-                    '#fb7293',
-                    '#E062AE',
-                    '#E690D1',
-                    '#e7bcf3',
-                    '#9d96f5',
-                    '#8378EA',
-                    '#96BFFF'
                 ],
                 data: [
-                    { value: 300, name: 'Search Engine'},
-                    { value: 300, name: 'Direct' },
-                    { value: 300, name: 'Email' },
-                    { value: 300, name: 'Union Ads' },
-                    { value: 300, name: 'Union Ads1' },
-                    { value: 300, name: 'Union Ads2' },
+                    { value: 300, name: 'Casa'},
+                    { value: 300, name: 'Transporte' },
+                    { value: 300, name: 'Comida' },
+                    { value: 300, name: 'Lazer' },
+                    { value: 300, name: 'Estudos' },
+                    { value: 300, name: 'Jogos' },
 
                 ],
                 emphasis: {

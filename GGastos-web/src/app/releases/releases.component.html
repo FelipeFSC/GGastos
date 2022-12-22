@@ -28,7 +28,7 @@
 
     <mat-accordion class="headers-align" multi>
 
-        <mat-expansion-panel>
+        <mat-expansion-panel [expanded]="true">
             <mat-expansion-panel-header>
                 <mat-panel-description class="receita">
                     Receita
@@ -68,7 +68,7 @@
 
                 <ng-container matColumnDef="value">
                     <th mat-header-cell *matHeaderCellDef> Valor </th>
-                    <td mat-cell *matCellDef="let element"> {{element.value}} </td>
+                    <td mat-cell *matCellDef="let element"> R$ {{element.value}} </td>
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -79,7 +79,7 @@
 
         </mat-expansion-panel>
 
-        <mat-expansion-panel>
+        <mat-expansion-panel [expanded]="true">
             <mat-expansion-panel-header>
                 <mat-panel-description class="despesas">
                     Despesas
@@ -131,3 +131,4 @@
     </mat-accordion>
 
 </mat-card>
+<div><br></div>

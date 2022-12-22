@@ -1,5 +1,6 @@
 mat-card {
-    margin: 35px;
+    margin: auto;
+    width: 70%;
 }
 
 .release-box {

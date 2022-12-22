@@ -14,6 +14,10 @@ const routes: Routes = [
         path: 'releases',
         loadChildren: () => import("./releases/releases.module").then(m => m.ReleasesModule),
     },
+    {
+        path: 'categories',
+        loadChildren: () => import("./categories/categories.module").then(m => m.CategoriesModule),
+    },
 ];
 
 @NgModule({

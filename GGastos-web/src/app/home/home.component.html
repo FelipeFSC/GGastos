@@ -1,67 +1,112 @@
 <app-left-menu></app-left-menu>
 
-<div class="general-box">
-    <div class="left-box">
-        <div class="card card-left hello-card">
-            <span class="hello-text">
-                OIIII Felipe Ferreira!
-                <br><br>
-                <span class="money-size">R$ 1.500,00</span>
+<!--
+    style="margin: auto; width: 70%;"
+-->
+
+<div>
+    <div class="general-box">
+        <div class="left-box">
+            <div class="card card-left hello-card">
+                <span class="hello-text">
+                    OIIII Felipe Ferreira!
+                    <br><br>
+                    <span class="money-size">R$ 1.500,00</span>
+                    <br>
+                    saldo geral
+                </span>
+            </div>
+
+            <div class="card card-left content-card">
+                <span class="title-text">
+                    Minhas contas
+                </span>
+            </div>
+
+            <div class="card card-left content-card">
+                <span class="title-text">
+                    Cartões de crédito
+                </span>
+            </div>
+
+            <div class="card card-left content-card">
+                <span class="title-text">
+                    Contas a pagar
+                </span>
+
+                <mat-list *ngFor="let item of items; let i = index">
+                    <mat-list-item>
+                        <span class="dot"></span>
+
+                        <div style="width: 70%;">
+                            <span class="category-text">Cartão </span> <span class="subcategory-text sub-text-color">Balada</span>
+                            <br>
+                            <span class="expense-date sub-text-color">25/06/2016</span>
+                        </div>
+
+                        <div style="width: 30%; text-align: right; display: flex; flex-direction: row; justify-content: flex-end;">
+                            <span class="expense-value sub-text-color">R$ -63,90</span>
+                            <mat-icon style="color: #ff7d77; width: 10px; margin-left: 8px; font-size: 19px; cursor: pointer;">thumb_up</mat-icon>
+                        </div>
+                    </mat-list-item>
+                    <mat-divider *ngIf="i != (items.length-1)"></mat-divider>
+                </mat-list>
+            </div>
+        </div>
+
+        <div class="right-box">
+            <div class="card card-right content-card">
+                <span class="title-text">
+                    Top Categorias do mês atual
+                </span>
                 <br>
-                saldo geral
-            </span>
-        </div>
+                <div echarts [options]="options" class="chart-style"></div>
+            </div>
 
-        <div class="card card-left content-card">
-            <span class="title-text">
-                Minhas contas
-            </span>
-        </div>
+            <div class="card card-right content-card">
+                <span class="title-text">
+                    Metas do mês atual
+                </span>
 
-        <div class="card card-left content-card">
-            <span class="title-text">
-                Cartões de crédito
-            </span>
-        </div>
+                <mat-list>
+                    <div style="display: flex; align-items: center;">
+                        <div echarts [options]="option" class="chart2-style"></div>
 
-        <div class="card card-left content-card">
-            <span class="title-text">
-                Contas a pagar
-            </span>
+                        <div style="width: 70%;">
+                            <span class="category-text">Meta geral de despesa</span>
+                            <br>
+                            <span class="expense-date sub-text-color">Meta: R$ 1.800,00</span>
+                            <br>
+                            <span class="expense-date sub-text-color">Gasto R$ 200,00</span>
+                        </div>
 
-            <mat-list *ngFor="let item of items; let i = index">
-                <mat-list-item>
-                    <span class="dot"></span>
-
-                    <div style="width: 70%;">
-                        <span class="category-text">Cartão </span> <span class="subcategory-text sub-text-color">Balada</span>
-                        <br>
-                        <span class="expense-date sub-text-color">25/06/2016</span>
+                        <div style="width: 30%; text-align: right; display: flex; flex-direction: row; justify-content: flex-end;">
+                            <span class="expense-value sub-text-color" style="font-size: 23px;">11%</span>
+                        </div>
                     </div>
 
-                    <div style="width: 30%; text-align: right; display: flex; flex-direction: row; justify-content: flex-end;">
-                        <span class="expense-value sub-text-color">R$ -63,90</span>
-                        <mat-icon style="color: #ff7d77; width: 10px; margin-left: 8px; font-size: 19px; cursor: pointer;">thumb_up</mat-icon>
+                    <br>
+                    <mat-divider></mat-divider>
+                    <br>
+
+                    <div style="display: flex; align-items: center;">
+                        <div echarts [options]="option" class="chart2-style"></div>
+
+                        <div style="width: 70%;">
+                            <span class="category-text">Meta geral de despesa</span>
+                            <br>
+                            <span class="expense-date sub-text-color">Meta: R$ 1.800,00</span>
+                            <br>
+                            <span class="expense-date sub-text-color">Gasto R$ 200,00</span>
+                        </div>
+
+                        <div style="width: 30%; text-align: right; display: flex; flex-direction: row; justify-content: flex-end;">
+                            <span class="expense-value sub-text-color" style="font-size: 23px;">11%</span>
+                        </div>
                     </div>
-                </mat-list-item>
-                <mat-divider *ngIf="i != (items.length-1)"></mat-divider>
-            </mat-list>
-        </div>
-    </div>
 
-    <div class="right-box">
-        <div class="card card-right content-card">
-            <span class="title-text">
-                Top Categorias do mês atual
-            </span>
-            <br>
-            <div echarts [options]="options" class="chart-style"></div>
-        </div>
-
-        <div class="card card-right content-card">
-            <span class="title-text">
-                Metas do mês atual
-            </span>
+                </mat-list>
+            </div>
         </div>
     </div>
 </div>

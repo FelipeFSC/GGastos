@@ -106,3 +106,9 @@
 .chart-style {
     height: 150px;
 }
+
+.chart2-style {
+    width: 60px;
+    height: 60px;
+    display: inline-block;
+}
