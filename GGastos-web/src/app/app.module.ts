@@ -6,6 +6,9 @@ import { AppComponent } from './app.component';
 import { MaterialModule } from './material/material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DialogModule } from './dialog/dialog.module';
+import { HttpService } from './http.service';
+import { AppConfigService } from './app-config.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
     declarations: [
@@ -16,9 +19,13 @@ import { DialogModule } from './dialog/dialog.module';
         AppRoutingModule,
         MaterialModule,
         BrowserAnimationsModule,
-        DialogModule
+        DialogModule,
+        HttpClientModule
     ],
-    providers: [],
+    providers: [
+        AppConfigService,
+        HttpService,
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

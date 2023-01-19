@@ -1,7 +1,7 @@
 <div mat-dialog-content>
 
     <div class="example-box">
-        <span class="category-icon-circle" [ngStyle]="styleColor"><mat-icon class="icon">{{category.icone.toLowerCase()}}</mat-icon></span>
+        <span class="category-icon-circle" [ngStyle]="styleColor"><mat-icon class="icon">{{category.icon}}</mat-icon></span>
         &nbsp;
         <span>{{category.name}}</span>
     </div>
@@ -15,7 +15,7 @@
 
     <mat-form-field appearance="legacy">
         <mat-label>Icone</mat-label>
-        <input [(ngModel)]="category.icone" matInput placeholder="Exemplo: love">
+        <input [(ngModel)]="category.icon" matInput placeholder="Exemplo: love">
     </mat-form-field>
     Icones:&nbsp;
     <a href="https://fonts.google.com/icons">google icons</a>

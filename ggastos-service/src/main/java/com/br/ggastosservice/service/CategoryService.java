@@ -32,6 +32,8 @@ public class CategoryService {
     }
 
     public Category create(Category category) {
+        category.setIcon(category.getIcon().toLowerCase());
+        category.setEnabled(true);
         categoryRepository.save(category);
         return category;
     }
@@ -39,11 +41,13 @@ public class CategoryService {
     public void update(long oldCategoryId, Category category) throws Exception {
         findOne(oldCategoryId);
         category.setId(oldCategoryId);
+        category.setEnabled(true);
         categoryRepository.save(category);
     }
 
-    public void delete(long categoryId) throws Exception {
+    public void disable(long categoryId) throws Exception {
         Category category = findOne(categoryId);
-        categoryRepository.delete(category);
+        category.setEnabled(false);
+        categoryRepository.save(category);
     }
 }

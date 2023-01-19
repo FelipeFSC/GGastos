@@ -50,7 +50,7 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/{categoryId}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable("categoryId") long categoryId) throws Exception{
-		categoryService.delete(categoryId);
+		categoryService.disable(categoryId);
 	}
 
 }
