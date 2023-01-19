@@ -17,13 +17,14 @@ public class SubCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String name;
 
     private boolean enabled;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-	private Category category;
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private Category category;
 
 }

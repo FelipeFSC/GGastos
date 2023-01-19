@@ -19,7 +19,7 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String type;
 
@@ -31,8 +31,7 @@ public class Category {
 
     private boolean enabled;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name="category_id", nullable = true)
-	private List<SubCategory> subCategories;
+    @Transient
+    private List<SubCategory> subCategories;
 
 }

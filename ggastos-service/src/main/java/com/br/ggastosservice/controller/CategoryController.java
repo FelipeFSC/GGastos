@@ -7,14 +7,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.br.ggastosservice.model.Category;
 import com.br.ggastosservice.service.CategoryService;
-
+import com.br.ggastosservice.service.SubCategoryService;
 import java.util.List;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-
 
 @RestController
 @RequestMapping("/categories")
@@ -22,24 +20,26 @@ public class CategoryController {
 
     private CategoryService categoryService;
 
+    @Autowired
+    private SubCategoryService subCategoryService;
+
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
-
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(method = RequestMethod.GET, produces = { "application/json" })
+    @RequestMapping(method = RequestMethod.GET, produces = {"application/json"})
     public List<Category> findAll() {
-        return categoryService.findAll();
+        return categoryService.listAllCategorysEnableds();
     }
 
     @ResponseBody
-	@ResponseStatus(HttpStatus.CREATED)
-	@RequestMapping(method = RequestMethod.POST, consumes = { "application/json" }, produces = { "application/json" })
-	public Category create(@RequestBody Category category) {
-		return categoryService.create(category);
-	}
+    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping(method = RequestMethod.POST, consumes = {"application/json"}, produces = {"application/json"})
+    public Category create(@RequestBody Category category) {
+        return categoryService.create(category);
+    }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequestMapping(value = "/{categoryId}", method = RequestMethod.PUT)
@@ -48,9 +48,9 @@ public class CategoryController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-	@RequestMapping(value = "/{categoryId}", method = RequestMethod.DELETE)
-	public void delete(@PathVariable("categoryId") long categoryId) throws Exception{
-		categoryService.disable(categoryId);
-	}
+    @RequestMapping(value = "/{categoryId}", method = RequestMethod.DELETE)
+    public void delete(@PathVariable("categoryId") long categoryId) throws Exception {
+        categoryService.disable(categoryId);
+    }
 
 }
