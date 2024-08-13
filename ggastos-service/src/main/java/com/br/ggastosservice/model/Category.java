@@ -1,7 +1,5 @@
 package com.br.ggastosservice.model;
 
-import java.util.List;
-
 import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
@@ -30,8 +28,5 @@ public class Category {
     private String icon;
 
     private boolean enabled;
-
-    @Transient
-    private List<SubCategory> subCategories;
 
 }

@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CategoryDialogComponent } from '../dialog/category-dialog/category-dialog.component';
 import { ExtractDataService } from '../extract-data.service';
 import { CategoriesService } from './categories.service';
+import { SubCategoryDialogComponent } from '../dialog/sub-category-dialog/sub-category-dialog.component';
 
 @Component({
     selector: 'app-categories',
@@ -25,6 +26,7 @@ export class CategoriesComponent implements OnInit {
 
     list() {
         let success = (res: any) => {
+            // console.log(res);
             let list: any[] = [];
             for (let item of res) {
                 let category = {
@@ -33,7 +35,8 @@ export class CategoriesComponent implements OnInit {
                     icon: item.icon,
                     color: item.color,
                     type: item.type,
-                    enabled: item.enabled
+                    enabled: item.enabled,
+                    isOpen: false
                 }
                 list.push(category);
             }
@@ -48,7 +51,7 @@ export class CategoriesComponent implements OnInit {
             .subscribe(this.extractDataService.extract(success, err));
     }
 
-    onAddUnitOfMeasure(category?: any) {
+    onAddCategory(category?: any|undefined) {
         let dialogRef = this.dialog.open(CategoryDialogComponent, {
             width: '400px',
             data: { edit: ((category ? category : null))}
@@ -65,8 +68,6 @@ export class CategoriesComponent implements OnInit {
                         }
                     });
 
-                    console.log(result);
-
                     let category: any = {
                         id: result.id,
                         type: "Gasto",
@@ -78,13 +79,13 @@ export class CategoriesComponent implements OnInit {
 
                     this.onUpdateCategory(category.id, category);
                 } else {
-                    result.id = Math.floor(Math.random() * 100000000);
 
                     let category: any = {
                         type: "Gasto",
                         name: result.name,
                         color: result.color,
-                        icon: result.icon
+                        icon: result.icon,
+                        subCategories: []
                     }
 
                     this.onSaveCategory(category);
@@ -108,7 +109,7 @@ export class CategoriesComponent implements OnInit {
 
     onSaveCategory(category: any) {
         let success = (res: any) => {
-            this.items.push(res);
+            this.list();
         }
 
         let err = (error: any) => {
@@ -117,6 +118,68 @@ export class CategoriesComponent implements OnInit {
 
         this.categoriesService.createCategory(category)
             .subscribe(this.extractDataService.extract(success, err));
+    }
+
+    onAddSubCategory(category?: any|undefined) {
+        let dialogRef = this.dialog.open(SubCategoryDialogComponent, {
+            width: '400px',
+            data: { categories: this.items, edit: ((category ? category : null))}
+        });
+
+        dialogRef.afterClosed().subscribe((result: any) => {
+            if (result) {
+                if (result.id) {
+                    this.items.forEach((item: any) => {
+                        if (item.id === result.id) {
+                            item.icone = result.icone;
+                            item.color = result.color;
+                            item.name = result.name;
+                        }
+                    });
+
+                    let category: any = {
+                        id: result.id,
+                        type: "Gasto",
+                        name: result.name,
+                        color: result.color,
+                        icon: result.icon,
+                        subCategories: []
+                    }
+
+                    this.onUpdateCategory(category.id, category);
+                } else {
+                    let subCategory: any = {
+                        name: result.name,
+                        category: {
+                            id: result.categoryId
+                        }
+                    }
+                    this.onSaveSubCategory(subCategory);
+                }
+            }
+        });
+    }
+
+    onSaveSubCategory(subCategory: any) {
+        let success = (res: any) => {
+            this.list();
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.categoriesService.createSubCategory(subCategory)
+            .subscribe(this.extractDataService.extract(success, err));
+    }
+
+    loadSubCategory(category: any) {
+        category.isOpen = !category.isOpen;
+
+        if (category.isOpen) {
+            console.log("CARREGA");
+            
+        }
     }
 
 }

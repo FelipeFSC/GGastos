@@ -4,8 +4,8 @@
 
     <button class="add-button" mat-button [matMenuTriggerFor]="menu"><mat-icon>add</mat-icon></button>
     <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="onAddUnitOfMeasure(null)">Categoria</button>
-        <button mat-menu-item>Sub-categoria</button>
+        <button mat-menu-item (click)="onAddCategory()">Categoria</button>
+        <button mat-menu-item (click)="onAddSubCategory()">Sub-categoria</button>
     </mat-menu>
 
     <br>
@@ -13,15 +13,21 @@
 
     <div *ngFor="let item of items; let i = index">
         <mat-accordion class="example-headers-align" multi>
-            <mat-expansion-panel>
+            <mat-expansion-panel (click)="loadSubCategory(item)">
                 <mat-expansion-panel-header style="padding: 0px 24px 0px 0px;">
                     <mat-panel-title>
-                        <span (click)="$event.stopPropagation();" (click)="onAddUnitOfMeasure(item)" class="category-icon-circle" [ngStyle]="{'background-color':item.color}"><mat-icon class="icon">{{item.icon}}</mat-icon></span>
+                        <span (click)="$event.stopPropagation();" (click)="onAddCategory(item)" class="category-icon-circle" [ngStyle]="{'background-color':item.color}"><mat-icon class="icon">{{item.icon}}</mat-icon></span>
                         &nbsp;
                         <span>{{item.name}}</span>
                     </mat-panel-title>
                 </mat-expansion-panel-header>
+                <div *ngFor="let item of items; let i = index">
+                    
+                    <div style="display: flex; align-items: center; margin-top: 10px; margin-bottom: 10px;">
 
+                        <span>{{item.name}}</span>
+                    </div>
+                </div>
             </mat-expansion-panel>
         </mat-accordion>
         <br>

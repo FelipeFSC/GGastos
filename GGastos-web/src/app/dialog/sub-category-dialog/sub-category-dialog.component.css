@@ -1,0 +1,27 @@
+.general-box {
+    margin: auto;
+    width: 70%;
+    height: auto;
+    /*background-color: white;*/
+    padding: 15px;
+}
+
+.add-button {
+    background-color: #28cbff;
+    color: white;
+}
+
+.icon {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.example-box {
+    width: 100%;
+    height: 60px;
+    background-color: #edeaed;
+    display: flex;
+    align-items: center;
+}

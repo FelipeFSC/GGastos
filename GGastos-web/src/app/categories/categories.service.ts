@@ -26,4 +26,8 @@ export class CategoriesService {
 	updateCategory(categoryId: number, category: any) {
 		return this.httpService.put(this.url + this.appService.categoryUrl + `/${categoryId}`, category);
 	}
+
+	createSubCategory(category: any) {
+		return this.httpService.post(this.url + this.appService.subCategoryUrl, category);
+	}
 }

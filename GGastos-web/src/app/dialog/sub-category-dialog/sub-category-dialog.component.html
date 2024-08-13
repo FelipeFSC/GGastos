@@ -1,0 +1,44 @@
+<div mat-dialog-content>
+
+    <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Categoria</mat-label>
+        <mat-select [(ngModel)]="selectedValue" name="food" (selectionChange)="onSelect()">
+            <mat-option *ngFor="let item of categories;" [value]="item">
+                <div style="display: flex; align-items: center;">
+                    <span class="category-icon-circle"
+                        [ngStyle]="{'background-color':item.color}">
+                        <mat-icon class="icon" style="margin-right: 0;">{{item.icon}}</mat-icon>
+                    </span>
+                        &nbsp;
+                    {{item.name}}
+                </div>
+            </mat-option>
+
+            <!-- Aqui eu mostro apenas o que eu quero quando selecionado :D -->
+            <mat-select-trigger>
+                <ng-container *ngIf="selectedValue">
+                    {{selectedValue.name}}
+                </ng-container>
+            </mat-select-trigger>
+        </mat-select>
+    </mat-form-field>
+
+    <div *ngIf="selectedValue">
+        <mat-form-field appearance="legacy" class="full-width">
+            <mat-label>Nome</mat-label>
+            <input [(ngModel)]="category.name" matInput placeholder="Exemplo: Aluguel">
+        </mat-form-field>
+    </div>
+
+</div>
+<br>
+<br>
+
+<div>
+    <button *ngIf="isDelete" (click)="onClose()">DELETE</button>
+    &nbsp;
+    <button (click)="onClose()">Cancel</button>
+    &nbsp;
+    <button [mat-dialog-close]="category" *ngIf="selectedValue">Salvar</button>
+</div>
+
