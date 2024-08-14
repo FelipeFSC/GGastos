@@ -5,12 +5,7 @@
             <div class="menu-box">
                 <button mat-button (click)="onHome()">Visão Geral</button>
 
-                <button mat-button [matMenuTriggerFor]="belowMenu">Lançamentos</button>
-                <mat-menu #belowMenu="matMenu" yPosition="below">
-                    <button mat-menu-item (click)="onReleases()">Todos os lançamentos</button>
-                    <button mat-menu-item>Contas e carteiras</button>
-                    <button mat-menu-item>Cartões de crédito</button>
-                </mat-menu>
+                <button mat-button (click)="onReleases()">Lançamentos</button>
 
                 <button mat-button (click)="onCategories()">Categorias</button>
             </div>

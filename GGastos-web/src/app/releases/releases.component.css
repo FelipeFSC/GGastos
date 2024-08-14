@@ -1,3 +1,121 @@
+.icon {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.box-general {
+    margin: auto;
+    height: auto;
+    max-width: 800px;
+    background-color: white;
+    border-radius: 10px;
+}
+.box-menu {
+    height: 42px;
+    width: auto;
+    /*background-color: antiquewhite;*/
+    padding: 18px 20px;
+    border-radius: 10px 10px 0px 0px;
+}
+.box-item-menu {
+    width: 33%;
+    float: left;
+}
+.box-item-content-right {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+
+.box-filter {
+    width: auto;
+    height: 45px;
+    background-color: #3f51b5;
+}
+
+
+.box-content {
+    padding: 0px 20px;
+}
+.box-data {
+    padding: 15px 0px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.box-content-date {
+    width: 5%;
+}
+.box-content-itens {
+    width: 95%;
+    /*
+    background-color: aqua;
+    */
+}
+.box-item {
+    width: 100%;
+    /*
+    background-color: rgb(0, 64, 255);
+    */
+    height: 40px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.box-category-options {
+    width: 55%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+}
+.category {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.options {
+    margin-right: 10px;
+}
+.mini-icon {
+    color: #c2c2bd;
+    font-size: 16px;
+    align-content: center;
+}
+.box-account {
+    width: 25%;
+}
+.box-balance-check {
+    width: 20%;
+
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
+    justify-content: space-evenly;
+}
+
+
+.box-total {
+    width: auto;
+    display: flex;
+    flex-direction: row-reverse;
+}
+.box-itens-total {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 40%;
+    height: 60px;
+    padding: 0px 20px;
+    border-radius: 10px;
+}
+.space-between {
+    display: flex;
+    justify-content: space-between;
+}
+/*
 mat-card {
     margin: auto;
     width: 70%;
@@ -60,3 +178,4 @@ mat-card {
 mat-panel-description {
     justify-content: space-between;
 }
+*/

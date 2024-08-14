@@ -1,7 +1,102 @@
 <app-left-menu></app-left-menu>
 
+<div class="box-general">
+    <div class="box-menu">
+        <div class="box-item-menu">
+            <span style="font-size: 16px;"> Lançamentos </span>
+            <button mat-mini-fab color="primary">
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
 
-<mat-card>
+        <div class="box-item-menu">
+            oi
+        </div>
+
+        <div class="box-item-menu box-item-content-right">
+            <button mat-icon-button color="primary">
+                <mat-icon>more_horiz</mat-icon>
+            </button>
+            <button mat-icon-button color="primary">
+                <mat-icon>list</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <div class="box-filter">
+
+    </div>
+
+    <div class="box-content" *ngFor="let geral of modeloDados">
+
+        <div class="box-data">
+            <span class="box-content-date"> {{geral.data}} </span>
+
+            <div class="box-content-itens">
+                <div class="box-item" *ngFor="let item of geral.gastos">
+                    <div class="box-category-options">
+                        <div class="category">
+                            <span class="category-icon-circle"
+                                [ngStyle]="{'background-color': item.cor }">
+                                <mat-icon class="icon"> {{item.icone}} </mat-icon>
+                            </span>
+                            <span style="margin-left: 12px;"> {{item.nameCategoria}} </span>
+                        </div>
+                        <div class="options">
+                            <mat-icon *ngIf="item.isAnotacao" class="mini-icon"
+                                #tooltip="matTooltip"
+                                matTooltip={{item.isAnotacao}}
+                                matTooltipPosition='below'>chat
+                            </mat-icon>
+
+                            <mat-icon *ngIf="item.isAnexo" class="mini-icon"
+                                #tooltip="matTooltip"
+                                matTooltip={{item.isAnexo.nome}}
+                                matTooltipPosition='below'>image
+                            </mat-icon>
+
+                            <mat-icon *ngIf="item.isFixo" class="mini-icon"
+                                #tooltip="matTooltip"
+                                matTooltip="Lançamento fixo"
+                                matTooltipPosition='below'>cached
+                            </mat-icon>
+                        </div>
+                    </div>
+                    <div class="box-account">
+                        {{item.tipoConta}}
+                    </div>
+                    <div class="box-balance-check">
+                        <mat-icon class="mini-icon">
+                            thumb_up
+                        </mat-icon>
+    
+                        <span>
+                            {{item.valor}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="box-total">
+        <div class="box-itens-total">
+            <div class="space-between">
+                <span style="font-size: 16px;">Saldo</span>
+                <span style="font-size: 16px;">500.000,00</span>
+            </div>
+            <div class="space-between">
+                <span style="font-size: 16px;">Previsto</span>
+                <span style="font-size: 16px;">498.000,00</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--
+<mat-card class="aaaaaaaa">
     <div class="release-box">
         <div class="xxxxxxx">
             <span> Lançamentos </span>
@@ -16,7 +111,7 @@
             <button mat-icon-button aria-label="icon-button with a heart icon">
                 <mat-icon class="cinza">chevron_left</mat-icon>
             </button>
-            <span class="cinza"> setembroaaa 2022 </span>
+            <span class="cinza"> setembroaaa 2022 aaa </span>
             <button mat-icon-button aria-label="icon-button with a heart icon">
                 <mat-icon class="cinza">chevron_right</mat-icon>
             </button>
@@ -132,3 +227,4 @@
 
 </mat-card>
 <div><br></div>
+-->

@@ -1,19 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import {MatTableDataSource} from '@angular/material/table';
-import {SelectionModel} from '@angular/cdk/collections';
-
-export interface PeriodicElement {
-    id: number;
-    name: string;
-    description: string;
-    value: number;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-    {id: 1, name: 'Salário', description: "", value: 1500},
-    {id: 2, name: 'Decimo', description: "Amoooo S2", value: 750},
-    {id: 3, name: 'Participação de lucro', description: "Quando tem é bom", value: 50000},
-];
 
 @Component({
     selector: 'app-releases',
@@ -23,37 +8,110 @@ const ELEMENT_DATA: PeriodicElement[] = [
 
 export class ReleasesComponent implements OnInit {
 
+    modeloDados: any = [];
+
     constructor() { }
 
     ngOnInit(): void {
-    }
+        this.modeloDados = [
+            {   
+                data: "01",
+                gastos: [
+                    {
+                        icone: "star",
+                        cor: "#74e2aa",
+                        isAnotacao: "Sempre bom",
+                        isAnexo: {
+                            id: 14,
+                            nome: "folha de pagamento.pdf"
+                        },
+                        isFixo: true,
 
-    displayedColumns: string[] = ['name', 'description', 'value', 'select'];
-    dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
-    selection = new SelectionModel<PeriodicElement>(true, []);
 
-    /** Whether the number of selected elements matches the total number of rows. */
-    isAllSelected() {
-        const numSelected = this.selection.selected.length;
-        const numRows = this.dataSource.data.length;
-        return numSelected === numRows;
-    }
+                        nameCategoria: "Salário",
+                        tipoConta: "Conta inicial",
+                        valor: "1750"
+                    },
+                    {   
+                        icone: "favorite",
+                        cor: "#74e2dd",
+                        isAnotacao: "Fiz a geral no PC do Jonas, filho do Geraldo da esquina.",
+                        isAnexo: null,
+                        isFixo: false,
 
-    /** Selects all rows if they are not all selected; otherwise clear selection. */
-    masterToggle() {
-        if (this.isAllSelected()) {
-            this.selection.clear();
-            return;
-        }
+                        nameCategoria: "Bico",
+                        tipoConta: "Conta inicial",
+                        valor: "500"
+                    }
+                ]
+            },
+            {
+                data: "05",
+                gastos: [
+                    {
+                        icone: "star",
+                        cor: "#74e2aa",
+                        isAnotacao: null,
+                        isAnexo: null,
+                        isFixo: true,
 
-        this.selection.select(...this.dataSource.data);
-    }
+                        nameCategoria: "Salário",
+                        tipoConta: "Conta do momozin",
+                        valor: "2300"
+                    }
+                ]
+            },
+            {
+                data: "10",
+                gastos: [
+                    {
+                        icone: "shopping_cart",
+                        cor: "#ff9281",
+                        isAnotacao: null,
+                        isAnexo: null,
+                        isFixo: false,
 
-    /** The label for the checkbox on the passed row */
-    checkboxLabel(row?: PeriodicElement): string {
-        if (!row) {
-            return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
-        }
-        return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
+                        nameCategoria: "Feijão",
+                        tipoConta: "Conta conjunta",
+                        valor: "50"
+                    },
+                    {
+                        icone: "shopping_cart",
+                        cor: "#ff9281",
+                        isAnotacao: "Ta caro, né!?",
+                        isAnexo: null,
+                        isFixo: false,
+
+                        nameCategoria: "Arroz",
+                        tipoConta: "Conta conjunta",
+                        valor: "60"
+                    },
+                    {
+                        icone: "shopping_cart",
+                        cor: "#ff9281",
+                        isAnotacao: null,
+                        isAnexo: null,
+                        isFixo: false,
+
+                        nameCategoria: "Saladinha hmm",
+                        tipoConta: "Conta conjunta",
+                        valor: "40"
+                    },
+                    {
+                        icone: "shopping_cart",
+                        cor: "#ff9281",
+                        isAnotacao: "SELOKO, só comprei uma unidade de hamburguer",
+                        isAnexo: null,
+                        isFixo: false,
+
+                        nameCategoria: "Carne",
+                        tipoConta: "Conta conjunta",
+                        valor: "150"
+                    }
+                ]
+            },
+        ];
+
+
     }
 }
