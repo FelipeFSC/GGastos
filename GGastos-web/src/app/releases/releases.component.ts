@@ -114,4 +114,21 @@ export class ReleasesComponent implements OnInit {
 
 
     }
+
+    onViewItem(item: any) {
+        console.log("Bó visualizar :D");
+        console.log(item);
+    }
+
+    onDownloadFile(event: MouseEvent) {
+        event.stopPropagation();
+
+        console.log("Baixar o arquivo");
+    }
+
+    onCheck(event: MouseEvent) {
+        event.stopPropagation();
+
+        console.log("Nice, você pagou a conta!");
+    }
 }
