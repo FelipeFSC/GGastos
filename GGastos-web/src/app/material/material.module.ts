@@ -27,6 +27,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import {MatTabsModule} from '@angular/material/tabs';
 import { ReactiveFormsModule } from '@angular/forms';
+import {MatTreeModule} from '@angular/material/tree';
+
 
 @NgModule({
 	imports: [
@@ -58,7 +60,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 		MatExpansionModule,
 		MatDatepickerModule,
 		MatNativeDateModule,
-		ReactiveFormsModule
+		ReactiveFormsModule,
+		MatTreeModule
 	],
 	declarations: [],
 	exports: [
@@ -89,7 +92,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 		MatExpansionModule,
 		MatDatepickerModule,
 		MatNativeDateModule,
-		ReactiveFormsModule
+		ReactiveFormsModule,
+		MatTreeModule
 	],
 	providers: []
 })

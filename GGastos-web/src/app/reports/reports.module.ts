@@ -7,6 +7,7 @@ import { ReportsRoutingModule } from './releases-routing.module';
 import { CategoryReportComponent } from './category-report/category-report.component';
 import { InputOutputReportComponent } from './input-output-report/input-output-report.component';
 import { AccountReportComponent } from './account-report/account-report.component';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 @NgModule({
     declarations: [
@@ -20,6 +21,9 @@ import { AccountReportComponent } from './account-report/account-report.componen
         CommonModule,
         MaterialModule,
         MyComponentsModule,
+        NgxEchartsModule.forRoot({
+			echarts: () => import('echarts'),
+		}),
     ]
 })
 export class ReportsModule { }
