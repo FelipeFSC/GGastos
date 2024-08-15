@@ -1,0 +1,30 @@
+<app-left-menu></app-left-menu>
+
+<div class="box-general">
+    <h1> Titulo e filtro de datas </h1>
+
+    <mat-tab-group class="mat-tab-group" (selectedTabChange)="onTabChange($event)" animationDuration="0ms">
+        <mat-tab label="Categorias">
+            <app-category-report 
+                *ngIf="typeList === 'categories'"
+                (isLoaded)="changeLoad()">
+            </app-category-report>
+        </mat-tab>
+        <mat-tab label="Entradas x Saídas">
+            <app-category-report 
+                *ngIf="typeList === 'inputsOutputs'"
+                (isLoaded)="changeLoad()">
+            </app-category-report>
+        </mat-tab>
+        <mat-tab label="Contas">
+            <app-category-report 
+                *ngIf="typeList === 'accounts'"
+                (isLoaded)="changeLoad()">
+            </app-category-report>
+        </mat-tab>
+    </mat-tab-group>
+    <div *ngIf="isLoad" class="box-load">
+        <img src="././assets/loadGif.gif" alt="load gif">
+    </div>
+</div>
+

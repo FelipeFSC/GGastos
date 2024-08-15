@@ -9,6 +9,7 @@ import { DialogModule } from './dialog/dialog.module';
 import { HttpService } from './http.service';
 import { AppConfigService } from './app-config.service';
 import { HttpClientModule } from '@angular/common/http';
+import { ReportsModule } from './reports/reports.module';
 
 @NgModule({
     declarations: [
@@ -20,7 +21,8 @@ import { HttpClientModule } from '@angular/common/http';
         MaterialModule,
         BrowserAnimationsModule,
         DialogModule,
-        HttpClientModule
+        HttpClientModule,
+        ReportsModule
     ],
     providers: [
         AppConfigService,
