@@ -11,16 +11,16 @@
             </app-category-report>
         </mat-tab>
         <mat-tab label="Entradas x Saídas">
-            <app-category-report 
+            <app-input-output-report 
                 *ngIf="typeList === 'inputsOutputs'"
                 (isLoaded)="changeLoad()">
-            </app-category-report>
+            </app-input-output-report>
         </mat-tab>
         <mat-tab label="Contas">
-            <app-category-report 
+            <app-account-report 
                 *ngIf="typeList === 'accounts'"
                 (isLoaded)="changeLoad()">
-            </app-category-report>
+            </app-account-report>
         </mat-tab>
     </mat-tab-group>
     <div *ngIf="isLoad" class="box-load">
