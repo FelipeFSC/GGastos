@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ReleasesDialogComponent } from '../dialog/releases-dialog/releases-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-releases',
@@ -10,7 +12,9 @@ export class ReleasesComponent implements OnInit {
 
     modeloDados: any = [];
 
-    constructor() { }
+    constructor(
+        private dialog: MatDialog,
+    ) { }
 
     ngOnInit(): void {
         this.modeloDados = [
@@ -114,6 +118,21 @@ export class ReleasesComponent implements OnInit {
 
 
     }
+
+    onExpense() {
+        this.dialog.open(ReleasesDialogComponent, {
+            
+        })
+    }
+
+    onRevenue() {
+
+    }
+
+    onTransfer() {
+
+    }
+
 
     onViewItem(item: any) {
         console.log("Bó visualizar :D");

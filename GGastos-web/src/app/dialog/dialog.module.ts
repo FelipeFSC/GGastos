@@ -5,11 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { CategoryDialogComponent } from './category-dialog/category-dialog.component';
 import { MaterialModule } from '../material/material.module';
 import { SubCategoryDialogComponent } from './sub-category-dialog/sub-category-dialog.component';
+import { ReleasesDialogComponent } from './releases-dialog/releases-dialog.component';
 
 @NgModule({
     declarations: [
         CategoryDialogComponent,
         SubCategoryDialogComponent,
+        ReleasesDialogComponent,
     ],
     imports: [
         CommonModule,
@@ -18,7 +20,8 @@ import { SubCategoryDialogComponent } from './sub-category-dialog/sub-category-d
     ],
     entryComponents: [
         CategoryDialogComponent,
-        SubCategoryDialogComponent
+        SubCategoryDialogComponent,
+        ReleasesDialogComponent
     ]
 })
 export class DialogModule { }

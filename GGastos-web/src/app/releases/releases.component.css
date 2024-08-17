@@ -5,6 +5,10 @@
     justify-content: center;
 }
 
+.mat-mini-fab {
+    box-shadow: none;
+}
+
 .box-general {
     margin: auto;
     height: auto;
@@ -110,6 +114,17 @@
     background-color: #e9e9e9;
     width: 100%;
 }
+.btn-release{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 25px;
+    width: 160px;
+}
+
+.btn-expense {color: red;}
+.btn-revenue {color: green;}
+.btn-transfer {color: #858782;}
 
 .box-total {
     width: auto;

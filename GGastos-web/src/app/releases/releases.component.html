@@ -4,9 +4,14 @@
     <div class="box-menu">
         <div class="box-item-menu">
             <span style="font-size: 16px;"> Lançamentos </span>
-            <button mat-mini-fab color="primary">
+            <button mat-mini-fab color="primary" [matMenuTriggerFor]="menu">
                 <mat-icon>add</mat-icon>
             </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="onExpense()" class="btn-release btn-expense">Despesa</button>
+                <button mat-menu-item (click)="onRevenue()" class="btn-release btn-revenue">Receita</button>
+                <button mat-menu-item (click)="onTransfer()" class="btn-release btn-transfer">Transferência</button>
+            </mat-menu>
         </div>
 
         <div class="box-item-menu">
