@@ -16,9 +16,9 @@ export class SubCategoryDialogComponent implements OnInit {
 
     styleColor: any = {'background-color':this.category.color};
 
-    isDelete: boolean = false;
-
 	categories: any[] = [];
+
+    isDisabled = false;
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: any,
@@ -29,7 +29,7 @@ export class SubCategoryDialogComponent implements OnInit {
 		this.categories = this.data.categories;
 
         if (this.data.edit) {
-            this.onLoad(this.data.edit, this.categories);
+            this.onLoad(this.data.edit, this.data.category);
         }
     }
 
@@ -38,15 +38,18 @@ export class SubCategoryDialogComponent implements OnInit {
         this.category.icon = category.icon;
         this.category.color = category.color;
         this.category.name = category.name;
+        this.selectedValue = category;
+        this.isDisabled = true;
 
         this.subCategory.id = subCategory.id;
         this.subCategory.name = subCategory.name;
 
         this.styleColor = {'background-color':category.color};
+        this.onSelect()
     }
 
     onSelect() {
-        this.category.categoryId = this.selectedValue.id;
+        this.subCategory.categoryId = this.selectedValue.id;
     }
 
     changeColor() {

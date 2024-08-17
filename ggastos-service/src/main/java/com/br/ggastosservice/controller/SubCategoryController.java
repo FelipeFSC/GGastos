@@ -32,8 +32,8 @@ public class SubCategoryController {
 
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/{subCategoryId}", method = RequestMethod.PUT)
-    public void update(@PathVariable("subCategoryId") long categoryId, @RequestBody SubCategory subCategory) throws Exception {
-        subCategoryService.update(categoryId, subCategory);
+    public void update(@PathVariable("subCategoryId") long subCategoryId, @RequestBody SubCategory subCategory) throws Exception {
+        subCategoryService.update(subCategoryId, subCategory);
     }
 
     @ResponseStatus(HttpStatus.OK)

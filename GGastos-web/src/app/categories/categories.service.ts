@@ -35,6 +35,10 @@ export class CategoriesService {
 		return this.httpService.post(this.url + this.appService.subCategoryUrl, category);
 	}
 
+	updateSubCategory(subCategoryId: number, subCategory: any) {
+		return this.httpService.put(this.url + this.appService.subCategoryUrl + `/${subCategoryId}`, subCategory);
+	}
+
 	deleteSubCategory(subCategory: number) {
 		return this.httpService.delete(this.url + this.appService.subCategoryUrl + `/${subCategory}`);
 	}

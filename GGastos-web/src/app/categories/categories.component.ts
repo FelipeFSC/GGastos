@@ -134,34 +134,48 @@ export class CategoriesComponent implements OnInit {
     }
 
     onAddSubCategory(category?: any|undefined, subCategory?: any|undefined) {
-        console.log("category: ", category);
+        console.log("categoryAdd:", category);
         let dialogRef = this.dialog.open(SubCategoryDialogComponent, {
             width: '400px',
-            data: { categories: ((subCategory ? category : this.categories)), edit: ((subCategory ? subCategory : null))}
+            data: { categories: this.categories, edit: ((subCategory ? subCategory : null)), category: ((category ? category : null))}
         });
 
         dialogRef.afterClosed().subscribe((result: any) => {
             if (result) {
                 if (result.id) {
-                    this.categories.forEach((item: any) => {
-                        if (item.id === result.id) {
-                            item.icone = result.icone;
-                            item.color = result.color;
-                            item.name = result.name;
+                    console.log("result", result)
+
+                    if (result.categoryId == undefined) {
+                        this.categories.forEach((item: any) => {
+                            if (item.id === result.id) {
+                                item.icone = result.icone;
+                                item.color = result.color;
+                                item.name = result.name;
+                            }
+                        });
+    
+                        let category: any = {
+                            id: result.id,
+                            type: "Gasto",
+                            name: result.name,
+                            color: result.color,
+                            icon: result.icon,
+                            subCategories: []
                         }
-                    });
-
-                    let category: any = {
-                        id: result.id,
-                        type: "Gasto",
-                        name: result.name,
-                        color: result.color,
-                        icon: result.icon,
-                        subCategories: []
+    
+                        this.onUpdateCategory(category.id, category);
+                    } else {
+                        let subCategoryEdit: any = {
+                            id: result.id,
+                            name: result.name,
+                            category: {
+                                id: result.categoryId
+                            }
+                        }
+                        this.onUpdateSubCategory(result.id, subCategoryEdit);
                     }
-
-                    this.onUpdateCategory(category.id, category);
                 } else {
+                    console.log("subCategory: ", result);
                     let subCategory: any = {
                         name: result.name,
                         category: {
@@ -184,6 +198,19 @@ export class CategoriesComponent implements OnInit {
         }
 
         this.categoriesService.createSubCategory(subCategory)
+            .subscribe(this.extractDataService.extract(success, err));
+    }
+
+    onUpdateSubCategory(subCategoryId: number, subCategory: any) {
+        let success = (res: any) => {
+            this.list();
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.categoriesService.updateSubCategory(subCategoryId, subCategory)
             .subscribe(this.extractDataService.extract(success, err));
     }
 

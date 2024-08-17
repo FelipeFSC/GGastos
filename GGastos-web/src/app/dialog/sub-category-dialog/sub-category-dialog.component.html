@@ -2,7 +2,7 @@
 
     <mat-form-field appearance="fill" class="full-width">
         <mat-label>Categoria</mat-label>
-        <mat-select [(ngModel)]="selectedValue" name="food" (selectionChange)="onSelect()">
+        <mat-select [(ngModel)]="selectedValue" name="food" (selectionChange)="onSelect()" [disabled]="isDisabled">
             <mat-option *ngFor="let item of categories;" [value]="item">
                 <div style="display: flex; align-items: center;">
                     <span class="category-icon-circle"
@@ -35,7 +35,7 @@
 <br>
 
 <div>
-    <button mat-stroked-button [mat-dialog-close]="category" *ngIf="selectedValue">Salvar</button>
+    <button mat-stroked-button [mat-dialog-close]="subCategory" *ngIf="selectedValue">Salvar</button>
     &nbsp;
     <button mat-stroked-button (click)="onClose()">Cancelar</button>
 </div>
