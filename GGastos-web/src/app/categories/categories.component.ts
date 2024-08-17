@@ -12,7 +12,8 @@ import { SubCategoryDialogComponent } from '../dialog/sub-category-dialog/sub-ca
 })
 export class CategoriesComponent implements OnInit {
 
-    items: any = [];
+    categories: any = [];
+    subCategories: any = [];
 
     constructor(
         private dialog: MatDialog,
@@ -26,21 +27,20 @@ export class CategoriesComponent implements OnInit {
 
     list() {
         let success = (res: any) => {
-            // console.log(res);
             let list: any[] = [];
-            for (let item of res) {
+            for (let categoryRes of res) {
                 let category = {
-                    id: item.id,
-                    name: item.name,
-                    icon: item.icon,
-                    color: item.color,
-                    type: item.type,
-                    enabled: item.enabled,
+                    id: categoryRes.id,
+                    name: categoryRes.name,
+                    icon: categoryRes.icon,
+                    color: categoryRes.color,
+                    type: categoryRes.type,
+                    enabled: categoryRes.enabled,
                     isOpen: false
                 }
                 list.push(category);
             }
-            this.items = list;
+            this.categories = list;
         }
 
         let err = (error: any) => {
@@ -60,7 +60,7 @@ export class CategoriesComponent implements OnInit {
         dialogRef.afterClosed().subscribe((result: any) => {
             if (result) {
                 if (result.id) {
-                    this.items.forEach((item: any) => {
+                    this.categories.forEach((item: any) => {
                         if (item.id === result.id) {
                             item.icone = result.icone;
                             item.color = result.color;
@@ -107,6 +107,19 @@ export class CategoriesComponent implements OnInit {
             .subscribe(this.extractDataService.extract(success, err));
     }
 
+    onDeleteCategory(categoryId: number) {
+        let success = (res: any) => {
+            this.list();
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.categoriesService.deleteCategory(categoryId)
+            .subscribe(this.extractDataService.extract(success, err));
+    }
+
     onSaveCategory(category: any) {
         let success = (res: any) => {
             this.list();
@@ -120,16 +133,17 @@ export class CategoriesComponent implements OnInit {
             .subscribe(this.extractDataService.extract(success, err));
     }
 
-    onAddSubCategory(category?: any|undefined) {
+    onAddSubCategory(category?: any|undefined, subCategory?: any|undefined) {
+        console.log("category: ", category);
         let dialogRef = this.dialog.open(SubCategoryDialogComponent, {
             width: '400px',
-            data: { categories: this.items, edit: ((category ? category : null))}
+            data: { categories: ((subCategory ? category : this.categories)), edit: ((subCategory ? subCategory : null))}
         });
 
         dialogRef.afterClosed().subscribe((result: any) => {
             if (result) {
                 if (result.id) {
-                    this.items.forEach((item: any) => {
+                    this.categories.forEach((item: any) => {
                         if (item.id === result.id) {
                             item.icone = result.icone;
                             item.color = result.color;
@@ -173,13 +187,38 @@ export class CategoriesComponent implements OnInit {
             .subscribe(this.extractDataService.extract(success, err));
     }
 
-    loadSubCategory(category: any) {
-        category.isOpen = !category.isOpen;
-
-        if (category.isOpen) {
-            console.log("CARREGA");
-            
+    onDeleteSubCategory(subCategoryId: number) {
+        let success = (res: any) => {
+            this.list();
         }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.categoriesService.deleteSubCategory(subCategoryId)
+            .subscribe(this.extractDataService.extract(success, err));
+    }
+
+    loadSubCategory(categoryId: number) {
+        let success = (res: any) => {
+            let list: any[] = [];
+            for (let subCategoryRes of res) {
+                let subCategory = {
+                    id: subCategoryRes.id,
+                    name: subCategoryRes.name
+                }
+                list.push(subCategory);
+            }
+            this.subCategories = list;
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.categoriesService.findSubCategoryByCategoryId(categoryId)
+            .subscribe(this.extractDataService.extract(success, err));
     }
 
 }

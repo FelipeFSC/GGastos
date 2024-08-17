@@ -2,6 +2,8 @@ package com.br.ggastosservice.model;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,5 +28,4 @@ public class SubCategory {
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Category category;
-
 }

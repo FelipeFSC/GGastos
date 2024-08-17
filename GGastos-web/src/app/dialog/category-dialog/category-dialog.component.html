@@ -18,7 +18,7 @@
         <input [(ngModel)]="category.icon" matInput placeholder="Exemplo: love">
     </mat-form-field>
     Icones:&nbsp;
-    <a href="https://fonts.google.com/icons">google icons</a>
+    <a href="https://fonts.google.com/icons" target="_blank">google icons</a>
 
     <br>
 
@@ -32,9 +32,7 @@
 <br>
 
 <div>
-    <button *ngIf="isDelete" (click)="onClose()">DELETE</button>
+    <button mat-stroked-button [mat-dialog-close]="category">Salvar</button>
     &nbsp;
-    <button (click)="onClose()">Cancel</button>
-    &nbsp;
-    <button [mat-dialog-close]="category">Salvar</button>
+    <button mat-stroked-button (click)="onClose()">Cancelar</button>
 </div>

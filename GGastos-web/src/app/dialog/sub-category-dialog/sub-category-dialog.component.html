@@ -26,7 +26,7 @@
     <div *ngIf="selectedValue">
         <mat-form-field appearance="legacy" class="full-width">
             <mat-label>Nome</mat-label>
-            <input [(ngModel)]="category.name" matInput placeholder="Exemplo: Aluguel">
+            <input [(ngModel)]="subCategory.name" matInput placeholder="Exemplo: Aluguel">
         </mat-form-field>
     </div>
 
@@ -35,10 +35,8 @@
 <br>
 
 <div>
-    <button *ngIf="isDelete" (click)="onClose()">DELETE</button>
+    <button mat-stroked-button [mat-dialog-close]="category" *ngIf="selectedValue">Salvar</button>
     &nbsp;
-    <button (click)="onClose()">Cancel</button>
-    &nbsp;
-    <button [mat-dialog-close]="category" *ngIf="selectedValue">Salvar</button>
+    <button mat-stroked-button (click)="onClose()">Cancelar</button>
 </div>
 

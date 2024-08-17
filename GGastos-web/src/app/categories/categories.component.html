@@ -11,21 +11,24 @@
     <br>
     <br>
 
-    <div *ngFor="let item of items; let i = index">
+    <div *ngFor="let category of categories; let i = index">
         <mat-accordion class="example-headers-align" multi>
-            <mat-expansion-panel (click)="loadSubCategory(item)">
+            <mat-expansion-panel>
                 <mat-expansion-panel-header style="padding: 0px 24px 0px 0px;">
-                    <mat-panel-title>
-                        <span (click)="$event.stopPropagation();" (click)="onAddCategory(item)" class="category-icon-circle" [ngStyle]="{'background-color':item.color}"><mat-icon class="icon">{{item.icon}}</mat-icon></span>
+                    <mat-panel-title (click)="loadSubCategory(category.id)">
+                        <span (click)="$event.stopPropagation();" (click)="onAddCategory(category)" class="category-icon-circle" [ngStyle]="{'background-color':category.color}"><mat-icon class="icon">{{category.icon}}</mat-icon></span>
                         &nbsp;
-                        <span>{{item.name}}</span>
+                        <span>{{category.name}}</span>
                     </mat-panel-title>
+                    <button mat-button (click)="onDeleteCategory(category.id)"><mat-icon>delete</mat-icon></button>
                 </mat-expansion-panel-header>
-                <div *ngFor="let item of items; let i = index">
-                    
+                <div *ngFor="let subCategory of subCategories; let i = index">
                     <div style="display: flex; align-items: center; margin-top: 10px; margin-bottom: 10px;">
-
-                        <span>{{item.name}}</span>
+                        <span>{{subCategory.name}}</span>
+                        <div style="margin-left: auto;">
+                            <button mat-button (click)="onAddSubCategory(category, subCategory)"><mat-icon class="align-rigth">edit</mat-icon></button>
+                            <button mat-button (click)="onDeleteSubCategory(subCategory.id)"><mat-icon class="align-rigth">delete</mat-icon></button>
+                        </div>
                     </div>
                 </div>
             </mat-expansion-panel>

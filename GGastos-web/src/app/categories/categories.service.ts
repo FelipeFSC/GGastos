@@ -27,7 +27,19 @@ export class CategoriesService {
 		return this.httpService.put(this.url + this.appService.categoryUrl + `/${categoryId}`, category);
 	}
 
+	deleteCategory(categoryId: number) {
+		return this.httpService.delete(this.url + this.appService.categoryUrl + `/${categoryId}`);
+	}
+
 	createSubCategory(category: any) {
 		return this.httpService.post(this.url + this.appService.subCategoryUrl, category);
+	}
+
+	deleteSubCategory(subCategory: number) {
+		return this.httpService.delete(this.url + this.appService.subCategoryUrl + `/${subCategory}`);
+	}
+
+	findSubCategoryByCategoryId(categoryId: number) {
+		return this.httpService.get(this.url + this.appService.subCategoryUrl + `/${categoryId}`);
 	}
 }

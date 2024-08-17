@@ -7,9 +7,9 @@ export class AppConfigService {
 
 	private privateBaseUrl: string = 'http://localhost:8081';
 
-	private privateCategory: string = "/categories";
+	private privateCategory: string = "/category";
 
-	private privateSubCategory: string = "/subcategory";
+	private privateSubCategory: string = "/sub-category";
 
 	public get baseUrl(): string {
 		return this.privateBaseUrl;

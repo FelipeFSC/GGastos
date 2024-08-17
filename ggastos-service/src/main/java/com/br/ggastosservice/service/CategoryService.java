@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.br.ggastosservice.model.Category;
 import com.br.ggastosservice.repository.CategoryRepository;
 
@@ -17,8 +18,8 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<Category> listAllCategorysEnableds() {
-        return categoryRepository.listAllCategorysEnableds();
+    public List<Category> listAllCategoriesEnableds() {
+        return categoryRepository.listAllCategoriesEnableds();
     }
 
     public Category findOne(long id) throws Exception  {
@@ -36,9 +37,9 @@ public class CategoryService {
         return category;
     }
 
-    public void update(long oldCategoryId, Category category) throws Exception {
-        findOne(oldCategoryId);
-        category.setId(oldCategoryId);
+    public void update(long categoryId, Category category) throws Exception {
+        findOne(categoryId);
+        category.setId(categoryId);
         category.setEnabled(true);
         categoryRepository.save(category);
     }

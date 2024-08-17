@@ -12,6 +12,8 @@ export class SubCategoryDialogComponent implements OnInit {
 
   	category: any = {id: 0, name: "", categoryId: 0};
 
+    subCategory: any = {id: 0, name: "", categoryId: 0};
+
     styleColor: any = {'background-color':this.category.color};
 
     isDelete: boolean = false;
@@ -27,18 +29,20 @@ export class SubCategoryDialogComponent implements OnInit {
 		this.categories = this.data.categories;
 
         if (this.data.edit) {
-            this.isDelete = true;
-            this.onLoad(this.data.edit);
+            this.onLoad(this.data.edit, this.categories);
         }
     }
 
-    onLoad(data: any) {
-        this.category.id = data.id;
-        this.category.icon = data.icon;
-        this.category.color = data.color;
-        this.category.name = data.name;
+    onLoad(subCategory: any, category: any) {
+        this.category.id = category.id;
+        this.category.icon = category.icon;
+        this.category.color = category.color;
+        this.category.name = category.name;
 
-        this.styleColor = {'background-color':data.color};
+        this.subCategory.id = subCategory.id;
+        this.subCategory.name = subCategory.name;
+
+        this.styleColor = {'background-color':category.color};
     }
 
     onSelect() {
