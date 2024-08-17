@@ -14,7 +14,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatNativeDateModule, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -95,6 +95,22 @@ import {MatTreeModule} from '@angular/material/tree';
 		ReactiveFormsModule,
 		MatTreeModule
 	],
-	providers: []
+	providers: [
+		{ provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+		{
+			provide: MAT_DATE_FORMATS,
+			useValue: {
+				display: {
+				dateInput: 'DD/MM/YYYY',
+				monthYearLabel: 'MMM YYYY',
+				monthYearA11yLabel: 'MM YYYY',
+				yearA11yLabel: 'YYYY'
+				},
+				parse: {
+				dateInput: 'DD/MM/YYYY',
+				}
+			}
+		}
+	]
 })
 export class MaterialModule { }

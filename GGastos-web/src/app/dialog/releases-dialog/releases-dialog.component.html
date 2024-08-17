@@ -1,15 +1,60 @@
 <div mat-dialog-content>
     <mat-form-field class="example-full-width" appearance="fill">
-        <mat-label>Company (disabled)</mat-label>
-        <input matInput value="Google">
+        <mat-label>Descrição</mat-label>
+        <input matInput>
     </mat-form-field>
+    
+    <div class="form-group">
+        <mat-form-field class="example-half-width" appearance="fill">
+            <span matPrefix>R$ &nbsp;</span>
 
-    <mat-form-field class="example-full-width" appearance="fill">
-        <mat-label>Address</mat-label>
-        <textarea matInput placeholder="Ex. 100 Main St">1600 Amphitheatre Pkwy</textarea>
-    </mat-form-field>
-    <mat-form-field class="example-full-width" appearance="fill">
-        <mat-label>Address 2</mat-label>
-        <textarea matInput></textarea>
-    </mat-form-field>
+            <mat-label>Valor</mat-label>
+            <input matInput>
+        </mat-form-field>
+        
+        <mat-form-field class="example-half-width" color="accent" appearance="fill">
+            <mat-label>Custom calendar color</mat-label>
+            <input matInput [matDatepicker]="picker2">
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2 color="primary"></mat-datepicker>
+        </mat-form-field>
+    </div>
+    
+    <div class="form-group">
+        <mat-form-field class="example-half-width" appearance="fill">
+            <mat-label>Pokemon</mat-label>
+            <mat-select>
+                <mat-optgroup *ngFor="let group of pokemonGroups"
+                    [label]="group.name"
+                    [disabled]="group.disabled">
+
+                    <mat-option *ngFor="let pokemon of group.pokemon" [value]="pokemon.value">
+                        {{pokemon.viewValue}}
+                    </mat-option>
+
+                </mat-optgroup>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="example-half-width" appearance="fill">
+            <mat-label>Favorite food</mat-label>
+            <mat-select>
+                <mat-option *ngFor="let food of foods" [value]="food.value">
+                    <div style="display: flex; align-items: center;">
+                        <span class="category-icon-circle"
+                            [ngStyle]="{'background-color': 'red' }">
+                            <mat-icon class="icon"> home </mat-icon>
+                        </span>
+                        &nbsp;&nbsp;
+                        <span>
+                            {{food.viewValue}}
+                        </span>
+                    </div>
+                </mat-option>
+                <mat-option *ngFor="let food of foods" [value]="food.value">
+                    asddsd
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
 </div>

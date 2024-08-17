@@ -11,6 +11,20 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+.form-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.example-full-width {
+    width: 100%;
+}
+
+.example-half-width {
+    width: 48%;
+}
+
 .category-icon-circle {
     height: 30px;
     width: 30px;
