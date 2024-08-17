@@ -1,34 +1,4 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
-import {FlatTreeControl} from '@angular/cdk/tree';
-
-const TREE_DATA: any[] = [
-    {
-        name: 'Fruit',
-        test: 'asasdas',
-        children: [{name: 'Apple'}, {name: 'Banana'}, {name: 'Fruit loops'}],
-    },
-    {
-        name: 'Vegetables',
-        children: [
-            {
-                name: 'Green',
-                children: [{name: 'Broccoli'}, {name: 'Brussels sprouts'}],
-            },
-            {
-                name: 'Orange',
-                children: [{name: 'Pumpkins'}, {name: 'Carrots'}],
-            },
-        ],
-    },
-];
-  
-
-interface ExampleFlatNode {
-    expandable: boolean;
-    name: string;
-    level: number;
-}
 
 @Component({
     selector: 'app-category-report',
@@ -47,7 +17,7 @@ export class CategoryReportComponent implements OnInit {
         },
 
         series: [{
-            name: 'Access From',
+            name: '',
             type: 'pie',
             radius: ['40%', '70%'],
             avoidLabelOverlap: false,
@@ -74,33 +44,168 @@ export class CategoryReportComponent implements OnInit {
     };
 
 
+    data: any = [
+        {
+            nome: "Casa",
+            icone: "home",
+            cor: "red",
+            data: "03/08/2024",
+            valor: "100,00",
+            saidas: [
+                {
+                    nome: "cas 1",
+                    data: "03/08/2024",
+                    valor: "100,00"
+                },
+                {
+                    nome: "cas 2",
+                    data: "03/08/2024",
+                    valor: "100,00"
+                },
+                {
+                    nome: "cas 3",
+                    data: "03/08/2024",
+                    valor: "1001111111,00"
+                }
+            ],
+            subCategorias: [
+                {
+                    nome: "sub 1 Casa",
+                    icone: "home",
+                    cor: "red",
+                    data: "03/08/2024",
+                    valor: "100,00",
+                    saidas: [
+                        {
+                            nome: "sub 1",
+                            data: "03/08/2024",
+                            valor: "100,00"
+                        },
+                        {
+                            nome: "sub 2",
+                            data: "03/08/2024",
+                            valor: "100,00"
+                        },
+                        {
+                            nome: "sub 3",
+                            data: "03/08/2024",
+                            valor: "100,00"
+                        }
+                    ],
+                },
+                {
+                    nome: "sub 2 Casa",
+                    icone: "home",
+                    cor: "red",
+                    data: "03/08/2024",
+                    valor: "100,00",
+                    saidas: [
+                        {
+                            nome: "sub 1",
+                            data: "03/08/2024",
+                            valor: "100,00"
+                        },
+                        {
+                            nome: "sub 2",
+                            data: "03/08/2024",
+                            valor: "100,00"
+                        },
+                        {
+                            nome: "sub 3",
+                            data: "03/08/2024",
+                            valor: "100,00"
+                        }
+                    ],
+                }
+            ]
+        },
+        {
+            nome: "Comida",
+            icone: "home",
+            cor: "red",
+            data: "03/08/2024",
+            valor: "100,00",
+            saidas: [
+                {
+                    nome: "com 1",
+                    data: "03/08/2024",
+                    valor: "100,00"
+                },
+                {
+                    nome: "com 2",
+                    data: "03/08/2024",
+                    valor: "100,00"
+                },
+                {
+                    nome: "com 3",
+                    data: "03/08/2024",
+                    valor: "100,00"
+                }
+            ],
+            subCategorias: []
+        },
+        {
+            nome: "Hotelzinho",
+            icone: "home",
+            cor: "red",
+            data: "03/08/2024",
+            valor: "100,00",
+            saidas: [],
+            subCategorias: [
+                {
+                    nome: "sub prima",
+                    icone: "home",
+                    cor: "red",
+                    data: "03/08/2024",
+                    valor: "100,00",
+                    saidas: [
+                        {
+                            nome: "prima 1",
+                            data: "03/08/2024",
+                            valor: "100,00"
+                        },
+                        {
+                            nome: "prima 2",
+                            data: "03/08/2024",
+                            valor: "100,00"
+                        },
+                        {
+                            nome: "prima 3",
+                            data: "03/08/2024",
+                            valor: "100,00"
+                        }
+                    ],
+                },
+                {
+                    nome: "sub soninho",
+                    icone: "home",
+                    cor: "red",
+                    data: "03/08/2024",
+                    valor: "100,00",
+                    saidas: [
+                        {
+                            nome: "mimi 1",
+                            data: "03/08/2024",
+                            valor: "100,00"
+                        },
+                        {
+                            nome: "mimi 2",
+                            data: "03/08/2024",
+                            valor: "100,00"
+                        },
+                        {
+                            nome: "mimi 3",
+                            data: "03/08/2024",
+                            valor: "100,00"
+                        }
+                    ],
+                }
+            ]
+        }
+    ]
 
-
-
-    private transformer = (node: any, level: number) => {
-        return {
-            expandable: !!node.children && node.children.length > 0,
-            name: node.name,
-            level: level,
-        };
-    };
-
-    treeControl = new FlatTreeControl<ExampleFlatNode>(
-        node => node.level,
-        node => node.expandable,
-    );
-
-    treeFlattener = new MatTreeFlattener(
-        this.transformer,
-        node => node.level,
-        node => node.expandable,
-        node => node.children,
-    );
-      
-    dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
     constructor() {
-        this.dataSource.data = TREE_DATA;
     }
 
     ngOnInit(): void {
@@ -111,7 +216,5 @@ export class CategoryReportComponent implements OnInit {
             console.log('CATEGORY REPORT');
         }, 1000);
     }
-
-    hasChild = (_: number, node: ExampleFlatNode) => node.expandable;
 
 }
