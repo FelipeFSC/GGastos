@@ -43,6 +43,25 @@ export class CategoryReportComponent implements OnInit {
         }]
     };
 
+    /*
+
+    {
+        nome: "cas 1",
+        data: "03/08/2024",
+        valor: "100,00"
+    },
+    {
+        nome: "cas 2",
+        data: "03/08/2024",
+        valor: "100,00"
+    },
+    {
+        nome: "cas 3",
+        data: "03/08/2024",
+        valor: "1001111111,00"
+    }
+
+    */
 
     data: any = [
         {
@@ -51,24 +70,11 @@ export class CategoryReportComponent implements OnInit {
             cor: "red",
             data: "03/08/2024",
             valor: "100,00",
-            saidas: [
-                {
-                    nome: "cas 1",
-                    data: "03/08/2024",
-                    valor: "100,00"
-                },
-                {
-                    nome: "cas 2",
-                    data: "03/08/2024",
-                    valor: "100,00"
-                },
-                {
-                    nome: "cas 3",
-                    data: "03/08/2024",
-                    valor: "1001111111,00"
-                }
-            ],
-            subCategorias: [
+            aberto: false,
+            existeSaida: true,
+            subCategorias: [],
+            saidas: [],
+            showSub: [
                 {
                     nome: "sub 1 Casa",
                     icone: "home",
@@ -125,6 +131,7 @@ export class CategoryReportComponent implements OnInit {
             cor: "red",
             data: "03/08/2024",
             valor: "100,00",
+            aberto: false,
             saidas: [
                 {
                     nome: "com 1",
@@ -150,6 +157,7 @@ export class CategoryReportComponent implements OnInit {
             cor: "red",
             data: "03/08/2024",
             valor: "100,00",
+            aberto: false,
             saidas: [],
             subCategorias: [
                 {
@@ -215,6 +223,49 @@ export class CategoryReportComponent implements OnInit {
 
             console.log('CATEGORY REPORT');
         }, 1000);
+    }
+
+    onAbriEFecha(value: any) {
+        value.aberto = !value.aberto;
+
+        //console.log(value);
+
+        if (value.subCategorias && value.subCategorias.length > 0) {
+            console.log("TEM SUB");
+            if (value.aberto) {
+                console.log("Coloca");
+
+                value.subCategorias = value.showSub;
+            } else {
+                console.log("Tira");
+
+                value.subCategorias = [];
+            }
+
+        
+        } else {
+            if (value.aberto) {
+                console.log("Coloca");
+
+                value.subCategorias = value.showSub;
+            } else {
+                console.log("Tira");
+
+                value.subCategorias = [];
+            }
+
+            //value.saidas = [];
+        }
+
+        //value.saidas = [];
+        //value.subCategorias = [];
+    }
+
+    tiraSoSaidas(value: any) {
+        console.log("QUASE SUB");
+        console.log(value);
+
+        value.saidas = [];
     }
 
 }

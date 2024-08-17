@@ -46,19 +46,26 @@ table {
 }
 
 .td-tittle {
-    width: 45%;
+    width: 50%;
 }
 
 th, td {
+    border: none;
     padding: 8px;
-    border: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
 }
 
-.align-center {
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.cell-center {
+    width: 20%;
     text-align: center;
 }
 
-.align-right {
+.cell-right {
+    width: 30%;
     text-align: right;
 }
 
