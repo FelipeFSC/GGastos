@@ -22,6 +22,9 @@ export class ReleasesDialogComponent implements OnInit {
 
     installmentValue: string = "0.00";
 
+
+    category = "FUNCIONOU";
+
     pokemonGroups: any[] = [
         {
             name: 'Contas',

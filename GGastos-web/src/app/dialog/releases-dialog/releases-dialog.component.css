@@ -88,3 +88,38 @@
 .button-options:hover {
     border-color: #afb1ac;
 }
+
+.button-done-box {
+    margin-top: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mat-fab {
+    box-shadow: none;
+    transition: .3s ease-in;
+}
+
+.mat-fab:hover {
+    opacity: .7;
+}
+
+.sumiu {
+    font-size: 12px;
+    color: #777;
+    margin-top: 4px;
+    opacity: 0;
+    transition: .2s cubic-bezier(1, -0.01, 0.59, 0.97);;
+    margin-top: 25px;
+}
+
+.sumiu:hover {
+    color: blue;
+}
+
+.button-done-box:hover .sumiu {
+    opacity: 1;
+    cursor: pointer;
+    margin-top: 0px;
+}

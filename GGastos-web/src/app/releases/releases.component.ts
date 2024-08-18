@@ -120,8 +120,12 @@ export class ReleasesComponent implements OnInit {
     }
 
     onExpense() {
-        this.dialog.open(ReleasesDialogComponent, {
+        let dialogRef = this.dialog.open(ReleasesDialogComponent, {
             
+        })
+
+        dialogRef.afterClosed().subscribe((result: any) => {
+            console.log(result);
         })
     }
 

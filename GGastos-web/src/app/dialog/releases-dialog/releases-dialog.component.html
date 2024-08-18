@@ -1,5 +1,4 @@
 <div style="max-width: 350px; padding: 10px 5px; height: auto;">
-
     <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Descrição</mat-label>
         <input matInput>
@@ -154,4 +153,21 @@
             </span>
         </div>
     </div>
+
+    <div class="button-done-box">
+        <div class="sumiu" style="width: 100px; text-align: center;">
+            <span>Cancelar</span>
+        </div>
+
+        <div style="width: 100px; text-align: center;">
+            <button mat-fab color="primary" [mat-dialog-close]="category">
+                <mat-icon>check</mat-icon>
+            </button>
+        </div>
+
+        <div class="sumiu" style="width: 100px; text-align: center;">
+            <span>Salvar e criar outra</span>
+        </div>
+    </div>
+
 </div>
