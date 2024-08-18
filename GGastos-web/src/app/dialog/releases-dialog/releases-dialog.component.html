@@ -1,5 +1,5 @@
-<div style="height: auto;">
-    <div style="max-width: 350px; padding: 10px 5px; height: auto;">
+<div style="max-width: 350px; padding: 10px 5px; height: auto;">
+
     <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Descrição</mat-label>
         <input matInput>
@@ -7,10 +7,8 @@
     
     <div class="form-group">
         <mat-form-field class="example-half-width" appearance="fill">
-            <span matPrefix>R$ &nbsp;</span>
-
             <mat-label>Valor</mat-label>
-            <input matInput>
+            <input appCurrencyMask value="R$" matInput>
         </mat-form-field>
         
         <mat-form-field class="example-half-width" color="accent" appearance="fill">
@@ -154,6 +152,5 @@
                 Anexo
             </span>
         </div>
-    </div>
     </div>
 </div>
