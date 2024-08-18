@@ -10,3 +10,81 @@
 .mat-icon {
     margin-right: 0px!important;
 }
+
+.container-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tittle-text {
+    color: #858782;
+    margin-top: 20px;
+    margin-bottom: 3px;
+}
+
+.radio-group-box {
+    display: flex;
+    flex-direction: column;
+    margin: 7px 0px;
+}
+
+.subtext {
+    font-size: 11px;
+}
+
+.mat-radio-button {
+    margin-top: 4px;
+}
+.select-box {
+    margin-top: 15px;
+}
+
+.options-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.repeat-box {
+    margin-bottom: 15px;
+}
+
+.button-options {
+    margin-left: 25px;
+    margin-right: 25px;
+    cursor: pointer;
+    position: relative;
+    border: 1px solid #ebebeb;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    transition: all linear 150ms;
+}
+.button-active {
+    background-color: #dbded8;
+}
+
+.icon-options {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: #c5c7c2;
+    font-size: 20px;
+    margin: -10px 0 0 -10px;
+    transition: all linear 150ms;
+}
+.icon-active {
+    color: white;   
+}
+
+
+.button-text {
+    font-size: 12px;
+    color: #777;
+    margin-top: 4px;
+}
+
+.button-options:hover {
+    border-color: #afb1ac;
+}

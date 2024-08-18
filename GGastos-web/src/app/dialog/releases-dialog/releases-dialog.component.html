@@ -1,4 +1,5 @@
-<div mat-dialog-content>
+<div style="height: auto;">
+    <div style="max-width: 350px; padding: 10px 5px; height: auto;">
     <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Descrição</mat-label>
         <input matInput>
@@ -38,8 +39,8 @@
 
         <mat-form-field class="example-half-width" appearance="fill">
             <mat-label>Favorite food</mat-label>
-            <mat-select>
-                <mat-option *ngFor="let food of foods" [value]="food.value">
+            <mat-select [(ngModel)]="categorySelected">
+                <mat-option *ngFor="let food of foods" [value]="food">
                     <div style="display: flex; align-items: center;">
                         <span class="category-icon-circle"
                             [ngStyle]="{'background-color': 'red' }">
@@ -47,14 +48,112 @@
                         </span>
                         &nbsp;&nbsp;
                         <span>
-                            {{food.viewValue}}
+                            {{food.name}}
                         </span>
                     </div>
                 </mat-option>
-                <mat-option *ngFor="let food of foods" [value]="food.value">
-                    asddsd
-                </mat-option>
+                <mat-select-trigger>
+                    <ng-container *ngIf="categorySelected">
+                        {{categorySelected.name}}
+                    </ng-container>
+                </mat-select-trigger>
             </mat-select>
         </mat-form-field>
+    </div>
+
+    <div *ngIf="isChatActive">
+        <hr class="simple-horizontal-line">
+
+        <div class="tittle-text"> Observação </div>
+        <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Textarea</mat-label>
+            <textarea matInput></textarea>
+          </mat-form-field>
+    </div>
+
+    <div class="repeat-box" *ngIf="isRepeatActive">
+        <hr class="simple-horizontal-line">
+
+        <section class="example-section">
+            <div class="tittle-text">Repetir</div>
+            <mat-radio-group  [(ngModel)]="divideType" class="radio-group-box">
+                <mat-radio-button value="fixed">é uma despesa fixa</mat-radio-button>
+                <mat-radio-button class="mat-radio-button" value="divided">é um lançamento parcelado em</mat-radio-button>
+            </mat-radio-group>
+        </section>
+
+        <div *ngIf="divideType === 'fixed'" class="select-box">
+            <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>Select</mat-label>
+                <mat-select>
+                    <mat-option value="one">First option</mat-option>
+                    <mat-option value="two">Second option</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div *ngIf="divideType === 'divided'" class="select-box">
+            <div class="form-group">
+                <mat-form-field class="example-half-width" appearance="fill">
+                    <mat-label>Select</mat-label>
+                    <mat-select>
+                        <mat-option value="one">First option</mat-option>
+                        <mat-option value="two">Second option</mat-option>
+                    </mat-select>
+                </mat-form-field>
+    
+                <mat-form-field class="example-half-width" appearance="fill">
+                    <mat-label>Select</mat-label>
+                    <mat-select>
+                        <mat-option value="one">First option</mat-option>
+                        <mat-option value="two">Second option</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div>
+                - Serão lançadas <span style="color: #f96161;">2 parcelas</span> de <span style="color: #688e50;">R$ 0,00</span>
+                <br>
+                <span class="subtext">
+                    Em caso de divisão não exata, a sobra será somada à primeira parcela.
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="options-container">
+        <div class="container-button">
+            <div class="button-options" [ngClass]="{'button-active': isRepeatActive}" (click)="onRepeat()">
+                <mat-icon class="icon-options" [ngClass]="{'icon-active': isRepeatActive}">
+                    cached
+                </mat-icon>
+            </div>
+            <span class="button-text">
+                Repetir
+            </span>
+        </div>
+
+        <div class="container-button">
+            <div class="button-options" [ngClass]="{'button-active': isChatActive}" (click)="onChat()">
+                <mat-icon class="icon-options" [ngClass]="{'icon-active': isChatActive}">
+                    chat
+                </mat-icon>
+            </div>
+            <span class="button-text">
+                Observação
+            </span>
+        </div>
+
+        <div class="container-button">
+            <div class="button-options" [ngClass]="{'button-active': isAttachmentActive}" (click)="onAttachment()">
+                <mat-icon class="icon-options" [ngClass]="{'icon-active': isAttachmentActive}">
+                    attachment
+                </mat-icon>
+            </div>
+            <span class="button-text">
+                Anexo
+            </span>
+        </div>
+    </div>
     </div>
 </div>

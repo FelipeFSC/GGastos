@@ -7,34 +7,56 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ReleasesDialogComponent implements OnInit {
 
+    divideType: string = "";
+
+    isRepeatActive:boolean = false;
+
+    isChatActive:boolean = false;
+
+    isAttachmentActive: boolean = false;
+
     pokemonGroups: any[] = [
         {
             name: 'Contas',
             pokemon: [
-                {value: 'bulbasaur-0', viewValue: 'Bulbasaur'},
-                {value: 'oddish-1', viewValue: 'Oddish'},
-                {value: 'bellsprout-2', viewValue: 'Bellsprout'},
+                {name: 'bulbasaur-0', viewValue: 'Bulbasaur'},
+                {name: 'oddish-1', viewValue: 'Oddish'},
+                {name: 'bellsprout-2', viewValue: 'Bellsprout'},
             ],
         },
         {
             name: 'Cartões',
             pokemon: [
-                {value: 'squirtle-3', viewValue: 'Squirtle'},
-                {value: 'psyduck-4', viewValue: 'Psyduck'},
-                {value: 'horsea-5', viewValue: 'Horsea'},
+                {name: 'squirtle-3', viewValue: 'Squirtle'},
+                {name: 'psyduck-4', viewValue: 'Psyduck'},
+                {name: 'horsea-5', viewValue: 'Horsea'},
             ],
         },
     ];
 
     foods: any[] = [
-        {value: 'steak-0', viewValue: 'Steak'},
-        {value: 'pizza-1', viewValue: 'Pizza'},
-        {value: 'tacos-2', viewValue: 'Tacos'},
+        {name: 'steak-0', viewValue: 'Steak'},
+        {name: 'pizza-1', viewValue: 'Pizza'},
+        {name: 'tacos-2', viewValue: 'Tacos'},
     ];
+
+    categorySelected: any = {};
 
     constructor() { }
 
     ngOnInit(): void {
+    }
+
+    onRepeat() {
+        this.isRepeatActive = !this.isRepeatActive;
+    }
+
+    onChat() {
+        this.isChatActive = !this.isChatActive;
+    }
+
+    onAttachment() {
+        this.isAttachmentActive = !this.isAttachmentActive;
     }
 
 }
