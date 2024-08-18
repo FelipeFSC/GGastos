@@ -8,7 +8,7 @@
     <div class="form-group">
         <mat-form-field class="example-half-width" appearance="fill">
             <mat-label>Valor</mat-label>
-            <input appCurrencyMask value="R$" matInput>
+            <input (input)="valorAlterado()" [(ngModel)]="value" appCurrencyMask matInput>
         </mat-form-field>
         
         <mat-form-field class="example-half-width" color="accent" appearance="fill">
@@ -74,7 +74,7 @@
 
         <section class="example-section">
             <div class="tittle-text">Repetir</div>
-            <mat-radio-group  [(ngModel)]="divideType" class="radio-group-box">
+            <mat-radio-group [(ngModel)]="divideType" class="radio-group-box">
                 <mat-radio-button value="fixed">é uma despesa fixa</mat-radio-button>
                 <mat-radio-button class="mat-radio-button" value="divided">é um lançamento parcelado em</mat-radio-button>
             </mat-radio-group>
@@ -84,8 +84,10 @@
             <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Select</mat-label>
                 <mat-select>
-                    <mat-option value="one">First option</mat-option>
-                    <mat-option value="two">Second option</mat-option>
+                    <mat-option> - </mat-option>
+                    <mat-option *ngFor="let item of paymentRange" value="item.name">
+                        {{item.name}}
+                    </mat-option>
                 </mat-select>
             </mat-form-field>
         </div>
@@ -93,24 +95,23 @@
         <div *ngIf="divideType === 'divided'" class="select-box">
             <div class="form-group">
                 <mat-form-field class="example-half-width" appearance="fill">
-                    <mat-label>Select</mat-label>
-                    <mat-select>
-                        <mat-option value="one">First option</mat-option>
-                        <mat-option value="two">Second option</mat-option>
-                    </mat-select>
+                    <mat-label>Valor</mat-label>
+                    <input [(ngModel)]="valorParcela" (input)="valorAlterado()" type="number" matInput>
                 </mat-form-field>
     
                 <mat-form-field class="example-half-width" appearance="fill">
                     <mat-label>Select</mat-label>
                     <mat-select>
-                        <mat-option value="one">First option</mat-option>
-                        <mat-option value="two">Second option</mat-option>
+                        <mat-option> - </mat-option>
+                        <mat-option *ngFor="let item of paymentRange" value="item.name">
+                            {{item.name}}
+                        </mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
 
             <div>
-                - Serão lançadas <span style="color: #f96161;">2 parcelas</span> de <span style="color: #688e50;">R$ 0,00</span>
+                - Serão lançadas <span style="color: #f96161;">{{valorParcela}} parcelas</span> de <span style="color: #688e50;">R$ {{installmentValue}}</span>
                 <br>
                 <span class="subtext">
                     Em caso de divisão não exata, a sobra será somada à primeira parcela.

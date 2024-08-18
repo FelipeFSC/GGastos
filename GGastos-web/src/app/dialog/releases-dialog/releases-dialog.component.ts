@@ -15,6 +15,13 @@ export class ReleasesDialogComponent implements OnInit {
 
     isAttachmentActive: boolean = false;
 
+
+    value: string = "R$";
+
+    valorParcela: number|null = null;
+
+    installmentValue: string = "0.00";
+
     pokemonGroups: any[] = [
         {
             name: 'Contas',
@@ -40,6 +47,18 @@ export class ReleasesDialogComponent implements OnInit {
         {name: 'tacos-2', viewValue: 'Tacos'},
     ];
 
+    paymentRange: any[] = [
+        {name: 'Anual'},
+        {name: 'Semestral'},
+        {name: 'Trimestral'},
+        {name: 'Bimestral'},
+        {name: 'Mensal'},
+        {name: 'Quinzenal'},
+        {name: 'Semanal'},
+        {name: 'Diário'},
+    ];
+
+
     categorySelected: any = {};
 
     constructor() { }
@@ -57,6 +76,22 @@ export class ReleasesDialogComponent implements OnInit {
 
     onAttachment() {
         this.isAttachmentActive = !this.isAttachmentActive;
+    }
+
+    valorAlterado() {
+        let numberValue = 1;
+
+        if (this.value) {
+            let value: string = this.value.replace("R$", "");
+            value = value.replace(".", "");
+            value = value.replace(",", ".");
+            numberValue = Number(value);
+        }
+
+        if (this.valorParcela) {
+            let result = numberValue / this.valorParcela;
+            this.installmentValue = result.toFixed(2);
+        }
     }
 
 }
