@@ -121,16 +121,22 @@ export class ReleasesComponent implements OnInit {
 
     onExpense() {
         let dialogRef = this.dialog.open(ReleasesDialogComponent, {
-            
-        })
+            data: { title: "Nova despesa" }
+        });
 
         dialogRef.afterClosed().subscribe((result: any) => {
             console.log(result);
-        })
+        });
     }
 
     onRevenue() {
+        let dialogRef = this.dialog.open(ReleasesDialogComponent, {
+            data: { title: "Nova receita" }
+        });
 
+        dialogRef.afterClosed().subscribe((result: any) => {
+            console.log(result);
+        });
     }
 
     onTransfer() {

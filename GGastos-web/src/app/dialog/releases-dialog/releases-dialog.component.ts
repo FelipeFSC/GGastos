@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-releases-dialog',
@@ -7,6 +8,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ReleasesDialogComponent implements OnInit {
 
+    tittle: string = "";
+
     divideType: string = "";
 
     isRepeatActive:boolean = false;
@@ -14,7 +17,6 @@ export class ReleasesDialogComponent implements OnInit {
     isChatActive:boolean = false;
 
     isAttachmentActive: boolean = false;
-
 
     value: string = "R$";
 
@@ -64,9 +66,12 @@ export class ReleasesDialogComponent implements OnInit {
 
     categorySelected: any = {};
 
-    constructor() { }
+    constructor(
+        @Inject(MAT_DIALOG_DATA) public data: any
+    ) { }
 
     ngOnInit(): void {
+        this.tittle = this.data.title;
     }
 
     onRepeat() {
