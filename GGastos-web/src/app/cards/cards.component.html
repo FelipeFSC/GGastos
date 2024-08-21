@@ -1,28 +1,69 @@
 <app-left-menu></app-left-menu>
 
 <div class="general-box">
-    <div class="edit-add-button-box">
-        <span class="title-text">
-            Cartões de Crédito
-        </span>
-        <button mat-flat-button color="primary">Adicionar cartão</button>
+    <div *ngIf="!onEditEcreen">
+
+        <div class="edit-add-button-box">
+            <span class="title-text">
+                Cartões de Crédito
+            </span>
+            <button mat-flat-button color="primary">Adicionar cartão</button>
+        </div>
+
+        <div class="itens-box">
+            <ul>
+                <ng-container *ngFor="let item of data; let i = index">
+                    <li (click)="onEdit(item.nome)">
+                        <div class="image-box">
+                            <img src="../../assets/banco-teste.png" alt="" srcset="">
+                        </div>
+                        <div class="item-text">
+                            {{item.nome}}
+                        </div>
+
+                        <div class="button-edit-box">
+                            <mat-icon class="icon-button">chevron_right</mat-icon>
+                        </div>
+                    </li>
+                    <hr *ngIf="i < data.length-1" class="simple-horizontal-line">
+                </ng-container>
+            </ul>
+        </div>
     </div>
 
-    <div class="itens-box">
-        <ul *ngFor="let item of data; let i = index">
-            <li>
+    <div *ngIf="onEditEcreen">
+        <div class="edit-add-button-box">
+            <div class="button-edit-back-box">
+                <div class="icon-back-box" (click)="onList()">
+                    <mat-icon>arrow_back</mat-icon>
+                </div>
                 <div class="image-box">
                     <img src="../../assets/banco-teste.png" alt="" srcset="">
                 </div>
                 <div class="item-text">
-                    {{item.nome}}
+                    <span class="title-edit-text">Banco dos bancos</span>
+                    <div>
+                        <small>Fecha dia 6 / Vence dia 20</small>
+                    </div>
                 </div>
+            </div>
+            <div>
+                <span class="edit-button">Editar</span>
+                <span class="delete-button">Arquivar</span>
+            </div>
+        </div>
 
-                <div class="button-edit-box">
-                    <mat-icon class="icon-button">chevron_right</mat-icon>
+        <div class="edit-card-info-box">
+            <div class="current-invoice-box">
+                <div class="invoice-box">
+                    <span class="invoice-title"> Fatura atual </span>
+                    <div>
+                        <span class="invoice-value-text"> R$ -55,00 </span>
+                        <span class="view-button">Ver fatura</span>
+                    </div>
                 </div>
-            </li>
-            <hr *ngIf="i < data.length-1" class="simple-horizontal-line">
-        </ul>
+                <small>Limite disponível de R$ -50,00</small>
+            </div>
+        </div>
     </div>
 </div>

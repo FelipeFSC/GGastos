@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CardsComponent implements OnInit {
 
+    onEditEcreen: boolean = false;
+
     data: any = [
         {
             nome: "Banco 1",
@@ -31,4 +33,13 @@ export class CardsComponent implements OnInit {
     ngOnInit(): void {
     }
 
+    onList() {
+        this.onEditEcreen = false;
+    }
+    
+    onEdit(numero: string) {
+        this.onEditEcreen = true;
+
+        console.log(numero);
+    }
 }

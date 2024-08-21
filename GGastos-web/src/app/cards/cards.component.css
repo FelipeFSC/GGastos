@@ -85,3 +85,90 @@ li:hover .item-text {
     position: absolute;
     right: 0;
 }
+
+
+.button-edit-back-box {
+    display: flex;
+    align-items: center;
+}
+
+.icon-back-box {
+    color: #ccc;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.content-box-edit {
+    padding-left: 80px;
+    padding-bottom: 32px;
+}
+
+.edit-saldo-text {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.checkbox-class {
+    margin-top: 15px;
+    font-size: 13px;
+    color: #858782;
+}
+
+.delete-button {
+    color: #d72638;
+    cursor: pointer;
+}
+
+.edit-button {
+    margin-right: 20px;
+    color: #129e3f;
+    cursor: pointer;
+}
+
+.view-button {
+    margin-right: 20px;
+    color: #3062d4;
+    cursor: pointer;  
+}
+
+.title-edit-text {
+    font-size: 18px;
+    color: black;
+    font-weight: 600;
+}
+
+small {
+    font-size: 12px;
+    color: #afb1ac;
+}
+
+.current-invoice-box {
+    border-left: 4px solid #16c64f;
+    padding-left: 10px;
+}
+
+.edit-card-info-box {
+    padding: 5px 80px;
+    padding-bottom: 32px;
+}
+
+.invoice-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.invoice-title {
+    font-size: 15px;
+    color: #787878;
+}
+
+.invoice-value-text {
+    font-weight: 700;
+    color: #4d4d4d;
+    font-size: 18px;
+}
+
+.current-invoice-box {
+    border-left: 4px solid #16c64f;
+    padding-left: 10px;
+}
