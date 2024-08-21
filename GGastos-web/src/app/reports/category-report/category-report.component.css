@@ -1,3 +1,24 @@
+.header-box {
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.title-text {
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.report-button {
+    color: #c5c4c2;
+}
+
+.report-button:hover {
+    color: blue;
+}
+
+
 .charts-box {
     display: flex;
     flex-direction: row;

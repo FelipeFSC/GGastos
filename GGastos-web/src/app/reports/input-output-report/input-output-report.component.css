@@ -1,0 +1,57 @@
+.report-button {
+    color: #c5c4c2;
+}
+
+.report-button:hover {
+    color: blue;
+}
+
+.header-box {
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+th {
+    border: none;
+    padding: 15px 30px;
+    text-align: right;
+    font-weight: 400;
+}
+
+td {
+    padding: 13px 30px;
+    border-bottom: none;
+    border-top: 1px solid #edeaed;
+    font-size: 13px;
+    color: #777;
+    text-align: right;
+    white-space: nowrap;
+    text-align: right;
+    font-weight: 500;
+}
+
+tr:nth-child(even) {
+    background-color: #edeaed;
+}
+
+.title-text {
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.details-box {
+    margin-bottom: 38px;
+    padding: 35px 30px 0;
+    font-size: 16px;
+    line-height: 16px;
+    font-weight: 400;
+}

@@ -11,7 +11,7 @@ export class CategoryReportComponent implements OnInit {
 
     isLoad: boolean = true;
 
-    options: any = {
+    xx: any = {
         tooltip: {
             trigger: 'item'
         },

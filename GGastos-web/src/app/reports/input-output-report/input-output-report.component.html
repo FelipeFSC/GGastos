@@ -1,2 +1,44 @@
 
-<h1> 3 </h1>
+<div *ngIf="!isLoad">
+
+    <div class="header-box">
+        <span class="title-text">
+            Entrada x Saídas
+        </span>
+
+        <div>
+            <button mat-icon-button class="report-button">
+                <mat-icon>picture_as_pdf</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <div class="charts-box">
+        <div echarts [options]="option" class="chart2-style"></div>
+    </div>
+
+    <hr class="simple-horizontal-line">
+
+    <div class="details-box">
+        Detalhamento
+    </div>
+
+    <table>
+        <thead>
+            <th style="text-align: left;">período</th>
+            <th>entradas</th>
+            <th>saídas</th>
+            <th>resultado</th>
+            <th>saldo</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of data">
+                <td style="text-align: left;"> {{item.date}} </td>
+                <td> R$ {{item.entrada}} </td>
+                <td> R$ {{item.saida}} </td>
+                <td> R$ {{item.resultado}} </td>
+                <td> R$ {{item.saldo}} </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

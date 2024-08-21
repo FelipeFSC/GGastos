@@ -1,8 +1,20 @@
 <div *ngIf="!isLoad">
-    <div class="charts-box">
-        <div echarts [options]="options" class="chart2-style"></div>
+    <div class="header-box">
+        <span class="title-text">
+            Categorias
+        </span>
 
-        <div echarts [options]="options" class="chart2-style"></div>
+        <div>
+            <button mat-icon-button class="report-button">
+                <mat-icon>picture_as_pdf</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <div class="charts-box">
+        <div echarts [options]="xx" class="chart2-style"></div>
+
+        <div echarts [options]="xx" class="chart2-style"></div>
     </div>
     <hr class="horizontal-line">
     <div class="box-expenses">
