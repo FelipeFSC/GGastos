@@ -1,3 +1,28 @@
-<p>cards works!</p>
+<app-left-menu></app-left-menu>
 
-<h1>asidajsodinasdoin CARTOES ANDASDNASD</h1>
+<div class="general-box">
+    <div class="edit-add-button-box">
+        <span class="title-text">
+            Cartões de Crédito
+        </span>
+        <button mat-flat-button color="primary">Adicionar cartão</button>
+    </div>
+
+    <div class="itens-box">
+        <ul *ngFor="let item of data; let i = index">
+            <li>
+                <div class="image-box">
+                    <img src="../../assets/banco-teste.png" alt="" srcset="">
+                </div>
+                <div class="item-text">
+                    {{item.nome}}
+                </div>
+
+                <div class="button-edit-box">
+                    <mat-icon class="icon-button">chevron_right</mat-icon>
+                </div>
+            </li>
+            <hr *ngIf="i < data.length-1" class="simple-horizontal-line">
+        </ul>
+    </div>
+</div>
