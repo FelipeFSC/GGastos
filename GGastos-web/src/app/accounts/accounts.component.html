@@ -1,28 +1,59 @@
 <app-left-menu></app-left-menu>
 
 <div class="general-box">
-    <div class="edit-add-button-box">
-        <span class="title-text">
-            Contas
-        </span>
-        <button mat-flat-button color="primary">Nova conta</button>
+    <div *ngIf="!onEditEcreen">
+        <div class="edit-add-button-box">
+            <span class="title-text">
+                Contas
+            </span>
+            <button mat-flat-button color="primary">Nova conta</button>
+        </div>
+    
+        <div class="itens-box">
+            <ul>
+                <ng-container *ngFor="let item of data; let i = index">
+                    <li (click)="onEdit(item.nome)">
+                        <div class="image-box">
+                            <img src="../../assets/banco-teste.png" alt="" srcset="">
+                        </div>
+                        <div class="item-text">
+                            {{item.nome}}
+                        </div>
+        
+                        <div class="button-edit-box">
+                            <mat-icon class="icon-button">chevron_right</mat-icon>
+                        </div>
+                    </li>
+                    <hr *ngIf="i < data.length-1" class="simple-horizontal-line">
+                </ng-container>
+            </ul>
+        </div>
     </div>
 
-    <div class="itens-box">
-        <ul *ngFor="let item of data; let i = index">
-            <li>
+    <div *ngIf="onEditEcreen">
+        <div class="edit-add-button-box">
+            <div class="button-edit-back-box">
+                <div class="icon-back-box" (click)="onList()">
+                    <mat-icon>arrow_back</mat-icon>
+                </div>
                 <div class="image-box">
                     <img src="../../assets/banco-teste.png" alt="" srcset="">
                 </div>
                 <div class="item-text">
-                    {{item.nome}}
+                    Banco bbc
                 </div>
+            </div>
+            <div>
+                <span class="edit-button">Editar</span>
+                <span class="delete-button">Arquivar</span>
+            </div>
+        </div>
 
-                <div class="button-edit-box">
-                    <mat-icon class="icon-button">chevron_right</mat-icon>
-                </div>
-            </li>
-            <hr *ngIf="i < data.length-1" class="simple-horizontal-line">
-        </ul>
+        <div class="content-box-edit">
+            <div class="edit-saldo-text">R$ 499,00</div>
+            <section class="checkbox-class">
+                <mat-checkbox class="example-margin">Não somar no Saldo Geral</mat-checkbox>
+            </section>
+        </div>
     </div>
 </div>

@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AccountsComponent implements OnInit {
 
+    onEditEcreen: boolean = false;
+
     data: any = [
         {
             nome: "Banco 1",
@@ -29,6 +31,16 @@ export class AccountsComponent implements OnInit {
     constructor() { }
 
     ngOnInit(): void {
+    }
+
+    onList() {
+        this.onEditEcreen = false;
+    }
+    
+    onEdit(numero: string) {
+        this.onEditEcreen = true;
+
+        console.log(numero);
     }
 
 }
