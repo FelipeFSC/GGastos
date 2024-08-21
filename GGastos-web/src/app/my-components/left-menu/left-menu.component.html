@@ -14,9 +14,15 @@
 
             <span class="example-spacer"></span>
 
-            <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+            <button mat-icon-button class="example-icon favorite-icon" [matMenuTriggerFor]="menu">
                 <mat-icon>settings</mat-icon>
             </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="onCategories()" class="btn-release btn-expense">Categorias</button>
+                <button mat-menu-item (click)="onAccounts()" class="btn-release btn-revenue">Contas</button>
+                <button mat-menu-item (click)="onCards()" class="btn-release btn-transfer">Cartões de crédito</button>
+            </mat-menu>
+
             <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
                 <mat-icon>logout</mat-icon>
             </button>

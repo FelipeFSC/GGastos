@@ -30,4 +30,12 @@ export class LeftMenuComponent implements OnInit {
     onCategories() {
         this.router.navigate(['categories']);
     }
+
+    onCards() {
+        this.router.navigate(['cards']);
+    }
+
+    onAccounts() {
+        this.router.navigate(['accounts']);
+    }
 }
