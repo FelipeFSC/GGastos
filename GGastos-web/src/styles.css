@@ -1,8 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
 
+* {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
 html, body { height: 100%; }
 body {
-    margin: 0;
     background-color: #edeaed;
     font-family: inter, sans-serif;
     font-weight: 500;
@@ -26,12 +31,11 @@ body {
 }
 
 .category-icon-circle {
-    height: 30px;
-    width: 30px;
+    height: 39px;
+    width: 39px;
     color: white;
     border-radius: 50%;
     display: inline-block;
-    margin-left: 15px;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -1,12 +1,16 @@
 package com.br.ggastosservice.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.br.ggastosservice.dto.CategoriesDto;
 import com.br.ggastosservice.model.Category;
+import com.br.ggastosservice.model.SubCategory;
 import com.br.ggastosservice.repository.CategoryRepository;
+import com.br.ggastosservice.repository.SubCategoryRepository;
 
 @Transactional
 @Service
@@ -14,8 +18,28 @@ public class CategoryService {
 
     private CategoryRepository categoryRepository;
 
-    public CategoryService(CategoryRepository categoryRepository) {
+    private SubCategoryRepository subCategoryRepository;
+
+    public CategoryService(CategoryRepository categoryRepository
+            , SubCategoryRepository subCategoryRepository) {
         this.categoryRepository = categoryRepository;
+        this.subCategoryRepository = subCategoryRepository;
+    }
+
+    public List<CategoriesDto> listAllCategories() {
+        List<Category> categories = listAllCategoriesEnableds(); 
+    
+        List<CategoriesDto> CategoriesDtoList = new ArrayList<CategoriesDto>();
+        for (Category category : categories) {
+            List<SubCategory> subcategories = subCategoryRepository.findByCategoryIdAndEnabled(category.getId(), true);
+
+            CategoriesDto categoriesDto = new CategoriesDto();
+            categoriesDto.setCategory(category);
+            categoriesDto.setSubCategory(subcategories);
+            CategoriesDtoList.add(categoriesDto);
+        }
+
+        return CategoriesDtoList;
     }
 
     public List<Category> listAllCategoriesEnableds() {

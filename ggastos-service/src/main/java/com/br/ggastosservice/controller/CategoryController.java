@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.br.ggastosservice.dto.CategoriesDto;
 import com.br.ggastosservice.model.Category;
 import com.br.ggastosservice.service.CategoryService;
 import java.util.List;
@@ -26,8 +27,8 @@ public class CategoryController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, produces = {"application/json"})
-    public List<Category> findAll() {
-        return categoryService.listAllCategoriesEnableds();
+    public List<CategoriesDto> findAll() {
+        return categoryService.listAllCategories();
     }
 
     @ResponseBody

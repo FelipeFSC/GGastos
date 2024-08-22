@@ -13,6 +13,7 @@ import { SubCategoryDialogComponent } from '../dialog/sub-category-dialog/sub-ca
 export class CategoriesComponent implements OnInit {
 
     categories: any = [];
+
     subCategories: any = [];
 
     constructor(
@@ -28,15 +29,11 @@ export class CategoriesComponent implements OnInit {
     list() {
         let success = (res: any) => {
             let list: any[] = [];
-            for (let categoryRes of res) {
+            for (let item of res) {
                 let category = {
-                    id: categoryRes.id,
-                    name: categoryRes.name,
-                    icon: categoryRes.icon,
-                    color: categoryRes.color,
-                    type: categoryRes.type,
-                    enabled: categoryRes.enabled,
-                    isOpen: false
+                    category: item.category,
+                    subCategory: item.subCategory,
+                    isAddSubCategory: false
                 }
                 list.push(category);
             }
@@ -108,7 +105,7 @@ export class CategoriesComponent implements OnInit {
     }
 
     onDeleteCategory(categoryId: number) {
-        let success = (res: any) => {
+        let success = () => {
             this.list();
         }
 
@@ -133,63 +130,58 @@ export class CategoriesComponent implements OnInit {
             .subscribe(this.extractDataService.extract(success, err));
     }
 
-    onAddSubCategory(category?: any|undefined, subCategory?: any|undefined) {
-        console.log("categoryAdd:", category);
+
+    onAddSubCategory(category: any) {
+        category.isAddSubCategory = true;
+    }
+
+    onCancelSubCategory(category: any) {
+        category.isAddSubCategory = false;
+    }
+
+    onVerifyBeforeSaveSubCategory(categoryId: number): any {
+        let input = document.getElementById('subCategoryInput'+categoryId) as HTMLInputElement;
+
+        if (!input.value || input.value.trim() === "") {
+            input.value = "";
+            return null;
+        }
+
+        let subCategory: any = {
+            name: input.value,
+            category: {
+                id: categoryId
+            }
+        }
+
+        this.onSaveSubCategory(subCategory);  
+    }
+
+    onEditSubCategory(subCategory: any, category: any) {
         let dialogRef = this.dialog.open(SubCategoryDialogComponent, {
             width: '400px',
-            data: { categories: this.categories, edit: ((subCategory ? subCategory : null)), category: ((category ? category : null))}
+            data: { categories: this.categories, edit: subCategory, category: category}
         });
 
         dialogRef.afterClosed().subscribe((result: any) => {
-            if (result) {
-                if (result.id) {
-                    console.log("result", result)
+            if (!result) {
+                return;
+            }
 
-                    if (result.categoryId == undefined) {
-                        this.categories.forEach((item: any) => {
-                            if (item.id === result.id) {
-                                item.icone = result.icone;
-                                item.color = result.color;
-                                item.name = result.name;
-                            }
-                        });
-    
-                        let category: any = {
-                            id: result.id,
-                            type: "Gasto",
-                            name: result.name,
-                            color: result.color,
-                            icon: result.icon,
-                            subCategories: []
-                        }
-    
-                        this.onUpdateCategory(category.id, category);
-                    } else {
-                        let subCategoryEdit: any = {
-                            id: result.id,
-                            name: result.name,
-                            category: {
-                                id: result.categoryId
-                            }
-                        }
-                        this.onUpdateSubCategory(result.id, subCategoryEdit);
-                    }
-                } else {
-                    console.log("subCategory: ", result);
-                    let subCategory: any = {
-                        name: result.name,
-                        category: {
-                            id: result.categoryId
-                        }
-                    }
-                    this.onSaveSubCategory(subCategory);
+            let subCategory: any = {
+                id: result.id,
+                name: result.name,
+                category: {
+                    id: result.categoryId
                 }
             }
+
+            this.onSaveSubCategory(subCategory); 
         });
     }
 
     onSaveSubCategory(subCategory: any) {
-        let success = (res: any) => {
+        let success = () => {
             this.list();
         }
 
@@ -215,7 +207,7 @@ export class CategoriesComponent implements OnInit {
     }
 
     onDeleteSubCategory(subCategoryId: number) {
-        let success = (res: any) => {
+        let success = () => {
             this.list();
         }
 

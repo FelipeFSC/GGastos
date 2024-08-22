@@ -1,39 +1,60 @@
 <app-left-menu></app-left-menu>
 
-<div class="general-box">
 
-    <button class="add-button" mat-button [matMenuTriggerFor]="menu"><mat-icon>add</mat-icon></button>
-    <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="onAddCategory()">Categoria</button>
-        <button mat-menu-item (click)="onAddSubCategory()">Sub-categoria</button>
-    </mat-menu>
-
-    <br>
-    <br>
-
-    <div *ngFor="let category of categories; let i = index">
-        <mat-accordion class="example-headers-align" multi>
-            <mat-expansion-panel>
-                <mat-expansion-panel-header style="padding: 0px 24px 0px 0px;">
-                    <mat-panel-title (click)="loadSubCategory(category.id)">
-                        <span (click)="$event.stopPropagation();" (click)="onAddCategory(category)" class="category-icon-circle" [ngStyle]="{'background-color':category.color}"><mat-icon class="icon">{{category.icon}}</mat-icon></span>
-                        &nbsp;
-                        <span>{{category.name}}</span>
-                    </mat-panel-title>
-                    <button mat-button (click)="onDeleteCategory(category.id)"><mat-icon>delete</mat-icon></button>
-                </mat-expansion-panel-header>
-                <div *ngFor="let subCategory of subCategories; let i = index">
-                    <div style="display: flex; align-items: center; margin-top: 10px; margin-bottom: 10px;">
-                        <span>{{subCategory.name}}</span>
-                        <div style="margin-left: auto;">
-                            <button mat-button (click)="onAddSubCategory(category, subCategory)"><mat-icon class="align-rigth">edit</mat-icon></button>
-                            <button mat-button (click)="onDeleteSubCategory(subCategory.id)"><mat-icon class="align-rigth">delete</mat-icon></button>
-                        </div>
-                    </div>
-                </div>
-            </mat-expansion-panel>
-        </mat-accordion>
-        <br>
+<div class="general-content-box">
+    <div class="header-content-box">
+        <span class="title-text">
+            Categorias
+        </span>
+        <button (click)="onAddCategory()" mat-flat-button color="primary">
+            Adicionar categoria
+        </button>
     </div>
 
+    <div style="padding: 0px 45px 45px 45px;">
+        <ul>
+            <li *ngFor="let item of categories; let i = index">
+                <div class="category-box item-style">
+                    <div (click)="onAddCategory(item.category)"class="cursor-pointer category-icon-text-box">
+                        <div class="category-icon-circle"
+                            [ngStyle]="{'background-color': item.category.color }">
+                            <mat-icon class="icon">
+                                {{item.category.icon}}
+                            </mat-icon>
+                        </div>
+                        <span class="category-name" style="margin-left: 15px;">{{item.category.name}}</span> <mat-icon class="edit-icon">edit</mat-icon>
+                    </div>
+                    <div>
+                        <span class="cursor-pointer" (click)="onDeleteCategory(item.category.id)" style="margin-right: 25px; color: #d72638;">deletar</span>
+                        <span class="cursor-pointer" (click)="onAddSubCategory(item.category)"  style="color: #129e3f;">+ sub-categoria</span>
+                    </div>
+                </div>
+
+                <div *ngIf="item.category.isAddSubCategory" class="edit-sub-category-box item-style">
+                    <i [ngStyle]="{'color': item.category.color }" class="fa">&#xf111;</i>
+                    <input type="text" class="input-text-style" id="subCategoryInput{{item.category.id}}">
+                    <button (click)="onVerifyBeforeSaveSubCategory(item.category.id)" mat-flat-button color="primary">
+                        Adicionar
+                    </button>
+                    <span class="cursor-pointer" (click)="onCancelSubCategory(item.category)" style="margin-left: 15px; color: #d72638;">cancelar</span>
+                </div>
+                <hr class="simple-horizontal-line">
+
+                <ul *ngIf="item.subCategory.length > 0">
+                    <ng-container *ngFor="let subCategory of item.subCategory; let i = index">
+                        <li class="sub-category-box item-style">
+                            <i [ngStyle]="{'color': item.category.color }" class="fa">&#xf111;</i>
+                            <span style="color: #a0a0a0; margin-left: 26px;"> {{subCategory.name}} </span>
+                            <div class="options-sub-category-box">
+                                <span class="cursor-pointer" (click)="onDeleteSubCategory(subCategory.id)" style="margin-right: 15px; color: #d72638;">deletar</span>
+                                <span class="cursor-pointer" (click)="onEditSubCategory(subCategory, item.category)" style="color: #129e3f;">editar</span> 
+                            </div>
+                        </li>
+
+                        <hr class="simple-horizontal-line">
+                    </ng-container>
+                </ul>
+            </li>
+        </ul>
+    </div>
 </div>
