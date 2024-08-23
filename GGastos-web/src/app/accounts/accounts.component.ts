@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { AccountDialogComponent } from '../dialog/account-dialog/account-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { Account } from './account.model';
 
 @Component({
     selector: 'app-accounts',
@@ -6,6 +9,13 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./accounts.component.css']
 })
 export class AccountsComponent implements OnInit {
+
+    account: Account = {
+        id: 0,
+        name: '',
+        icon: '',
+        color: '',
+    };
 
     onEditEcreen: boolean = false;
 
@@ -28,7 +38,9 @@ export class AccountsComponent implements OnInit {
         },
     ]
 
-    constructor() { }
+    constructor(
+        private dialog: MatDialog,
+    ) { }
 
     ngOnInit(): void {
     }
@@ -41,6 +53,12 @@ export class AccountsComponent implements OnInit {
         this.onEditEcreen = true;
 
         console.log(numero);
+    }
+
+    onAddAccount() {
+        let dialogRef = this.dialog.open(AccountDialogComponent, {
+            data: { title: "Nova despesa" }
+        });
     }
 
 }

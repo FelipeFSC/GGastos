@@ -6,7 +6,7 @@
     margin: auto;
     border-radius: 12px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
-    padding-bottom: 10px;
+    padding-bottom: 80px;
 }
 
 .edit-add-button-box {
@@ -28,7 +28,7 @@ button {
 }
 
 .itens-box {
-    padding-right: 45px;
+    padding: 0px 45px;
 }
 
 .image-box {
