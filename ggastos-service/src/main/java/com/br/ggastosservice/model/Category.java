@@ -28,4 +28,5 @@ public class Category {
     private String icon;
 
     private boolean enabled;
+
 }
