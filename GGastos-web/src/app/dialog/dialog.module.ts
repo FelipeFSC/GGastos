@@ -8,6 +8,7 @@ import { SubCategoryDialogComponent } from './sub-category-dialog/sub-category-d
 import { ReleasesDialogComponent } from './releases-dialog/releases-dialog.component';
 import { CurrencyMaskDirective } from './currency-mask.directive';
 import { AccountDialogComponent } from './account-dialog/account-dialog.component';
+import { CardDialogComponent } from './card-dialog/card-dialog.component';
 
 @NgModule({
     declarations: [
@@ -16,6 +17,7 @@ import { AccountDialogComponent } from './account-dialog/account-dialog.componen
         SubCategoryDialogComponent,
         ReleasesDialogComponent,
         AccountDialogComponent,
+        CardDialogComponent,
     ],
     imports: [
         CommonModule,

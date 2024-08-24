@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ExtractDataService } from '../extract-data.service';
+import { CardDialogComponent } from '../dialog/card-dialog/card-dialog.component';
 
 @Component({
     selector: 'app-cards',
@@ -28,9 +31,19 @@ export class CardsComponent implements OnInit {
         },
     ]
 
-    constructor() { }
+    constructor(
+        private dialog: MatDialog,
+        private extractDataService: ExtractDataService
+    ) { }
 
     ngOnInit(): void {
+    }
+
+    onAddCard(card: any) {
+        let dialogRef = this.dialog.open(CardDialogComponent, {
+            data: { title: "Nova conta", data: card }
+        });
+
     }
 
     onList() {
