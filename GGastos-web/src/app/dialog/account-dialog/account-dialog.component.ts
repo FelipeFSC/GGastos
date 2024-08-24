@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-account-dialog',
@@ -8,33 +8,40 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class AccountDialogComponent implements OnInit {
 
-    category: any = {id: 0, icon: "account_balance_wallet", color: "#9d02d9", name: "NuBank"};
+    account: any = {id: 0, icon: "account_balance_wallet", color: "#9d02d9", name: "NuBank", addOverall: false};
 
-    styleColor: any = {'background-color':this.category.color};
-
+    styleColor: any = {'background-color':this.account.color};
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: any,
+        public dialogRef: MatDialogRef<AccountDialogComponent>
     ) { }
 
     ngOnInit(): void {
+        this.onLoad(this.data.data);
     }
 
     onLoad(data: any) {
-        this.category.id = data.id;
-        this.category.icon = data.icon;
-        this.category.color = data.color;
-        this.category.name = data.name;
+        console.log(data);
 
-        this.styleColor = {'background-color':data.color};
+        if (data) {
+            console.log(data);
+            this.account.id = data.id;
+            this.account.icon = data.icon;
+            this.account.color = data.color;
+            this.account.name = data.name;
+            this.account.addOverall = data.addOverall;
+
+            this.styleColor = {'background-color':data.color};
+        }
     }
 
     changeColor() {
-        this.styleColor = {'background-color':this.category.color};
+        this.styleColor = {'background-color':this.account.color};
     }
 
     onClose() {
-        // this.dialogRef.close();
+        this.dialogRef.close();
     }
 
 }

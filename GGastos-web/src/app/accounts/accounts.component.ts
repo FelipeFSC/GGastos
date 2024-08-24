@@ -12,21 +12,13 @@ import { ExtractDataService } from '../extract-data.service';
 })
 export class AccountsComponent implements OnInit {
 
-    account: Account = {
-        id: 0,
-        name: '',
-        icon: '',
-        color: '',
-    };
+    account: Account = {};
+
+    selectedAccount: Account = {};
+
+    data: Account[] = [];
 
     onEditEcreen: boolean = false;
-
-    data: any = [
-        {
-            nome: "Banco 1",
-            image: "Foto 1",
-        },
-    ]
 
     constructor(
         private dialog: MatDialog,
@@ -43,7 +35,6 @@ export class AccountsComponent implements OnInit {
 
         let success = (res: any) => {
             let list: Account[] = [];
-            console.log(res)
             for (let item of res) {
                 let account = {
                     id: item.id,
@@ -52,7 +43,7 @@ export class AccountsComponent implements OnInit {
                     color: item.color,
                     balance: item.balance,
                     enabled: item.enabled,
-                    isAddOverall: item.addOverall
+                    addOverall: item.addOverall
                 }
                 list.push(account);
             }
@@ -66,40 +57,45 @@ export class AccountsComponent implements OnInit {
 
         this.accountsService.findByEnabled(true)
             .subscribe(this.extractDataService.extract(success, err));
-
-
     }
 
-    onEdit(numero: string) {
-        this.onEditEcreen = true;
-
-        console.log(numero);
-    }
-
-    onAddAccount() {
+    onAddAccount(account: Account | null) {
         let dialogRef = this.dialog.open(AccountDialogComponent, {
-            data: { title: "Nova despesa" }
+            data: { title: "Nova conta", data: account }
         });
 
         dialogRef.afterClosed().subscribe((result: any) => {
-            if (result) {
-                this.onSave({});
+            if (!result) {
+                return;
+            }
+            if (result.id) {
+                let account: Account = {
+                    id: result.id,
+                    name: result.name,
+                    icon: result.icon,
+                    color: result.color,
+                    balance: 0,
+                    addOverall: result.addOverall
+                };
+
+                this.onEdit(account);
+            } else {
+                let account: Account = {
+                    id: result.id,
+                    name: result.name,
+                    icon: result.icon,
+                    color: result.color,
+                    addOverall: result.addOverall
+                };
+
+                this.onSave(account);
             }
         });
     }
 
-    onSave(category: any) {
-        let account: Account = {
-            id: 0,
-            name: 'Teste',
-            icon: 'home',
-            color: 'red',
-            balance: 10,
-            isAddOverall: false
-        };
-
-        let success = (res: any) => {
-            //this.list();
+    onSave(account: any) {
+        let success = () => {
+            this.onList();
         }
 
         let err = (error: any) => {
@@ -110,4 +106,43 @@ export class AccountsComponent implements OnInit {
             .subscribe(this.extractDataService.extract(success, err));
     }
 
+    onEdit(account: any) {
+        let success = () => {
+            this.onOpenEdit(account.id);
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.accountsService.update(account.id, account)
+            .subscribe(this.extractDataService.extract(success, err));
+    }
+
+    onOpenEdit(accountId: number) {
+        let success = (res: Account) => {
+            this.selectedAccount = res;
+            this.onEditEcreen = true;
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.accountsService.findOne(accountId)
+            .subscribe(this.extractDataService.extract(success, err));
+    }
+
+    onDisable(accountId: number) {
+        let success = () => {
+            this.onList();
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.accountsService.disable(accountId)
+            .subscribe(this.extractDataService.extract(success, err));
+    }
 }

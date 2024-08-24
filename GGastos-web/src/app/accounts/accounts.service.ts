@@ -20,6 +20,10 @@ export class AccountsService {
 		return this.httpService.get(this.url + this.appService.accountUrl + `/enabled/${enabled}`);
 	}
 
+	findOne(accountId: number) {
+		return this.httpService.get(this.url + this.appService.accountUrl + `/${accountId}`);
+	}
+
 	create(account: Account) {
 		return this.httpService.post(this.url + this.appService.accountUrl, account);
 	}

@@ -6,7 +6,7 @@
     margin: auto;
     border-radius: 12px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
-    padding-bottom: 80px;
+    padding-bottom: 50px;
 }
 
 .edit-add-button-box {
@@ -34,9 +34,13 @@ button {
 .image-box {
     width: 48px;
     height: 48px;
+    color: white;
     overflow: hidden;
     position: relative;
     border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 img {
@@ -123,4 +127,11 @@ li:hover .item-text {
     margin-right: 20px;
     color: #129e3f;
     cursor: pointer;
+}
+
+.icon {
+    font-size: 23px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

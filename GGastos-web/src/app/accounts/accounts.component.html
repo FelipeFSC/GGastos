@@ -6,15 +6,17 @@
             <span class="title-text">
                 Contas
             </span>
-            <button mat-flat-button (click)="onAddAccount()" color="primary">Nova conta</button>
+            <button mat-flat-button (click)="onAddAccount(null)" color="primary">Nova conta</button>
         </div>
 
         <div class="itens-box">
             <ul>
                 <ng-container *ngFor="let item of data; let i = index">
-                    <li (click)="onEdit(item.nome)">
-                        <div class="image-box">
-                            <img src="../../assets/banco-teste.png" alt="" srcset="">
+                    <li (click)="onOpenEdit(item.id!)">
+                        <div class="image-box" [ngStyle]="{'background-color': item.color }">
+                            <mat-icon class="icon">
+                                {{item.icon}}
+                            </mat-icon>
                         </div>
                         <div class="item-text">
                             {{item.name}}
@@ -36,23 +38,25 @@
                 <div class="icon-back-box" (click)="onList()">
                     <mat-icon>arrow_back</mat-icon>
                 </div>
-                <div class="image-box">
-                    <img src="../../assets/banco-teste.png" alt="" srcset="">
+                <div class="image-box" [ngStyle]="{'background-color': selectedAccount.color }">
+                    <mat-icon class="icon">
+                        {{selectedAccount.icon}}
+                    </mat-icon>
                 </div>
                 <div class="item-text">
-                    Banco bbc
+                    {{selectedAccount.name}}
                 </div>
             </div>
             <div>
-                <span class="edit-button">Editar</span>
-                <span class="delete-button">Arquivar</span>
+                <span class="edit-button" (click)="onAddAccount(selectedAccount)" >Editar</span>
+                <span class="delete-button" (click)="onDisable(selectedAccount.id!)">Deletar</span>
             </div>
         </div>
 
         <div class="content-box-edit">
-            <div class="edit-saldo-text">R$ 499,00</div>
+            <div class="edit-saldo-text">R$ {{selectedAccount.balance?.toFixed(2)}}</div>
             <section class="checkbox-class">
-                <mat-checkbox class="example-margin">Não somar no Saldo Geral</mat-checkbox>
+                <mat-checkbox [disabled]="true" [checked]="selectedAccount.addOverall" class="example-margin">Não somar no Saldo Geral</mat-checkbox>
             </section>
         </div>
     </div>
