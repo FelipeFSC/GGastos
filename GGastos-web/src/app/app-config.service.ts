@@ -13,6 +13,8 @@ export class AppConfigService {
 
 	private privateAccount: string = "/accounts";
 
+	private privateCard: string = "/credit-cards"
+
 	public get baseUrl(): string {
 		return this.privateBaseUrl;
 	}
@@ -27,5 +29,9 @@ export class AppConfigService {
 
 	public get accountUrl() {
 		return this.privateAccount;
+	}
+
+	public get cardUrl(): string {
+		return this.privateCard;
 	}
 }

@@ -13,12 +13,14 @@
         <div class="itens-box">
             <ul>
                 <ng-container *ngFor="let item of data; let i = index">
-                    <li (click)="onEdit(item.nome)">
-                        <div class="image-box">
-                            <img src="../../assets/banco-teste.png" alt="" srcset="">
+                    <li (click)="onOpenEdit(item)">
+                        <div class="image-box" [ngStyle]="{'background-color': item.color }">
+                            <mat-icon class="icon">
+                                {{item.icon}}
+                            </mat-icon>
                         </div>
                         <div class="item-text">
-                            {{item.nome}}
+                            {{item.name}}
                         </div>
 
                         <div class="button-edit-box">
@@ -34,22 +36,22 @@
     <div *ngIf="onEditEcreen">
         <div class="edit-add-button-box">
             <div class="button-edit-back-box">
-                <div class="icon-back-box" (click)="onList()">
+                <div class="icon-back-box" (click)="onOpenList()">
                     <mat-icon>arrow_back</mat-icon>
                 </div>
                 <div class="image-box">
                     <img src="../../assets/banco-teste.png" alt="" srcset="">
                 </div>
                 <div class="item-text">
-                    <span class="title-edit-text">Banco dos bancos</span>
+                    <span class="title-edit-text">{{selectedCard.name}}</span>
                     <div>
-                        <small>Fecha dia 6 / Vence dia 20</small>
+                        <small>Fecha dia {{selectedCard.closingDate}} / Vence dia {{selectedCard.dueDate}}</small>
                     </div>
                 </div>
             </div>
             <div>
                 <span class="edit-button">Editar</span>
-                <span class="delete-button">Deletar</span>
+                <span (click)="onDisable(selectedCard.id!)" class="delete-button">Deletar</span>
             </div>
         </div>
 

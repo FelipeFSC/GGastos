@@ -29,6 +29,7 @@ import { CardDialogComponent } from './card-dialog/card-dialog.component';
         SubCategoryDialogComponent,
         AccountDialogComponent,
         ReleasesDialogComponent,
+        CardDialogComponent,
     ]
 })
 export class DialogModule { }

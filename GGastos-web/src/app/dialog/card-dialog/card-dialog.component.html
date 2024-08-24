@@ -2,21 +2,20 @@
 
 
     <div class="example-box">
-        <span class="card-icon-circle icon-box" [ngStyle]="styleColor"><mat-icon class="icon">{{category.icon}}</mat-icon></span>
+        <span class="card-icon-circle icon-box" [ngStyle]="styleColor"><mat-icon class="icon">{{card.icon}}</mat-icon></span>
         &nbsp;
-        <span>{{category.name}}</span>
     </div>
 
     <br><br>
 
     <label for="favcolor">Selecione a cor do circulo:</label>&nbsp;
-    <input type="color" (change)="changeColor()" [(ngModel)]="category.color">
+    <input type="color" (change)="changeColor()" [(ngModel)]="card.color">
 
     <br><br>
 
     <mat-form-field appearance="legacy">
         <mat-label>Icone</mat-label>
-        <input [(ngModel)]="category.icon" matInput placeholder="Exemplo: love">
+        <input [(ngModel)]="card.icon" matInput placeholder="Exemplo: love">
     </mat-form-field>
     Icones:&nbsp;
     <a href="https://fonts.google.com/icons" target="_blank">google icons</a>
@@ -27,7 +26,7 @@
 
     <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Nome do cartão</mat-label>
-        <input matInput>
+        <input  [(ngModel)]="card.name" matInput>
     </mat-form-field>
 
     <mat-form-field class="example-full-width" appearance="fill">
@@ -38,8 +37,8 @@
     <div class="form-group">
         <mat-form-field class="example-half-width" appearance="fill">
             <mat-label>Fecha dia</mat-label>
-            <mat-select>
-                <mat-option *ngFor="let day of days" value="day">
+            <mat-select [(ngModel)]="card.closingDate">
+                <mat-option *ngFor="let day of days" value="{{day}}">
                     {{day}}
                 </mat-option>
             </mat-select>
@@ -47,8 +46,8 @@
 
         <mat-form-field class="example-half-width" appearance="fill">
             <mat-label>Vence dia</mat-label>
-            <mat-select>
-                <mat-option *ngFor="let day of days" value="day">
+            <mat-select [(ngModel)]="card.dueDate">
+                <mat-option *ngFor="let day of days" value="{{day}}">
                     {{day}}
                 </mat-option>
             </mat-select>
@@ -57,10 +56,8 @@
 
     <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Conta de pagamento padrão</mat-label>
-        <mat-select>
-            <mat-option value="1">1</mat-option>
-            <mat-option value="2">22</mat-option>
-            <mat-option value="3">333</mat-option>
+        <mat-select [(ngModel)]="card.account">
+            <mat-option *ngFor="let item of accounts" value="{{item.id!}}">{{item.name}}</mat-option>
         </mat-select>
     </mat-form-field>
 
@@ -69,8 +66,8 @@
     <br><br>
 
     <div style="text-align: center;">
-        <button mat-flat-button color="primary">Salvar</button>
+        <button mat-flat-button (click)="onClose()" color="warn">Cancelar</button>
         &nbsp;
-        <button mat-flat-button color="warn">Cancelar</button>
+        <button mat-flat-button (click)="onSave()" color="primary">Salvar</button>
     </div>
 </div>

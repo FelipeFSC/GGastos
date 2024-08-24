@@ -1,19 +1,29 @@
 package com.br.ggastosservice.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.br.ggastosservice.model.Account;
 import com.br.ggastosservice.model.CreditCard;
 import com.br.ggastosservice.repository.CreditCardRepository;
 
 @Service
 public class CreditCardService {
     
+    private AccountService accountService;
+
     private CreditCardRepository creditCardRepository;
 
-    public CreditCardService(CreditCardRepository creditCardRepository) {
+    public CreditCardService(CreditCardRepository creditCardRepository,
+            AccountService accountService) {
         this.creditCardRepository = creditCardRepository;
+        this.accountService = accountService;
+    }
+
+    public List<CreditCard> findByEnabled(boolean enabled) {
+        return creditCardRepository.findByEnabled(enabled);
     }
 
     public CreditCard findOne(long id) throws Exception {
@@ -24,7 +34,9 @@ public class CreditCardService {
         return creditCard.get();
     }
 
-    public CreditCard create(CreditCard creditCard) {
+    public CreditCard create(CreditCard creditCard) throws Exception {
+        Account account = accountService.findOne(creditCard.getAccount().getId());
+        creditCard.setAccount(account);
         creditCard.setIcon(creditCard.getIcon().trim().toLowerCase());
         creditCard.setEnabled(true);
         creditCardRepository.save(creditCard);

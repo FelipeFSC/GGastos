@@ -21,9 +21,9 @@ public class CreditCard {
 
     private String name;
 
-    private String color;
-
     private String icon;
+
+    private String color;
 
     @Column(name = "card_limit")
     private double cardLimit;

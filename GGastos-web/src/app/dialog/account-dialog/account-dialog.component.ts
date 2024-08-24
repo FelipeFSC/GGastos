@@ -22,10 +22,8 @@ export class AccountDialogComponent implements OnInit {
     }
 
     onLoad(data: any) {
-        console.log(data);
 
         if (data) {
-            console.log(data);
             this.account.id = data.id;
             this.account.icon = data.icon;
             this.account.color = data.color;

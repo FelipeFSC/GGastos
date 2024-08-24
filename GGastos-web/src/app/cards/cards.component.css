@@ -173,3 +173,11 @@ small {
     border-left: 4px solid #16c64f;
     padding-left: 10px;
 }
+
+.icon {
+    float: right;
+    width: auto;
+    margin: 4px;
+    color: white;
+    font-size: 20px;
+}
