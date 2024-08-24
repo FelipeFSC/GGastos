@@ -11,6 +11,8 @@ export class AppConfigService {
 
 	private privateSubCategory: string = "/sub-category";
 
+	private privateAccount: string = "/accounts";
+
 	public get baseUrl(): string {
 		return this.privateBaseUrl;
 	}
@@ -21,5 +23,9 @@ export class AppConfigService {
 
 	public get subCategoryUrl() {
 		return this.privateSubCategory;
+	}
+
+	public get accountUrl() {
+		return this.privateAccount;
 	}
 }

@@ -10,7 +10,7 @@ import com.br.ggastosservice.repository.AccountRepository;
 
 @Service
 public class AccountService {
-    
+
     private AccountRepository accountRepository;
 
     public AccountService(AccountRepository accountRepository) {

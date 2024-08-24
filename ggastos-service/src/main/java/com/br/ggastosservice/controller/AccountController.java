@@ -17,14 +17,14 @@ import com.br.ggastosservice.service.AccountService;
 @RestController
 @RequestMapping("/accounts")
 public class AccountController {
-    
+
     private AccountService accountService;
 
     public AccountController(AccountService accountService) {
         this.accountService = accountService;
     }
 
-    @GetMapping("/{accountId}/enabled/{enabled}")
+    @GetMapping("/enabled/{enabled}")
     public List<Account> findByEnabled(@PathVariable boolean enabled) throws Exception {
         return accountService.findByEnabled(enabled);
     }
