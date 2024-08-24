@@ -35,7 +35,6 @@ export class CardsComponent implements OnInit {
         this.onEditEcreen = false;
 
         let success = (res: any) => {
-            console.log(res);
             let list: Card[] = [];
             for (let item of res) {
                 let account = {

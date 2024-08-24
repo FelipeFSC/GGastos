@@ -39,8 +39,10 @@
                 <div class="icon-back-box" (click)="onOpenList()">
                     <mat-icon>arrow_back</mat-icon>
                 </div>
-                <div class="image-box">
-                    <img src="../../assets/banco-teste.png" alt="" srcset="">
+                <div class="image-box" [ngStyle]="{'background-color': selectedCard.color }">
+                    <mat-icon class="icon">
+                        {{selectedCard.icon}}
+                    </mat-icon>
                 </div>
                 <div class="item-text">
                     <span class="title-edit-text">{{selectedCard.name}}</span>
@@ -50,7 +52,7 @@
                 </div>
             </div>
             <div>
-                <span class="edit-button">Editar</span>
+                <span (click)="onAddCard(selectedCard)" class="edit-button">Editar</span>
                 <span (click)="onDisable(selectedCard.id!)" class="delete-button">Deletar</span>
             </div>
         </div>

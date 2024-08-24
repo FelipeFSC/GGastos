@@ -31,13 +31,33 @@ export class CardDialogComponent implements OnInit {
 
     onLoad(data: any) {
         if (data) {
-            //this.account.id = data.id;
-            //this.account.icon = data.icon;
-            //this.account.color = data.color;
-            //this.account.name = data.name;
-            //this.account.addOverall = data.addOverall;
+            this.card.id = data.id;
+            this.card.name = data.name;
+            this.card.icon = data.icon;
+            this.card.color = data.color;
+            this.card.cardLimit = data.cardLimit;
+            this.card.closingDate = data.closingDate;
+            this.card.dueDate = data.dueDate;
+            this.card.enabled = data.enabled;
+            // this.card.account = data.account;
 
-           //this.styleColor = {'background-color':data.color};
+            this.value = "R$ " + data.cardLimit.toFixed(2);
+
+            for (let item of this.days) {
+                if (item === this.card.dueDate) {
+                    // console.log(item);
+                    this.card.dueDate = item;
+                }
+            }
+
+            for (let item of this.accounts) {
+                if (item.id === data.account.id) {
+                    // console.log(item);
+                    this.card.account = (item);
+                }
+            }
+
+            this.styleColor = {'background-color':data.color};
         }
     }
 
