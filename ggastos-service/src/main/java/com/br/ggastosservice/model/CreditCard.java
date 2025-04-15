@@ -29,10 +29,10 @@ public class CreditCard {
     private double cardLimit;
 
     @Column(name = "closing_date")
-    private byte closingDate;
+    private Integer closingDate;
 
     @Column(name = "due_date")
-    private byte dueDate;
+    private Integer dueDate;
 
     private boolean enabled;
 

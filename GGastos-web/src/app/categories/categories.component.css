@@ -94,15 +94,6 @@ button {
     cursor: pointer;
 }
 
-.fa {
-    display: inline-block;
-    font: normal normal normal 14px / 1 FontAwesome;
-    font-size: 11px;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
 .options-sub-category-box {
     opacity: 0;
     margin-left: 70px;

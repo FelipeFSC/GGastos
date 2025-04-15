@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Card } from 'src/app/cards/card.model';
+import { Utils } from 'src/app/util/utils';
 
 @Component({
     selector: 'app-card-dialog',
@@ -69,10 +70,7 @@ export class CardDialogComponent implements OnInit {
         let numberValue = 1;
 
         if (this.value) {
-            let value: string = this.value.replace("R$", "");
-            value = value.replace(".", "");
-            value = value.replace(",", ".");
-            numberValue = Number(value);
+            numberValue = Utils.getMoneyValue(this.value);
         }
         this.card.cardLimit = numberValue;
 

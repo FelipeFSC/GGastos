@@ -9,5 +9,7 @@ import com.br.ggastosservice.model.CreditCard;
 public interface CreditCardRepository extends JpaRepository<CreditCard, Long> {
     
     List<CreditCard> findByEnabled(boolean enabled);
-    
+
+    List<CreditCard> findByEnabledAndAccountId(boolean enabled, long accountId);
+
 }

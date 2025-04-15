@@ -24,6 +24,10 @@ export class AccountsService {
 		return this.httpService.get(this.url + this.appService.accountUrl + `/${accountId}`);
 	}
 
+	findAllAccountsAndCreditCards() {
+		return this.httpService.get(this.url + this.appService.accountUrl + `/credit-cards`);
+	}
+
 	create(account: Account) {
 		return this.httpService.post(this.url + this.appService.accountUrl, account);
 	}

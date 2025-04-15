@@ -1,6 +1,6 @@
 package com.br.ggastosservice.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.*;
 
@@ -25,8 +25,8 @@ public class User {
 
     // password / email
 
-    private LocalDate createDate;
+    private LocalDateTime createDate;
     
-    private LocalDate updateDate;
+    private LocalDateTime updateDate;
 
 }

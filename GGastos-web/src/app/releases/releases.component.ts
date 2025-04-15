@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ReleasesDialogComponent } from '../dialog/releases-dialog/releases-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { AccountsService } from '../accounts/accounts.service';
+import { ExtractDataService } from '../extract-data.service';
+import { CategoriesService } from '../categories/categories.service';
 
 @Component({
     selector: 'app-releases',
@@ -13,7 +16,10 @@ export class ReleasesComponent implements OnInit {
     modeloDados: any = [];
 
     constructor(
+        private accountsService: AccountsService,
         private dialog: MatDialog,
+        private extractDataService: ExtractDataService,
+        private categoriesService: CategoriesService,
     ) { }
 
     ngOnInit(): void {
@@ -120,13 +126,37 @@ export class ReleasesComponent implements OnInit {
     }
 
     onExpense() {
-        let dialogRef = this.dialog.open(ReleasesDialogComponent, {
-            data: { title: "Nova despesa" }
-        });
+        let success = (accountsCreditCards: any) => {
 
-        dialogRef.afterClosed().subscribe((result: any) => {
-            console.log(result);
-        });
+            let success = (categoriesSubCategories: any) => {
+                let dialogRef = this.dialog.open(ReleasesDialogComponent, {
+                    data: { 
+                        title: "Nova despesa",
+                        accounts: accountsCreditCards,
+                        categories: categoriesSubCategories
+                    }
+                });
+        
+                dialogRef.afterClosed().subscribe((result: any) => {
+                    console.log(result);
+                });
+            }
+    
+            let err = (error: any) => {
+                console.log(error);
+            }
+    
+            this.categoriesService.findAll()
+                .subscribe(this.extractDataService.extract(success, err));
+
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.accountsService.findAllAccountsAndCreditCards()
+            .subscribe(this.extractDataService.extract(success, err));
     }
 
     onRevenue() {

@@ -49,7 +49,7 @@ public class CategoryService {
     public Category findOne(long id) throws Exception  {
         Optional<Category> category = categoryRepository.findById(id);
         if (category == null || !category.isPresent()) {
-            throw new Exception("Categoria id: " +id+ ", não encontrado!");
+            throw new Exception("Categoria ID: " +id+ ", não encontrado!");
         }
         return category.get();
     }

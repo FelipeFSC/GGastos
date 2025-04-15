@@ -11,24 +11,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "transaction")
+@Table(name = "fixed_transaction")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Transaction {
-    
+public class FixedTransaction {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private BigDecimal amount;
+    private BigDecimal value;
 
     private String transactionType; // (ENUM: entrada, saida, parcelado, fixo, transferencia de conta)
-
-    private String description;
-
-    private boolean isPaid;
 
     private LocalDateTime transactionDate;
 
@@ -43,9 +39,5 @@ public class Transaction {
     @ManyToOne
     @JoinColumn(name = "credit_card_id")
     private CreditCard creditCard;
-
-    @ManyToOne
-    @JoinColumn(name = "fixed_transaction_id")
-    private FixedTransaction fixedTransaction;
 
 }

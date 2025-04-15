@@ -30,7 +30,7 @@
                 </div>
 
                 <div *ngIf="item.category.isAddSubCategory" class="edit-sub-category-box item-style">
-                    <i [ngStyle]="{'color': item.category.color }" class="fa">&#xf111;</i>
+                    <i [ngStyle]="{'color': item.category.color }" class="mark-circle">&#xf111;</i>
                     <input type="text" class="input-text-style" id="subCategoryInput{{item.category.id}}">
                     <button (click)="onVerifyBeforeSaveSubCategory(item.category.id)" mat-flat-button color="primary">
                         Adicionar
@@ -42,7 +42,7 @@
                 <ul *ngIf="item.subCategory.length > 0">
                     <ng-container *ngFor="let subCategory of item.subCategory; let i = index">
                         <li class="sub-category-box item-style">
-                            <i [ngStyle]="{'color': item.category.color }" class="fa">&#xf111;</i>
+                            <i [ngStyle]="{'color': item.category.color }" class="mark-circle">&#xf111;</i>
                             <span style="color: #a0a0a0; margin-left: 26px;"> {{subCategory.name}} </span>
                             <div class="options-sub-category-box">
                                 <span class="cursor-pointer" (click)="onDeleteSubCategory(subCategory.id)" style="margin-right: 15px; color: #d72638;">deletar</span>

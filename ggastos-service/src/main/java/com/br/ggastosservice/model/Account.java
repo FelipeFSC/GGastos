@@ -29,7 +29,11 @@ public class Account {
 
     private boolean enabled;
 
-    @Column(name="is_add_overall")
-    private boolean isAddOverall;
+    @Column(name="main")
+    private boolean main;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }

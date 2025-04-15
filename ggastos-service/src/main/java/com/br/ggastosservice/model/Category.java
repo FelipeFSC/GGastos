@@ -29,4 +29,8 @@ public class Category {
 
     private boolean enabled;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
 }

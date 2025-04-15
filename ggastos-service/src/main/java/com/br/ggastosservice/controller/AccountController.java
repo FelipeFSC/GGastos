@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.br.ggastosservice.dto.AccountCreditCardsDto;
 import com.br.ggastosservice.model.Account;
+import com.br.ggastosservice.service.AccountCreditCardService;
 import com.br.ggastosservice.service.AccountService;
 
 @RestController
@@ -20,8 +22,12 @@ public class AccountController {
 
     private AccountService accountService;
 
-    public AccountController(AccountService accountService) {
+    private AccountCreditCardService accountCreditCardService;
+
+    public AccountController(AccountService accountService,
+            AccountCreditCardService accountCreditCardService) {
         this.accountService = accountService;
+        this.accountCreditCardService = accountCreditCardService;
     }
 
     @GetMapping("/enabled/{enabled}")
@@ -32,6 +38,11 @@ public class AccountController {
     @GetMapping("/{accountId}")
     public Account findOne(@PathVariable long accountId) throws Exception {
         return accountService.findOne(accountId);
+    }
+
+    @GetMapping("/credit-cards")
+    public List<AccountCreditCardsDto> findAllAccountsAndCreditCards() {
+        return accountCreditCardService.findAllAccountsAndCreditCards();
     }
 
     @PostMapping()

@@ -6,18 +6,18 @@
 
     <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Descrição</mat-label>
-        <input matInput>
+        <input [(ngModel)]="description" matInput>
     </mat-form-field>
     
     <div class="form-group">
         <mat-form-field class="example-half-width" appearance="fill">
             <mat-label>Valor</mat-label>
-            <input (input)="valorAlterado()" [(ngModel)]="value" appCurrencyMask matInput>
+            <input (input)="valorAlterado()" [(ngModel)]="paymentValue" appCurrencyMask matInput>
         </mat-form-field>
         
         <mat-form-field class="example-half-width" color="accent" appearance="fill">
             <mat-label>Custom calendar color</mat-label>
-            <input matInput [matDatepicker]="picker2">
+            <input [(ngModel)]="paymentDate" matInput [matDatepicker]="picker2">
             <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
             <mat-datepicker #picker2 color="primary"></mat-datepicker>
         </mat-form-field>
@@ -25,35 +25,47 @@
     
     <div class="form-group">
         <mat-form-field class="example-half-width" appearance="fill">
-            <mat-label>Pokemon</mat-label>
-            <mat-select>
-                <mat-optgroup *ngFor="let group of pokemonGroups"
-                    [label]="group.name"
-                    [disabled]="group.disabled">
+            <mat-label>Conta/Cartão</mat-label>
+            <mat-select [(ngModel)]="accountSelected">
+                <mat-optgroup *ngFor="let item of accountAndCreditCards"
+                    [label]="item.name">
 
-                    <mat-option *ngFor="let pokemon of group.pokemon" [value]="pokemon.value">
-                        {{pokemon.viewValue}}
+                    <mat-option *ngFor="let creditCard of item.list" [value]="creditCard">
+                        {{creditCard.name}}
                     </mat-option>
-
                 </mat-optgroup>
             </mat-select>
         </mat-form-field>
 
         <mat-form-field class="example-half-width" appearance="fill">
-            <mat-label>Favorite food</mat-label>
+            <mat-label>Categoria</mat-label>
             <mat-select [(ngModel)]="categorySelected">
-                <mat-option *ngFor="let food of foods" [value]="food">
-                    <div style="display: flex; align-items: center;">
-                        <span class="category-icon-circle"
-                            [ngStyle]="{'background-color': 'red' }">
-                            <mat-icon class="icon"> home </mat-icon>
-                        </span>
-                        &nbsp;&nbsp;
-                        <span>
-                            {{food.name}}
-                        </span>
-                    </div>
-                </mat-option>
+
+                <ng-container *ngFor="let item of categorySubCategoryList">
+                    <mat-option [value]="item.category">
+                        <div style="display: flex; align-items: center;">
+                            <span class="category-icon-circle"
+                                [ngStyle]="{'background-color': item.category.color }">
+                                <mat-icon class="icon"> {{item.category.icon}} </mat-icon>
+                            </span>
+                            &nbsp;&nbsp;
+                            <span>
+                                {{item.category.name}}
+                            </span>
+                        </div>
+                    </mat-option>
+
+                    <ng-container *ngFor="let subCategory of item.subCategory">
+                        <mat-option [value]="subCategory">
+                            <span>
+                                <i [ngStyle]="{'color': item.category.color }" class="mark-circle">&#xf111;</i>
+                                &nbsp;&nbsp;
+                                {{subCategory.name}}
+                            </span>
+                        </mat-option>
+                    </ng-container>
+                </ng-container>
+
                 <mat-select-trigger>
                     <ng-container *ngIf="categorySelected">
                         {{categorySelected.name}}
@@ -165,7 +177,7 @@
         </div>
 
         <div class="done-button-box">
-            <button mat-fab color="primary" [mat-dialog-close]="category">
+            <button mat-fab color="primary" (click)="onSave()">
                 <mat-icon>check</mat-icon>
             </button>
         </div>

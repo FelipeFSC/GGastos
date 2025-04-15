@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Utils } from 'src/app/util/utils';
 
 @Component({
     selector: 'app-releases-dialog',
@@ -18,7 +19,11 @@ export class ReleasesDialogComponent implements OnInit {
 
     isAttachmentActive: boolean = false;
 
-    value: string = "R$";
+    description: string = "";
+
+    paymentValue: string = "R$";
+
+    paymentDate: any = {};
 
     valorParcela: number|null = null;
 
@@ -27,30 +32,9 @@ export class ReleasesDialogComponent implements OnInit {
 
     category = "FUNCIONOU";
 
-    pokemonGroups: any[] = [
-        {
-            name: 'Contas',
-            pokemon: [
-                {name: 'bulbasaur-0', viewValue: 'Bulbasaur'},
-                {name: 'oddish-1', viewValue: 'Oddish'},
-                {name: 'bellsprout-2', viewValue: 'Bellsprout'},
-            ],
-        },
-        {
-            name: 'Cartões',
-            pokemon: [
-                {name: 'squirtle-3', viewValue: 'Squirtle'},
-                {name: 'psyduck-4', viewValue: 'Psyduck'},
-                {name: 'horsea-5', viewValue: 'Horsea'},
-            ],
-        },
-    ];
+    accountAndCreditCards: any[] = [];
 
-    foods: any[] = [
-        {name: 'steak-0', viewValue: 'Steak'},
-        {name: 'pizza-1', viewValue: 'Pizza'},
-        {name: 'tacos-2', viewValue: 'Tacos'},
-    ];
+    categorySubCategoryList: any[] = [];
 
     paymentRange: any[] = [
         {name: 'Anual'},
@@ -63,16 +47,44 @@ export class ReleasesDialogComponent implements OnInit {
         {name: 'Diário'},
     ];
 
+    accountSelected: any = {};
 
     categorySelected: any = {};
 
     constructor(
-        @Inject(MAT_DIALOG_DATA) public data: any
+        @Inject(MAT_DIALOG_DATA) public data: any,
+        public dialogRef: MatDialogRef<ReleasesDialogComponent>
     ) { }
 
     ngOnInit(): void {
         this.tittle = this.data.title;
+
+        this.categorySubCategoryList = this.data.categories;
+        this.onLoadAccountsCombo(this.data.accounts);
     }
+
+    onLoadAccountsCombo(data: any) {
+        let list = [];
+
+        let accounts = { name: "Contas", list: [{}]};
+        accounts.list.pop();
+        for (let account of data) {
+            accounts.list.push(account.account);
+        }
+        list.push(accounts);
+
+        let creditCards = { name: "Cartões", list: [{}] };
+        creditCards.list.pop();
+        for (let account of data) {
+            for (let creditCard of account.creditCards) {
+                creditCards.list.push(creditCard);
+            }
+        }
+        list.push(creditCards);
+
+        this.accountAndCreditCards = list;
+    }
+
 
     onRepeat() {
         this.isRepeatActive = !this.isRepeatActive;
@@ -89,17 +101,58 @@ export class ReleasesDialogComponent implements OnInit {
     valorAlterado() {
         let numberValue = 1;
 
-        if (this.value) {
-            let value: string = this.value.replace("R$", "");
-            value = value.replace(".", "");
-            value = value.replace(",", ".");
-            numberValue = Number(value);
+        if (this.paymentValue) {
+            numberValue = Utils.getMoneyValue(this.paymentValue);
         }
 
         if (this.valorParcela) {
             let result = numberValue / this.valorParcela;
             this.installmentValue = result.toFixed(2);
         }
+    }
+    
+    onSave() {
+        let moneyValue;
+        moneyValue = Utils.getMoneyValue(this.paymentValue);
+        
+        let releaseData = {
+            amount: moneyValue,
+            description: this.description,
+            paidDate: "",
+            paymentDate: this.paymentDate,
+            observation: "",
+            user: {
+                id: 1
+            },
+            category: {
+                id: 0
+            },
+            subCategory: {
+                id: 0
+            }
+        }
+        
+
+        console.log(this.description);
+        console.log(this.paymentDate);
+        console.log(moneyValue);
+
+        if (this.accountSelected.cardLimit) {
+            console.log("Cartão de credito");
+        }
+        console.log(this.accountSelected);
+        
+
+        if (this.categorySelected.category) {
+            console.log("Sub categoria");
+        }
+        console.log(this.categorySelected);
+
+
+        console.log(releaseData);
+
+
+//        this.dialogRef.close(null);
     }
 
 }

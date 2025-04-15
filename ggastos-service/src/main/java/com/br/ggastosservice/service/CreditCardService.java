@@ -26,6 +26,10 @@ public class CreditCardService {
         return creditCardRepository.findByEnabled(enabled);
     }
 
+    public List<CreditCard> findByEnabledAndAccountId(boolean enabled, long accountId) {
+        return creditCardRepository.findByEnabledAndAccountId(enabled, accountId);
+    }
+
     public CreditCard findOne(long id) throws Exception {
         Optional<CreditCard> creditCard = creditCardRepository.findById(id);
         if (creditCard == null || !creditCard.isPresent()) {
