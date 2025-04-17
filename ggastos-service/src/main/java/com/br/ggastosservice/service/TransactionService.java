@@ -1,5 +1,8 @@
 package com.br.ggastosservice.service;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -39,8 +42,17 @@ public class TransactionService {
         this.transactionTypeService = transactionTypeService;
     }
 
-    public List<Transaction> findAll() {
-        return transactionRepository.findAllByOrderByTransactionDate();
+    public List<Transaction> findAll(String date) {
+        int ano = Integer.parseInt(date.split("-")[0]);
+        int mes = Integer.parseInt(date.split("-")[1]);
+
+        LocalDateTime inicio = LocalDateTime.of(ano, mes, 1, 0, 0);
+
+        LocalDateTime fim = inicio
+            .with(TemporalAdjusters.lastDayOfMonth())
+            .with(LocalTime.MAX);
+            
+        return transactionRepository.findAllByTransactionDateBetweenOrderByTransactionDate(inicio, fim);
     }
 
     public void create(Transaction transaction) throws Exception {

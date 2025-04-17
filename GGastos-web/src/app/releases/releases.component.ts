@@ -19,6 +19,8 @@ export class ReleasesComponent implements OnInit {
     saldo: number = 0;
     previsto: number = 0;
 
+    mesAnoSelecionado: string = this.pegarMesAtual();
+
     constructor(
         private accountsService: AccountsService,
         private dialog: MatDialog,
@@ -28,10 +30,34 @@ export class ReleasesComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.onList();
+        this.filtrarPorMesAno(this.mesAnoSelecionado);
     }
 
-    onList() {
+    pegarMesAtual(): string {
+        const hoje = new Date();
+        const ano = hoje.getFullYear();
+        const mes = (hoje.getMonth() + 1).toString().padStart(2, '0');
+        return `${ano}-${mes}`;
+    }
+
+    alterarMes(incremento: number) {
+        const [anoStr, mesStr] = this.mesAnoSelecionado.split('-');
+        const ano = parseInt(anoStr);
+        const mes = parseInt(mesStr);
+
+        const novaData = new Date(ano, mes - 1 + incremento);
+        const novoAno = novaData.getFullYear();
+        const novoMes = (novaData.getMonth() + 1).toString().padStart(2, '0');
+
+        this.mesAnoSelecionado = `${novoAno}-${novoMes}`;
+        this.filtrarPorMesAno(this.mesAnoSelecionado);
+    }
+
+    filtrarPorMesAno(valor: string) {
+        this.onList(valor);
+    }
+
+    onList(date: string) {
         let success = (res: any) => {
             let list: any = [];
 
@@ -93,7 +119,7 @@ export class ReleasesComponent implements OnInit {
             console.log(error);
         }
 
-        this.releasesService.findAll()
+        this.releasesService.findAll(date)
             .subscribe(this.extractDataService.extract(success, err));
     }
 
@@ -170,7 +196,7 @@ export class ReleasesComponent implements OnInit {
 
     onCreate(data: any) {
         let success = () => {
-            this.onList();
+            this.filtrarPorMesAno(this.mesAnoSelecionado);
         }
 
         let err = (error: any) => {

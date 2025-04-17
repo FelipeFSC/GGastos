@@ -2,7 +2,7 @@
 
 <div class="box-general">
     <div class="box-menu">
-        <div class="box-item-menu">
+        <div>
             <span style="font-size: 16px;"> Lançamentos </span>
             <button mat-mini-fab color="primary" [matMenuTriggerFor]="menu">
                 <mat-icon>add</mat-icon>
@@ -14,11 +14,24 @@
             </mat-menu>
         </div>
 
-        <div class="box-item-menu">
-            oi
+        <div class="date-select-box">
+
+            <button mat-icon-button (click)="alterarMes(-1)">
+                <mat-icon>chevron_left</mat-icon>
+            </button>
+
+            <input
+                type="month"
+                [(ngModel)]="mesAnoSelecionado"
+                (change)="filtrarPorMesAno(mesAnoSelecionado)"/>
+
+            <button mat-icon-button (click)="alterarMes(1)">
+                <mat-icon>chevron_right</mat-icon>
+            </button>
+
         </div>
 
-        <div class="box-item-menu box-item-content-right">
+        <div>
             <button mat-icon-button color="primary">
                 <mat-icon>more_horiz</mat-icon>
             </button>

@@ -21,16 +21,12 @@
     width: auto;
     padding: 18px 20px;
     border-radius: 10px 10px 0px 0px;
-}
-.box-item-menu {
-    width: 33%;
-    float: left;
-}
-.box-item-content-right {
-    display: flex;
-    flex-direction: row-reverse;
-}
 
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+}
 
 .box-filter {
     width: auto;
@@ -138,4 +134,13 @@
 .space-between {
     display: flex;
     justify-content: space-between;
+}
+
+.date-select-box {
+    display: flex;
+    align-content: center;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: row;
+    width: 40%;
 }

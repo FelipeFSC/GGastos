@@ -4,6 +4,7 @@ import { ReleasesComponent } from './releases.component';
 import { MaterialModule } from '../material/material.module';
 import { MyComponentsModule } from '../my-components/my-components.module';
 import { ReleasesRoutingModule } from './releases-routing.module';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
     declarations: [
@@ -13,7 +14,8 @@ import { ReleasesRoutingModule } from './releases-routing.module';
         ReleasesRoutingModule,
         CommonModule,
         MaterialModule,
-        MyComponentsModule
+        MyComponentsModule,
+        FormsModule
     ]
 })
 export class ReleasesModule { }
