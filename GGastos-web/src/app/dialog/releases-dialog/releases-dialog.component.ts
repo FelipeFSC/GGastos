@@ -115,44 +115,44 @@ export class ReleasesDialogComponent implements OnInit {
         let moneyValue;
         moneyValue = Utils.getMoneyValue(this.paymentValue);
         
+        let categoryId = 0;
+        let subCategoryId = 0;
+        if (this.categorySelected.category) {
+            subCategoryId = this.categorySelected.id;
+        } else if (this.categorySelected.id) {
+            categoryId = this.categorySelected.id
+        }
+
+        let creditCardId = 0;
+        let accountId = 0;
+        if (this.accountSelected.cardLimit) {
+            creditCardId = this.accountSelected.id;
+        } else if (this.accountSelected.id) {
+            accountId = this.accountSelected.id;
+        }
+
         let releaseData = {
             amount: moneyValue,
             description: this.description,
+            transactionType: "entrada",
             paidDate: "",
-            paymentDate: this.paymentDate,
+            transactionDate: this.paymentDate,
             observation: "",
-            user: {
-                id: 1
+            account: {
+                id: accountId
+            },
+            creditCard: {
+                id: creditCardId
             },
             category: {
-                id: 0
+                id: categoryId
             },
             subCategory: {
-                id: 0
+                id: subCategoryId
             }
         }
-        
 
-        console.log(this.description);
-        console.log(this.paymentDate);
-        console.log(moneyValue);
-
-        if (this.accountSelected.cardLimit) {
-            console.log("Cartão de credito");
-        }
-        console.log(this.accountSelected);
-        
-
-        if (this.categorySelected.category) {
-            console.log("Sub categoria");
-        }
-        console.log(this.categorySelected);
-
-
-        console.log(releaseData);
-
-
-//        this.dialogRef.close(null);
+        this.dialogRef.close(releaseData);
     }
 
 }

@@ -24,7 +24,9 @@ public class Transaction {
 
     private BigDecimal amount;
 
-    private String transactionType; // (ENUM: entrada, saida, parcelado, fixo, transferencia de conta)
+    @ManyToOne
+    @JoinColumn(name = "transaction_type_id")
+    private TransactionType transactionType;
 
     private String description;
 
@@ -45,7 +47,11 @@ public class Transaction {
     private CreditCard creditCard;
 
     @ManyToOne
-    @JoinColumn(name = "fixed_transaction_id")
-    private FixedTransaction fixedTransaction;
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "sub_category_id")
+    private SubCategory subCategory;
 
 }

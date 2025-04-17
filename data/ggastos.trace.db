@@ -782,3 +782,6 @@ Caused by: org.h2.jdbc.JdbcSQLInvalidAuthorizationSpecException: Wrong user name
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:461)
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:429)
 	... 55 more
+2025-04-16 22:29:10 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM EXPENSE TRANSACTION TRANSACTION_TYPE[*]"; SQL statement:
+SELECT * FROM EXPENSE TRANSACTION TRANSACTION_TYPE [42000-200]

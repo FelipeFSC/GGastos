@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AccountsService } from '../accounts/accounts.service';
 import { ExtractDataService } from '../extract-data.service';
 import { CategoriesService } from '../categories/categories.service';
+import { ReleasesService } from './releases.service';
 
 @Component({
     selector: 'app-releases',
@@ -15,114 +16,85 @@ export class ReleasesComponent implements OnInit {
 
     modeloDados: any = [];
 
+    saldo: number = 0;
+    previsto: number = 0;
+
     constructor(
         private accountsService: AccountsService,
         private dialog: MatDialog,
         private extractDataService: ExtractDataService,
         private categoriesService: CategoriesService,
+        private releasesService: ReleasesService
     ) { }
 
     ngOnInit(): void {
-        this.modeloDados = [
-            {   
-                data: "01",
-                gastos: [
-                    {
-                        icone: "star",
-                        cor: "#74e2aa",
-                        isAnotacao: "Sempre bom",
-                        isAnexo: {
-                            id: 14,
-                            nome: "folha de pagamento.pdf"
-                        },
-                        isFixo: true,
+        this.onList();
+    }
 
+    onList() {
+        let success = (res: any) => {
+            let list: any = [];
 
-                        nameCategoria: "Salário",
-                        tipoConta: "Conta inicial",
-                        valor: "1750"
+            this.saldo = 0;
+            this.previsto = 0;
+
+            let gastos = [];
+            let beforeDay;
+            for (let item of res) {
+                let day = new Date(item.transactionDate).getDate();
+
+                if (item.transactionType.id === 1) {
+                    this.saldo += item.amount;
+                } else {
+                    this.previsto -= item.amount;
+                }
+
+                let gasto = {
+                    id: item.id,
+                    icone: item.category.icon,
+                    cor: item.category.color,
+                    isAnotacao: "Sempre bom",
+                    isAnexo: {
+                        id: 14,
+                        nome: "folha de pagamento.pdf"
                     },
-                    {   
-                        icone: "favorite",
-                        cor: "#74e2dd",
-                        isAnotacao: "Fiz a geral no PC do Jonas, filho do Geraldo da esquina.",
-                        isAnexo: null,
-                        isFixo: false,
+                    isFixo: true,
 
-                        nameCategoria: "Bico",
-                        tipoConta: "Conta inicial",
-                        valor: "500"
-                    }
-                ]
-            },
-            {
-                data: "05",
-                gastos: [
-                    {
-                        icone: "star",
-                        cor: "#74e2aa",
-                        isAnotacao: null,
-                        isAnexo: null,
-                        isFixo: true,
+                    nameCategoria: item.description,
+                    tipoConta: item.account.name,
+                    valor: item.amount.toFixed(2)
+                };
 
-                        nameCategoria: "Salário",
-                        tipoConta: "Conta do momozin",
-                        valor: "2300"
-                    }
-                ]
-            },
-            {
-                data: "10",
-                gastos: [
-                    {
-                        icone: "shopping_cart",
-                        cor: "#ff9281",
-                        isAnotacao: null,
-                        isAnexo: null,
-                        isFixo: false,
+                if (day != beforeDay && beforeDay) {
+                    list.push({
+                        data: beforeDay,
+                        gastos: gastos
+                    });
+                    gastos = [];
+                    gastos.push(gasto);
 
-                        nameCategoria: "Feijão",
-                        tipoConta: "Conta conjunta",
-                        valor: "50"
-                    },
-                    {
-                        icone: "shopping_cart",
-                        cor: "#ff9281",
-                        isAnotacao: "Ta caro, né!?",
-                        isAnexo: null,
-                        isFixo: false,
+                } else {
+                    gastos.push(gasto);
+                }
 
-                        nameCategoria: "Arroz",
-                        tipoConta: "Conta conjunta",
-                        valor: "60"
-                    },
-                    {
-                        icone: "shopping_cart",
-                        cor: "#ff9281",
-                        isAnotacao: null,
-                        isAnexo: null,
-                        isFixo: false,
+                beforeDay = day;
+            }
+            list.push({
+                data: beforeDay,
+                gastos: gastos
+            });
 
-                        nameCategoria: "Saladinha hmm",
-                        tipoConta: "Conta conjunta",
-                        valor: "40"
-                    },
-                    {
-                        icone: "shopping_cart",
-                        cor: "#ff9281",
-                        isAnotacao: "SELOKO, só comprei uma unidade de hamburguer",
-                        isAnexo: null,
-                        isFixo: false,
+            this.modeloDados = list;
 
-                        nameCategoria: "Carne",
-                        tipoConta: "Conta conjunta",
-                        valor: "150"
-                    }
-                ]
-            },
-        ];
+            this.previsto = (this.saldo - this.previsto);
+        }
 
+        let err = (error: any) => {
+            console.log(error);
+        }
 
+        this.releasesService.findAll()
+            .subscribe(this.extractDataService.extract(success, err));
     }
 
     onExpense() {
@@ -138,7 +110,9 @@ export class ReleasesComponent implements OnInit {
                 });
         
                 dialogRef.afterClosed().subscribe((result: any) => {
-                    console.log(result);
+                    result.amount = result.amount * -1;
+                    result.transactionType = {id: 2};
+                    this.onCreate(result);
                 });
             }
     
@@ -160,13 +134,51 @@ export class ReleasesComponent implements OnInit {
     }
 
     onRevenue() {
-        let dialogRef = this.dialog.open(ReleasesDialogComponent, {
-            data: { title: "Nova receita" }
-        });
+        let success = (accountsCreditCards: any) => {
 
-        dialogRef.afterClosed().subscribe((result: any) => {
-            console.log(result);
-        });
+            let success = (categoriesSubCategories: any) => {
+                let dialogRef = this.dialog.open(ReleasesDialogComponent, {
+                    data: { 
+                        title: "Nova receita",
+                        accounts: accountsCreditCards,
+                        categories: categoriesSubCategories
+                    }
+                });
+        
+                dialogRef.afterClosed().subscribe((result: any) => {
+                    result.transactionType = {id: 1};
+                    this.onCreate(result);
+                });
+            }
+    
+            let err = (error: any) => {
+                console.log(error);
+            }
+    
+            this.categoriesService.findAll()
+                .subscribe(this.extractDataService.extract(success, err));
+
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.accountsService.findAllAccountsAndCreditCards()
+            .subscribe(this.extractDataService.extract(success, err));
+    }
+
+    onCreate(data: any) {
+        let success = () => {
+            this.onList();
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.releasesService.create(data)
+            .subscribe(this.extractDataService.extract(success, err));
     }
 
     onTransfer() {

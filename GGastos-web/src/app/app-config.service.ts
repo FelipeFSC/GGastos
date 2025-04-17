@@ -15,6 +15,12 @@ export class AppConfigService {
 
 	private privateCard: string = "/credit-cards"
 
+	private privateTransaction: string = "/transactions";
+
+	public get transactionUrl(): string {
+		return this.privateTransaction;
+	}
+
 	public get baseUrl(): string {
 		return this.privateBaseUrl;
 	}
