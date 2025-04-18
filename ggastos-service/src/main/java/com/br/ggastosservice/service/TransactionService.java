@@ -134,7 +134,9 @@ public class TransactionService {
 
     public void create(Transaction transaction) throws Exception {
         verifyTransaction(transaction);
-        transaction.setPaidDate(null);
+        if (transaction.getFixedTransactionId() != null) {
+            transaction.setPaidDate(LocalDateTime.now());
+        }
 
         transactionRepository.save(transaction);
     }

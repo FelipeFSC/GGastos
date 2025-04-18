@@ -28,6 +28,11 @@ public class TransactionController {
         return transactionService.findAll(date);
     }
 
+    @GetMapping("/{transactionId}")
+    public Transaction findById(@PathVariable("transactionId") long transactionId) throws Exception {
+        return transactionService.findOne(transactionId);
+    }
+
     @PostMapping()
     public void create(@RequestBody Transaction transaction) throws Exception {
         transactionService.create(transaction);

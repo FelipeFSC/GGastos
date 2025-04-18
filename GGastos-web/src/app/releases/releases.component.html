@@ -51,7 +51,7 @@
             <span class="box-content-date"> {{geral.data}} </span>
 
             <div class="box-content-itens">
-                <div class="box-item" *ngFor="let item of geral.gastos" (click)="onViewItem(item)">
+                <div class="box-item" *ngFor="let item of geral.gastos" (click)="onEditItem(item.obj)">
                     <div class="box-category-options">
                         <div class="category">
                             <span class="category-icon-circle"

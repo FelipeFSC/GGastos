@@ -1,6 +1,7 @@
 package com.br.ggastosservice.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -45,6 +46,14 @@ public class FixedTransactionService {
 
     public List<FixedTransaction> findAll() {
         return fixedTransactionRepository.findAll();
+    }
+
+    public FixedTransaction findOne(long id) throws Exception  {
+        Optional<FixedTransaction> fixeTransaction = fixedTransactionRepository.findById(id);
+        if (fixeTransaction == null || !fixeTransaction.isPresent()) {
+            throw new Exception("Fixed transaction type ID: " +id+ ", não encontrado!");
+        }
+        return fixeTransaction.get();
     }
 
     public void create(FixedTransaction fixedTransaction) throws Exception {

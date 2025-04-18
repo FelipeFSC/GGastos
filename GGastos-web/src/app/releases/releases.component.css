@@ -91,7 +91,7 @@
 }
 
 .aprovada {
-    color: rgb(9, 255, 0);
+    color: #59c9a5;
     font-size: 16px;
     align-content: center;
     cursor: pointer;
@@ -100,7 +100,7 @@
     margin-right: 5px;
 }
 .aprovada:hover {
-    color: rgb(86, 172, 83);
+    color: #44b692;
 }
 
 .pendente {

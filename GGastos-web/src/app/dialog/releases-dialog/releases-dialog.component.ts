@@ -51,9 +51,64 @@ export class ReleasesDialogComponent implements OnInit {
     ngOnInit(): void {
         this.tittle = this.data.title;
         this.paymentRange = this.data.recurrencesTypes;
-
         this.categorySubCategoryList = this.data.categories;
-        this.onLoadAccountsCombo(this.data.accounts);
+
+        if (this.data.editData) {
+            this.onLoadData(this.data.editData);
+        } else {
+            this.onLoadAccountsCombo(this.data.accounts);
+        }
+    }
+
+    onLoadData(data: any) {
+        this.description = data.description;
+
+        if (data.value < 0) {
+            data.value = data.value * -1;
+        }
+        this.paymentValue = "R$ " + data.value.toFixed(2);
+        this.paymentDate = data.transactionDate;
+
+
+        for (let category of this.categorySubCategoryList) {
+            if (category.category.id === data.category.id) {
+                this.categorySelected = category.category;
+            }
+        }
+
+        let accountList = this.data.accounts;
+        let list = [];
+        let accounts = { name: "Contas", list: [{}]};
+        accounts.list.pop();
+        for (let account of accountList) {
+            accounts.list.push(account.account);
+
+            if (data.account.id === account.account.id) {
+                this.accountSelected = account.account;
+            }
+        }
+        list.push(accounts);
+        let creditCards = { name: "Cartões", list: [{}] };
+        creditCards.list.pop();
+        for (let account of accountList) {
+            for (let creditCard of account.creditCards) {
+                creditCards.list.push(creditCard);
+            }
+        }
+        list.push(creditCards);
+        this.accountAndCreditCards = list;
+
+        if (data.recurrenceType) {
+            this.isRepeatActive = true;
+            this.divideType = "fixed"
+
+            this.paymentRange.forEach((item) => {
+                if (data.recurrenceType.id === item.id) {
+                    this.paymentRangeSelected = item;
+                }
+            });
+        }
+
     }
 
     onLoadAccountsCombo(data: any) {
@@ -147,9 +202,10 @@ export class ReleasesDialogComponent implements OnInit {
         }
 
         if (this.isRepeatActive) {
-            releaseData.recurrenceType = {id: this.paymentRangeSelected};
+            releaseData.recurrenceType = {id: this.paymentRangeSelected.id};
         }
 
+        console.log(this.categorySelected);
         this.dialogRef.close(releaseData);
     }
 

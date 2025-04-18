@@ -19,6 +19,14 @@ export class ReleasesService {
 		return this.httpService.get(this.url + this.appService.transactionUrl + `/date/${date}`);
 	}
 
+	findOneTransaction(id: number) {
+		return this.httpService.get(this.url + this.appService.transactionUrl + `/${id}`);
+	}
+
+	findOneFixeTransaction(id: number) {
+		return this.httpService.get(this.url + this.appService.fixedTransactionUrl + `/${id}`);
+	}
+
 	create(transaction: any) {
 		return this.httpService.post(this.url + this.appService.transactionUrl, transaction);
 	}
