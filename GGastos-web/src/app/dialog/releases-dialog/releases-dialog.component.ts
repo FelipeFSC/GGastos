@@ -29,23 +29,15 @@ export class ReleasesDialogComponent implements OnInit {
 
     installmentValue: string = "0.00";
 
-
     category = "FUNCIONOU";
 
     accountAndCreditCards: any[] = [];
 
     categorySubCategoryList: any[] = [];
 
-    paymentRange: any[] = [
-        {name: 'Anual'},
-        {name: 'Semestral'},
-        {name: 'Trimestral'},
-        {name: 'Bimestral'},
-        {name: 'Mensal'},
-        {name: 'Quinzenal'},
-        {name: 'Semanal'},
-        {name: 'Diário'},
-    ];
+    paymentRange: any[] = [];
+
+    paymentRangeSelected: any = {};
 
     accountSelected: any = {};
 
@@ -58,6 +50,7 @@ export class ReleasesDialogComponent implements OnInit {
 
     ngOnInit(): void {
         this.tittle = this.data.title;
+        this.paymentRange = this.data.recurrencesTypes;
 
         this.categorySubCategoryList = this.data.categories;
         this.onLoadAccountsCombo(this.data.accounts);
@@ -132,12 +125,13 @@ export class ReleasesDialogComponent implements OnInit {
         }
 
         let releaseData = {
-            amount: moneyValue,
+            value: moneyValue,
             description: this.description,
-            transactionType: "entrada",
+            transactionType: "",
             paidDate: "",
             transactionDate: this.paymentDate,
             observation: "",
+            recurrenceType: {},
             account: {
                 id: accountId
             },
@@ -150,6 +144,10 @@ export class ReleasesDialogComponent implements OnInit {
             subCategory: {
                 id: subCategoryId
             }
+        }
+
+        if (this.isRepeatActive) {
+            releaseData.recurrenceType = {id: this.paymentRangeSelected};
         }
 
         this.dialogRef.close(releaseData);

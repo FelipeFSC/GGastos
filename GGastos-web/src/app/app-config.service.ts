@@ -17,6 +17,18 @@ export class AppConfigService {
 
 	private privateTransaction: string = "/transactions";
 
+	private privateFixedTransaction: string = "/fixed-transactions";
+
+	private privateRecurrenceType: string = "/recurrences-types";
+
+	public get recurrenceTypeUrl(): string {
+		return this.privateRecurrenceType;
+	}
+
+	public get fixedTransactionUrl(): string {
+		return this.privateFixedTransaction;
+	}
+	
 	public get transactionUrl(): string {
 		return this.privateTransaction;
 	}

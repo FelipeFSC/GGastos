@@ -23,4 +23,8 @@ export class ReleasesService {
 		return this.httpService.post(this.url + this.appService.transactionUrl, transaction);
 	}
 
+	createFixed(transaction: any) {
+		return this.httpService.post(this.url + this.appService.fixedTransactionUrl, transaction);
+	}
+
 }

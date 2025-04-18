@@ -5,6 +5,7 @@ import { AccountsService } from '../accounts/accounts.service';
 import { ExtractDataService } from '../extract-data.service';
 import { CategoriesService } from '../categories/categories.service';
 import { ReleasesService } from './releases.service';
+import { RecurrencesTypesService } from '../recurrences-types/categories.service';
 
 @Component({
     selector: 'app-releases',
@@ -21,16 +22,33 @@ export class ReleasesComponent implements OnInit {
 
     mesAnoSelecionado: string = this.pegarMesAtual();
 
+    recurrencesTypes: any = [];
+
     constructor(
         private accountsService: AccountsService,
         private dialog: MatDialog,
         private extractDataService: ExtractDataService,
         private categoriesService: CategoriesService,
-        private releasesService: ReleasesService
+        private releasesService: ReleasesService,
+        private recurrencesTypesService: RecurrencesTypesService
     ) { }
 
     ngOnInit(): void {
+        this.findAllRecurrencesTypes();
         this.filtrarPorMesAno(this.mesAnoSelecionado);
+    }
+
+    findAllRecurrencesTypes() {
+        let success = (data: any) => {
+            this.recurrencesTypes = data;
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+    
+        this.recurrencesTypesService.findAll()
+            .subscribe(this.extractDataService.extract(success, err));
     }
 
     pegarMesAtual(): string {
@@ -61,6 +79,8 @@ export class ReleasesComponent implements OnInit {
         let success = (res: any) => {
             let list: any = [];
 
+            console.log(res);
+
             this.saldo = 0;
             this.previsto = 0;
 
@@ -70,9 +90,9 @@ export class ReleasesComponent implements OnInit {
                 let day = new Date(item.transactionDate).getDate();
 
                 if (item.transactionType.id === 1) {
-                    this.saldo += item.amount;
+                    this.saldo += item.value;
                 } else {
-                    this.previsto -= item.amount;
+                    this.previsto -= item.value;
                 }
 
                 let gasto = {
@@ -88,7 +108,7 @@ export class ReleasesComponent implements OnInit {
 
                     nameCategoria: item.description,
                     tipoConta: item.account.name,
-                    valor: item.amount.toFixed(2)
+                    valor: item.value.toFixed(2)
                 };
 
                 if (day != beforeDay && beforeDay) {
@@ -130,13 +150,14 @@ export class ReleasesComponent implements OnInit {
                 let dialogRef = this.dialog.open(ReleasesDialogComponent, {
                     data: { 
                         title: "Nova despesa",
+                        recurrencesTypes: this.recurrencesTypes,
                         accounts: accountsCreditCards,
                         categories: categoriesSubCategories
                     }
                 });
         
                 dialogRef.afterClosed().subscribe((result: any) => {
-                    result.amount = result.amount * -1;
+                    result.value = result.value * -1;
                     result.transactionType = {id: 2};
                     this.onCreate(result);
                 });
@@ -166,6 +187,7 @@ export class ReleasesComponent implements OnInit {
                 let dialogRef = this.dialog.open(ReleasesDialogComponent, {
                     data: { 
                         title: "Nova receita",
+                        recurrencesTypes: this.recurrencesTypes,
                         accounts: accountsCreditCards,
                         categories: categoriesSubCategories
                     }
@@ -173,7 +195,12 @@ export class ReleasesComponent implements OnInit {
         
                 dialogRef.afterClosed().subscribe((result: any) => {
                     result.transactionType = {id: 1};
-                    this.onCreate(result);
+
+                    if (result.recurrenceType.id) {
+                        this.onCreateFixed(result);
+                    } else {
+                        this.onCreate(result);
+                    }
                 });
             }
     
@@ -191,6 +218,19 @@ export class ReleasesComponent implements OnInit {
         }
 
         this.accountsService.findAllAccountsAndCreditCards()
+            .subscribe(this.extractDataService.extract(success, err));
+    }
+
+    onCreateFixed(data: any) {
+        let success = () => {
+            this.filtrarPorMesAno(this.mesAnoSelecionado);
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.releasesService.createFixed(data)
             .subscribe(this.extractDataService.extract(success, err));
     }
 

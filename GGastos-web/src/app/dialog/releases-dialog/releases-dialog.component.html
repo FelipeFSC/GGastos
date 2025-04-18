@@ -99,9 +99,9 @@
         <div *ngIf="divideType === 'fixed'" class="select-box">
             <mat-form-field class="example-full-width" appearance="fill">
                 <mat-label>Select</mat-label>
-                <mat-select>
-                    <mat-option> - </mat-option>
-                    <mat-option *ngFor="let item of paymentRange" value="item.name">
+                <mat-select [(ngModel)]="paymentRangeSelected">
+                    <mat-option value="0"> - </mat-option>
+                    <mat-option *ngFor="let item of paymentRange" value="{{item.id}}">
                         {{item.name}}
                     </mat-option>
                 </mat-select>
