@@ -87,8 +87,11 @@
                     </div>
                     <div class="box-balance-check">
                         <mat-icon
-                            (click)="onCheck($event)" 
-                            class="mini-icon ok-icon">
+                            (click)="onCheck($event, item.obj)" 
+                            [ngClass]="{
+                                'aprovada': item.paidDate !== null,
+                                'pendente': item.paidDate === null
+                            }">
                             thumb_up
                         </mat-icon>
     

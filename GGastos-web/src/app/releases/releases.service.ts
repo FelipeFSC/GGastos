@@ -27,4 +27,8 @@ export class ReleasesService {
 		return this.httpService.post(this.url + this.appService.fixedTransactionUrl, transaction);
 	}
 
+	isPaid(transactionId: number) {
+		return this.httpService.patch(this.url + this.appService.transactionUrl + `/${transactionId}/is-paid`, null);
+	}
+
 }

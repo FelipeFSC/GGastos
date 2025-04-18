@@ -90,6 +90,32 @@
     color: #858782;
 }
 
+.aprovada {
+    color: rgb(9, 255, 0);
+    font-size: 16px;
+    align-content: center;
+    cursor: pointer;
+    transition: 200ms;
+    margin-left: 15px;
+    margin-right: 5px;
+}
+.aprovada:hover {
+    color: rgb(86, 172, 83);
+}
+
+.pendente {
+    color: #c2c2bd;
+    font-size: 16px;
+    align-content: center;
+    cursor: pointer;
+    transition: 200ms;
+    margin-left: 15px;
+    margin-right: 5px;
+}
+.pendente:hover {
+    color: #858782;
+}
+
 .box-account {
     width: 25%;
     color: #858782;

@@ -22,6 +22,8 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long fixedTransactionId;
+
     private BigDecimal value;
 
     @ManyToOne
@@ -30,7 +32,7 @@ public class Transaction {
 
     private String description;
 
-    private boolean isPaid;
+    private LocalDateTime paidDate;
 
     private LocalDateTime transactionDate;
 

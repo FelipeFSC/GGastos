@@ -100,15 +100,15 @@ export class ReleasesComponent implements OnInit {
                     icone: item.category.icon,
                     cor: item.category.color,
                     isAnotacao: "Sempre bom",
+                    paidDate: item.paidDate,
                     isAnexo: {
                         id: 14,
                         nome: "folha de pagamento.pdf"
                     },
-                    isFixo: true,
-
                     nameCategoria: item.description,
                     tipoConta: item.account.name,
-                    valor: item.value.toFixed(2)
+                    valor: item.value.toFixed(2),
+                    obj: item
                 };
 
                 if (day != beforeDay && beforeDay) {
@@ -159,7 +159,12 @@ export class ReleasesComponent implements OnInit {
                 dialogRef.afterClosed().subscribe((result: any) => {
                     result.value = result.value * -1;
                     result.transactionType = {id: 2};
-                    this.onCreate(result);
+                    
+                    if (result.recurrenceType.id) {
+                        this.onCreateFixed(result);
+                    } else {
+                        this.onCreate(result);
+                    }
                 });
             }
     
@@ -263,9 +268,28 @@ export class ReleasesComponent implements OnInit {
         console.log("Baixar o arquivo");
     }
 
-    onCheck(event: MouseEvent) {
+    onCheck(event: MouseEvent, transaction: any) {
         event.stopPropagation();
 
         console.log("Nice, você pagou a conta!");
+        console.log(transaction);
+
+
+        let success = () => {
+            this.filtrarPorMesAno(this.mesAnoSelecionado);
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        if (transaction.id) {
+            this.releasesService.isPaid(transaction.id)
+                .subscribe(this.extractDataService.extract(success, err));
+        } else {
+            this.releasesService.create(transaction)
+                .subscribe(this.extractDataService.extract(success, err));
+        }
+
     }
 }

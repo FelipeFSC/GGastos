@@ -3,6 +3,7 @@ package com.br.ggastosservice.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,6 +31,11 @@ public class TransactionController {
     @PostMapping()
     public void create(@RequestBody Transaction transaction) throws Exception {
         transactionService.create(transaction);
+    }
+
+    @PatchMapping("/{transactionId}/is-paid")
+    public void isPaid(@PathVariable("transactionId") long transactionId) throws Exception {
+        transactionService.paidTransaction(transactionId);
     }
 
 }
