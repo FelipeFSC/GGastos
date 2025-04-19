@@ -38,7 +38,7 @@ export class ReleasesComponent implements OnInit {
     ngOnInit(): void {
         this.findAllRecurrencesTypes();
         this.findAllAccountsAndCreditCards();
-        this.findAllCategoriesAndSub();
+        // this.findAllCategoriesAndSub();
         this.filtrarPorMesAno(this.mesAnoSelecionado);
     }
 
@@ -174,46 +174,65 @@ export class ReleasesComponent implements OnInit {
     }
 
     onExpense() {
-        let dialogRef = this.dialog.open(ReleasesDialogComponent, {
-            data: { 
-                title: "Nova despesa",
-                recurrencesTypes: this.recurrencesTypes,
-                accounts: this.accounts,
-                categories: this.categories
-            }
-        });
+        let success = (categoriesSubCategories: any) => {
+            let dialogRef = this.dialog.open(ReleasesDialogComponent, {
+                data: { 
+                    title: "Nova despesa",
+                    recurrencesTypes: this.recurrencesTypes,
+                    accounts: this.accounts,
+                    categories: categoriesSubCategories
+                }
+            });
+    
+            dialogRef.afterClosed().subscribe((result: any) => {
+                result.value = result.value * -1;
+                result.transactionType = {id: 2};
+                
+                if (result.recurrenceType.id) {
+                    this.onCreateFixed(result);
+                } else {
+                    this.onCreate(result);
+                }
+            });
+    
+        }
 
-        dialogRef.afterClosed().subscribe((result: any) => {
-            result.value = result.value * -1;
-            result.transactionType = {id: 2};
-            
-            if (result.recurrenceType.id) {
-                this.onCreateFixed(result);
-            } else {
-                this.onCreate(result);
-            }
-        });
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.categoriesService.findByType("despesa")
+            .subscribe(this.extractDataService.extract(success, err));
     }
 
     onRevenue() {
-        let dialogRef = this.dialog.open(ReleasesDialogComponent, {
-            data: { 
-                title: "Nova receita",
-                recurrencesTypes: this.recurrencesTypes,
-                accounts: this.accounts,
-                categories: this.categories
-            }
-        });
+        let success = (categoriesSubCategories: any) => {
+            let dialogRef = this.dialog.open(ReleasesDialogComponent, {
+                data: { 
+                    title: "Nova receita",
+                    recurrencesTypes: this.recurrencesTypes,
+                    accounts: this.accounts,
+                    categories: categoriesSubCategories
+                }
+            });
+    
+            dialogRef.afterClosed().subscribe((result: any) => {
+                result.transactionType = {id: 1};
+    
+                if (result.recurrenceType.id) {
+                    this.onCreateFixed(result);
+                } else {
+                    this.onCreate(result);
+                }
+            });
+        }
 
-        dialogRef.afterClosed().subscribe((result: any) => {
-            result.transactionType = {id: 1};
+        let err = (error: any) => {
+            console.log(error);
+        }
 
-            if (result.recurrenceType.id) {
-                this.onCreateFixed(result);
-            } else {
-                this.onCreate(result);
-            }
-        });
+        this.categoriesService.findByType("receita")
+            .subscribe(this.extractDataService.extract(success, err));
     }
 
     onCreateFixed(data: any) {

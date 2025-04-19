@@ -19,6 +19,10 @@ export class CategoriesService {
 		return this.httpService.get(this.url + this.appService.categoryUrl);
 	}
 
+	findByType(type: string) {
+		return this.httpService.get(this.url + this.appService.categoryUrl + `/type/${type}`);
+	}
+
 	createCategory(category: any) {
 		return this.httpService.post(this.url + this.appService.categoryUrl, category);
 	}

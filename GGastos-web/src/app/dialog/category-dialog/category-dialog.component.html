@@ -8,6 +8,20 @@
 
     <br><br>
 
+    <section class="example-section">
+        <div class="tittle-text">Tipo da categoria</div>
+        <br>
+        <mat-radio-group [(ngModel)]="category.categoryType" class="radio-group-box">
+            <mat-radio-button value="despesa">Despesa</mat-radio-button>
+            &nbsp; &nbsp;
+            <mat-radio-button class="mat-radio-button" value="receita">Receita</mat-radio-button>
+        </mat-radio-group>
+    </section>
+
+    <br>
+    <hr>
+    <br>
+
     <label for="favcolor">Selecione a cor do circulo:</label>&nbsp;
     <input type="color" (change)="changeColor()" [(ngModel)]="category.color">
 

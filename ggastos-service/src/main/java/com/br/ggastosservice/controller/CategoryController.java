@@ -1,5 +1,6 @@
 package com.br.ggastosservice.controller;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,12 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.GET, produces = {"application/json"})
     public List<CategoriesDto> findAll() {
-        return categoryService.listAllCategories();
+        return categoryService.findAllDto();
+    }
+
+    @GetMapping("/type/{type}")
+    public List<CategoriesDto> findByType(@PathVariable("type") String type) {
+        return categoryService.findByEnabledTrueAndTypeDto(type);
     }
 
     @ResponseBody

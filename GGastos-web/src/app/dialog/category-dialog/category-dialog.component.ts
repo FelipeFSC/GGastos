@@ -8,7 +8,13 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
     })
 export class CategoryDialogComponent implements OnInit {
 
-    category: any = {id: 0, icon: "home", color: "#0011ff", name: "Casa"};
+    category: any = {
+        id: 0,
+        icon: "home",
+        color: "#0011ff",
+        name: "Casa",
+        categoryType: "despesa"
+    };
 
     styleColor: any = {'background-color':this.category.color};
 

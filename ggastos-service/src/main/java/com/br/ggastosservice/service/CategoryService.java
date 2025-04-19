@@ -26,9 +26,7 @@ public class CategoryService {
         this.subCategoryRepository = subCategoryRepository;
     }
 
-    public List<CategoriesDto> listAllCategories() {
-        List<Category> categories = listAllCategoriesEnableds(); 
-    
+    public List<CategoriesDto> prepareList(List<Category> categories) {    
         List<CategoriesDto> CategoriesDtoList = new ArrayList<CategoriesDto>();
         for (Category category : categories) {
             List<SubCategory> subcategories = subCategoryRepository.findByCategoryIdAndEnabled(category.getId(), true);
@@ -42,8 +40,14 @@ public class CategoryService {
         return CategoriesDtoList;
     }
 
-    public List<Category> listAllCategoriesEnableds() {
-        return categoryRepository.listAllCategoriesEnableds();
+    public List<CategoriesDto> findAllDto() {
+        List<Category> list = categoryRepository.listAllCategoriesEnableds();
+        return prepareList(list);
+    }
+
+    public List<CategoriesDto> findByEnabledTrueAndTypeDto(String type) {
+        List<Category> list = categoryRepository.findByEnabledTrueAndType(type);
+        return prepareList(list);
     }
 
     public Category findOne(long id) throws Exception  {

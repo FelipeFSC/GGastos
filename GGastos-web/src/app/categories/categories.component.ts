@@ -67,7 +67,7 @@ export class CategoriesComponent implements OnInit {
 
                     let category: any = {
                         id: result.id,
-                        type: "Gasto",
+                        type: result.categoryType,
                         name: result.name,
                         color: result.color,
                         icon: result.icon,
@@ -78,7 +78,7 @@ export class CategoriesComponent implements OnInit {
                 } else {
 
                     let category: any = {
-                        type: "Gasto",
+                        type: result.categoryType,
                         name: result.name,
                         color: result.color,
                         icon: result.icon,
