@@ -61,8 +61,12 @@ public class TransactionService {
         return transaction.get();
     }
 
+    public List<Transaction> findAll() {
+        return transactionRepository.findByPaidDateNotNullOrderByCategoryId();
+    }
 
-    public List<Transaction> findAll(String date) {
+
+    public List<Transaction> findByDate(String date) {
         int ano = Integer.parseInt(date.split("-")[0]);
         int mes = Integer.parseInt(date.split("-")[1]);
 

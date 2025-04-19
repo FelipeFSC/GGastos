@@ -15,8 +15,12 @@ export class ReleasesService {
 		this.url = this.appService.baseUrl
 	}
 
-	findAll(date: string) {
+	findByDate(date: string) {
 		return this.httpService.get(this.url + this.appService.transactionUrl + `/date/${date}`);
+	}
+
+	findAll() {
+		return this.httpService.get(this.url + this.appService.transactionUrl);
 	}
 
 	findOneTransaction(id: number) {

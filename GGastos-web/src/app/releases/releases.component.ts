@@ -169,7 +169,7 @@ export class ReleasesComponent implements OnInit {
             console.log(error);
         }
 
-        this.releasesService.findAll(date)
+        this.releasesService.findByDate(date)
             .subscribe(this.extractDataService.extract(success, err));
     }
 

@@ -1,4 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { color } from 'echarts';
+import { ExtractDataService } from 'src/app/extract-data.service';
+import { ReleasesService } from 'src/app/releases/releases.service';
 
 @Component({
     selector: 'app-category-report',
@@ -213,7 +216,10 @@ export class CategoryReportComponent implements OnInit {
     ]
 
 
-    constructor() {
+    constructor(
+        private extractDataService: ExtractDataService,
+        private releasesService: ReleasesService,
+    ) {
     }
 
     ngOnInit(): void {
@@ -221,8 +227,75 @@ export class CategoryReportComponent implements OnInit {
             this.isLoaded.emit();
             this.isLoad = false;
 
+            this.onGetData();
+
             console.log('CATEGORY REPORT');
         }, 1000);
+    }
+
+    onGetData() {
+        let success = (data: any) => {
+
+            console.log(data);
+            let colors = [];
+            let listData = [];
+            
+            let beforeItem = null;
+            let soma = 0;
+            for (let item of data) {
+
+                if (beforeItem != null && item.category.id != beforeItem.category.id) {
+                    colors.push(beforeItem.category.color);
+                    listData.push({
+                        value: soma,
+                        name: beforeItem.category.name
+                    });
+
+                    soma = 0;
+                    soma += item.value * -1;
+                } else {
+                    soma += item.value * -1;
+                }
+                beforeItem = item;
+            }
+            colors.push(beforeItem.category.color);
+            listData.push({
+                value: soma,
+                name: beforeItem.category.name
+            });
+
+            console.log(colors);
+            console.log(listData);
+
+
+            this.xx = {
+                tooltip: {
+                    trigger: 'item'
+                },
+        
+                series: [{
+                    name: '',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    color: colors,
+                    data: listData
+                }]
+            };
+
+
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.releasesService.findAll()
+            .subscribe(this.extractDataService.extract(success, err));
     }
 
     onAbriEFecha(value: any) {

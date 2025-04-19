@@ -24,8 +24,13 @@ public class TransactionController {
     }
 
     @GetMapping("/date/{date}")
-    public List<Transaction> findAll(@PathVariable("date") String date) throws Exception {
-        return transactionService.findAll(date);
+    public List<Transaction> findByDate(@PathVariable("date") String date) throws Exception {
+        return transactionService.findByDate(date);
+    }
+
+    @GetMapping("")
+    public List<Transaction> findAll() throws Exception {
+        return transactionService.findAll();
     }
 
     @GetMapping("/{transactionId}")
