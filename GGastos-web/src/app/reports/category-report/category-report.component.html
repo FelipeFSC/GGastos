@@ -29,13 +29,13 @@
                                 {{item.nome}}
                             </td>
                             <td class="td-tittle cell-center">{{item.porcentagem}}</td>
-                            <td class="cell-right">{{item.valor}}</td>
+                            <td class="cell-right">R$ {{item.valor}}</td>
                         </tr>
                         <ng-container *ngIf="item.subCategorias.length === 0 && item.aberto">
                             <tr *ngFor="let subItem of item.saidas" style="color: blue;">
                                 <td class="td-tittle indent-1">{{subItem.nome}}</td>
                                 <td class="cell-center">{{subItem.data}}</td>
-                                <td class="cell-right">{{subItem.valor}}</td>
+                                <td class="cell-right">R$ {{subItem.valor}}</td>
                             </tr>
                         </ng-container>
 
@@ -47,7 +47,7 @@
                                         {{item.nome}}
                                     </td>
                                     <td class="cell-center">{{item.data}}</td>
-                                    <td class="cell-right">{{item.valor}}</td>
+                                    <td class="cell-right">R$ {{item.valor}}</td>
                                 </tr>
                             </ng-container>
 
@@ -55,7 +55,7 @@
                                 <tr *ngFor="let subItem of item.saidas" style="color: blue;">
                                     <td class="td-tittle indent-2">{{subItem.nome}}</td>
                                     <td class="cell-center">{{subItem.data}}</td>
-                                    <td class="cell-right">{{subItem.valor}}</td>
+                                    <td class="cell-right">R$ {{subItem.valor}}</td>
                                 </tr>
                             </ng-container>
                         </ng-container>
@@ -68,13 +68,13 @@
                                         {{subItem.nome}}
                                     </td>
                                     <td class="cell-center">{{subItem.porcentagem}}</td>
-                                    <td class="cell-right">{{subItem.valor}}</td>
+                                    <td class="cell-right">R$ {{subItem.valor}}</td>
                                 </tr>
                                 <ng-container *ngIf="subItem.aberto">
                                     <tr *ngFor="let subItemItem of subItem.saidas" style="color: blue;">
                                         <td class="td-tittle indent-2">{{subItemItem.nome}}</td>
                                         <td class="cell-center">{{subItemItem.data}}</td>
-                                        <td class="cell-right">{{subItemItem.valor}}</td>
+                                        <td class="cell-right">R$ {{subItemItem.valor}}</td>
                                     </tr>
                                 </ng-container>
                             </ng-container>
@@ -83,7 +83,7 @@
                     <tr>
                         <td class="td-tittle">TOTAL</td>
                         <td class="cell-center">100%</td>
-                        <td class="cell-right">{{total}}</td>
+                        <td class="cell-right">R$ {{total}}</td>
                     </tr>
                 </tbody>
             </table>

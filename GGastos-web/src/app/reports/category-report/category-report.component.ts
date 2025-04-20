@@ -230,7 +230,6 @@ export class CategoryReportComponent implements OnInit {
             }
 
             this.data = this.organizarTransacoes(list);
-            console.log(this.data);
         }
 
         let error = (error: any) => {
@@ -360,15 +359,9 @@ export class CategoryReportComponent implements OnInit {
                 });
     
                 // Formata o valor e calcula a porcentagem da subcategoria
-                /*
-                pseudoSub.valor = Math.abs(pseudoSub.valor).toLocaleString('pt-BR', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-                */
-                console.log(pseudoSub)
+                /* */
                 pseudoSub.porcentagem = ((pseudoSub.valor / categoriaTotal) * 100).toFixed(2) + "%";
-    
+
                 pseudoSub.valor = Math.abs(pseudoSub.valor).toLocaleString('pt-BR', {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
