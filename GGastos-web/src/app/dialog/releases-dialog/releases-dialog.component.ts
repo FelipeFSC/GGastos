@@ -72,10 +72,24 @@ export class ReleasesDialogComponent implements OnInit {
         this.paymentValue = "R$ " + data.value.toFixed(2).replace('.', ',');
         this.paymentDate = data.transactionDate;
 
-
         for (let category of this.categorySubCategoryList) {
-            if (category.category.id === data.category.id) {
-                this.categorySelected = category.category;
+            if (data.subCategory && category.subCategory.length > 0) {
+                let find = false;
+                for (let subCategory of category.subCategory) {
+                    if (data.subCategory.id == subCategory.id) {
+                        this.categorySelected = subCategory;
+                        find = true;
+                        break;
+                    }
+                }
+                if (find) {
+                    break;
+                }
+            } else {
+                if (category.category.id === data.category.id) {
+                    this.categorySelected = category.category;
+                    break;
+                }
             }
         }
 

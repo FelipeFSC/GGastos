@@ -11,8 +11,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     
     List<Transaction> findAllByTransactionDateBetweenOrderByTransactionDate(LocalDateTime ano, LocalDateTime mes);
 
-    List<Transaction> findByPaidDateNotNullOrderByCategoryId();
+    List<Transaction> findByPaidDateNotNullOrderByCategoryIdAscSubCategoryAscPaidDateAsc();
 
-    List<Transaction> findByTransactionTypeIdAndPaidDateNotNullOrderByCategoryId(long transactionTypeId);
+    List<Transaction> findByTransactionTypeIdAndPaidDateNotNullOrderByCategoryIdAscSubCategoryCategoryIdAsc(long transactionTypeId);
 
 }

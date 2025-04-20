@@ -141,22 +141,29 @@ export class ReleasesComponent implements OnInit {
                     this.previsto -= item.value;
                 }
 
+                let category = {icon: "", color: ""};
+                if (item.category) {
+                    category = item.category;
+                } else {
+                    category = item.subCategory.category;
+                }
+
                 let gasto = {
                     id: item.id,
                     isFixo: item.fixedTransactionId != null,
-                    icone: item.category.icon,
-                    cor: item.category.color,
+                    icone: category.icon,
+                    cor: category.color,
                     isAnotacao: null,
                     paidDate: item.paidDate,
-                    isAnexo: null,//{
-                        //id: 14,
-                        //nome: "folha de pagamento.pdf"
-                    //},
+                    isAnexo: null,
                     nameCategoria: item.description,
                     tipoConta: item.account.name,
                     valor: item.value.toFixed(2),
                     obj: item
                 };
+                /*
+                  isAnexo {id: 12, nome: "nome"}  
+                */
 
                 if (day != beforeDay && beforeDay) {
                     list.push({

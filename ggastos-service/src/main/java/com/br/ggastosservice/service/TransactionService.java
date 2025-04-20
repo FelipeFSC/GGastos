@@ -62,11 +62,11 @@ public class TransactionService {
     }
 
     public List<Transaction> findAll() {
-        return transactionRepository.findByPaidDateNotNullOrderByCategoryId();
+        return transactionRepository.findByPaidDateNotNullOrderByCategoryIdAscSubCategoryAscPaidDateAsc();
     }
 
     public List<Transaction> findByTransactionTypeId(long transactionTypeId) {
-        return transactionRepository.findByTransactionTypeIdAndPaidDateNotNullOrderByCategoryId(transactionTypeId);
+        return transactionRepository.findByTransactionTypeIdAndPaidDateNotNullOrderByCategoryIdAscSubCategoryCategoryIdAsc(transactionTypeId);
     }
 
     public List<Transaction> findByDate(String date) {

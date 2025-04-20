@@ -2,6 +2,7 @@ package com.br.ggastosservice.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -21,6 +22,13 @@ public class ReportService {
 
     public CateogoryReportDto generateCategoryReportDto(long transactionTypeId) {
         List<Transaction> transactions = transactionService.findByTransactionTypeId(transactionTypeId);
+
+        for (Transaction transaction : transactions) {
+            if (transaction.getCategory() == null) {
+                transaction.setCategory(transaction.getSubCategory().getCategory());
+            }
+        }
+        transactions.sort(Comparator.comparing(t -> t.getCategory().getId()));
 
         CateogoryReportDto cateogoryReportDto = new CateogoryReportDto();
         cateogoryReportDto.setColors(new ArrayList<String>());
