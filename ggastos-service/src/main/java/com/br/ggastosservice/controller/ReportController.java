@@ -1,6 +1,7 @@
 package com.br.ggastosservice.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,10 +18,9 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-    @GetMapping("/category-report")
-    public CateogoryReportDto generateCategoryReportDto() {
-        return reportService.generateCategoryReportDto();
+    @GetMapping("/category-report/{categoryTypeId}")
+    public CateogoryReportDto generateCategoryReportDto(@PathVariable("categoryTypeId") long categoryTypeId) {
+        return reportService.generateCategoryReportDto(categoryTypeId);
     }
-
 
 }

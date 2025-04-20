@@ -13,4 +13,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     List<Transaction> findByPaidDateNotNullOrderByCategoryId();
 
+    List<Transaction> findByTransactionTypeIdAndPaidDateNotNullOrderByCategoryId(long transactionTypeId);
+
 }

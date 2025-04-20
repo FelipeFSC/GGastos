@@ -65,6 +65,9 @@ public class TransactionService {
         return transactionRepository.findByPaidDateNotNullOrderByCategoryId();
     }
 
+    public List<Transaction> findByTransactionTypeId(long transactionTypeId) {
+        return transactionRepository.findByTransactionTypeIdAndPaidDateNotNullOrderByCategoryId(transactionTypeId);
+    }
 
     public List<Transaction> findByDate(String date) {
         int ano = Integer.parseInt(date.split("-")[0]);

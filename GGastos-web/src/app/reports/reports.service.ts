@@ -15,8 +15,8 @@ export class ReportsService {
 		this.url = this.appService.baseUrl
 	}
 
-	getCategoryReportDto() {
-		return this.httpService.get(this.url + this.appService.reportsUrl + `/category-report`);
+	getCategoryReportDto(categoryTypeId: number) {
+		return this.httpService.get(this.url + this.appService.reportsUrl + `/category-report/${categoryTypeId}`);
 	}
 
 }

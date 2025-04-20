@@ -19,9 +19,8 @@ public class ReportService {
         this.transactionService = transactionService;
     }
 
-    public CateogoryReportDto generateCategoryReportDto() {
-        System.out.println("");
-        List<Transaction> transactions = transactionService.findAll();
+    public CateogoryReportDto generateCategoryReportDto(long transactionTypeId) {
+        List<Transaction> transactions = transactionService.findByTransactionTypeId(transactionTypeId);
 
         CateogoryReportDto cateogoryReportDto = new CateogoryReportDto();
         cateogoryReportDto.setColors(new ArrayList<String>());
@@ -36,10 +35,16 @@ public class ReportService {
                 cateogoryReportDto.getColors().add(
                     beforeTransaction.getCategory().getColor()
                 );
+                BigDecimal showValue = BigDecimal.ZERO;
+                if (transactionTypeId == 1) {
+                    showValue = soma;
+                } else {
+                    showValue = soma.multiply(new BigDecimal(-1));
+                }
                 cateogoryReportDto.getData().add(
                     CategotyDataReportDto.builder()
                         .name(beforeTransaction.getCategory().getName())
-                        .value(soma.multiply(new BigDecimal(-1)))
+                        .value(showValue)
                     .build()
                 );
 
@@ -52,10 +57,17 @@ public class ReportService {
         cateogoryReportDto.getColors().add(
             beforeTransaction.getCategory().getColor()
         );
+
+        BigDecimal showValue = BigDecimal.ZERO;
+        if (transactionTypeId == 1) {
+            showValue = soma;
+        } else {
+            showValue = soma.multiply(new BigDecimal(-1));
+        }
         cateogoryReportDto.getData().add(
             CategotyDataReportDto.builder()
                 .name(beforeTransaction.getCategory().getName())
-                .value(soma.multiply(new BigDecimal(-1)))
+                .value(showValue)
             .build()
         );
 

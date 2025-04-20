@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ExtractDataService } from 'src/app/extract-data.service';
 import { ReleasesService } from 'src/app/releases/releases.service';
 import { ReportsService } from '../reports.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
     selector: 'app-category-report',
@@ -14,7 +15,8 @@ export class CategoryReportComponent implements OnInit {
 
     isLoad: boolean = true;
 
-    categoryData: any = {};
+    expensesData: any = {};
+    incomeData: any = {};
 
     total: number = 0;
 
@@ -200,14 +202,26 @@ export class CategoryReportComponent implements OnInit {
             this.isLoaded.emit();
             this.isLoad = false;
 
+            forkJoin({
+                incomeData: this.reportService.getCategoryReportDto(1).pipe(),
+                expensesData: this.reportService.getCategoryReportDto(2).pipe(),
+            }).subscribe({
+                next: (res) => {
+                    this.onSetExpensesData(res.expensesData);
+                    this.onSetIncomeData(res.incomeData);
+                },
+                error: (err) => {
+                    console.error('Erro nas requisições', err);
+                }
+            });
+
             this.getData2();
-            this.onGetData();
         }, 1000);
     }
 
     getData2(){
         let success = (data: any) => {
-            console.log(data);
+            // console.log(data);
 
             let list = [];
 
@@ -230,7 +244,7 @@ export class CategoryReportComponent implements OnInit {
             let saidas = [];
 
             for (let item of data) {
-                console.log("x");
+                // console.log("x");
                 if (item.value < 0) {
 
 
@@ -294,34 +308,48 @@ export class CategoryReportComponent implements OnInit {
             .subscribe(this.extractDataService.extract(success, error));
     }
 
-    onGetData() {
-        let success = (data: any) => {
-            this.categoryData = {
-                tooltip: {
-                    trigger: 'item'
+    onSetExpensesData(data: any) {
+        this.expensesData = {
+            tooltip: {
+                trigger: 'item'
+            },
+    
+            series: [{
+                name: '',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                avoidLabelOverlap: false,
+                label: {
+                    show: false,
+                    position: 'center'
                 },
-        
-                series: [{
-                    name: '',
-                    type: 'pie',
-                    radius: ['40%', '70%'],
-                    avoidLabelOverlap: false,
-                    label: {
-                        show: false,
-                        position: 'center'
-                    },
-                    color: data.colors,
-                    data: data.data
-                }]
-            };
-        }
-
-        let error = (error: any) => {
-        }
-
-        this.reportService.getCategoryReportDto()
-            .subscribe(this.extractDataService.extract(success, error));
+                color: data.colors,
+                data: data.data
+            }]
+        };
     }
+
+    onSetIncomeData(data: any) {
+        this.incomeData = {
+            tooltip: {
+                trigger: 'item'
+            },
+    
+            series: [{
+                name: '',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                avoidLabelOverlap: false,
+                label: {
+                    show: false,
+                    position: 'center'
+                },
+                color: data.colors,
+                data: data.data
+            }]
+        };
+    }
+
 
     onAbriEFecha(value: any) {
         value.aberto = !value.aberto;
