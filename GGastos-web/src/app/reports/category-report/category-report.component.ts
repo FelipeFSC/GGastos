@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { color } from 'echarts';
 import { ExtractDataService } from 'src/app/extract-data.service';
 import { ReleasesService } from 'src/app/releases/releases.service';
+import { ReportsService } from '../reports.service';
 
 @Component({
     selector: 'app-category-report',
@@ -14,37 +14,9 @@ export class CategoryReportComponent implements OnInit {
 
     isLoad: boolean = true;
 
-    xx: any = {
-        tooltip: {
-            trigger: 'item'
-        },
+    categoryData: any = {};
 
-        series: [{
-            name: '',
-            type: 'pie',
-            radius: ['40%', '70%'],
-            avoidLabelOverlap: false,
-            label: {
-                show: false,
-                position: 'center'
-            },
-            color: [
-                '#37A2DA',
-                '#32C5E9',
-                '#67E0E3',
-                '#9FE6B8',
-                '#FFDB5C',
-                '#ff9f7f',
-            ],
-            data: [
-                { value: 1048, name: 'Search Engine' },
-                { value: 735, name: 'Direct' },
-                { value: 580, name: 'Email' },
-                { value: 484, name: 'Union Ads' },
-                { value: 300, name: 'Video Ads' }
-            ]
-        }]
-    };
+    total: number = 0;
 
     /*
 
@@ -219,6 +191,7 @@ export class CategoryReportComponent implements OnInit {
     constructor(
         private extractDataService: ExtractDataService,
         private releasesService: ReleasesService,
+        private reportService: ReportsService
     ) {
     }
 
@@ -227,48 +200,103 @@ export class CategoryReportComponent implements OnInit {
             this.isLoaded.emit();
             this.isLoad = false;
 
+            this.getData2();
             this.onGetData();
-
-            console.log('CATEGORY REPORT');
         }, 1000);
+    }
+
+    getData2(){
+        let success = (data: any) => {
+            console.log(data);
+
+            let list = [];
+
+            const formatador = new Intl.DateTimeFormat('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+
+            let total = 0
+            for (let item of data) {
+                if (item.value < 0) {
+                    total += item.value;
+                }
+            }
+            this.total = total * -1;
+
+            let beforeItem = null;
+            let totalPorCategoria = 0
+            let saidas = [];
+
+            for (let item of data) {
+                console.log("x");
+                if (item.value < 0) {
+
+
+                    if (beforeItem != null && item.category.id != beforeItem.category.id) {
+                        let category = {
+                            nome: beforeItem.category.name,
+                            icone: beforeItem.category.icon,
+                            cor: beforeItem.category.color,
+                            data: ((totalPorCategoria / total) * 100).toFixed(0) + "%",
+                            valor: (totalPorCategoria * -1),
+                            aberto: false,
+                            existeSaida: true,
+                            subCategorias: [],
+                            saidas: saidas,
+                            showSub: []
+                        }
+                        list.push(category);
+
+                        totalPorCategoria = item.value;
+                        saidas = [];
+                        saidas.push({
+                            nome: item.description,
+                            data: formatador.format(new Date(item.paidDate)),
+                            valor: (item.value * -1)
+                        });
+                    } else {
+                        saidas.push({
+                            nome: item.description,
+                            data: formatador.format(new Date(item.paidDate)),
+                            valor: (item.value * -1)
+                        });
+                        totalPorCategoria += item.value;
+                    }
+
+                    beforeItem = item;
+                    //list.push(category);
+                }
+            }
+            let category = {
+                nome: beforeItem.category.name,
+                icone: beforeItem.category.icon,
+                cor: beforeItem.category.color,
+                data: ((totalPorCategoria / total) * 100).toFixed(0) + "%",
+                valor: (totalPorCategoria * -1),
+                aberto: false,
+                existeSaida: true,
+                subCategorias: [],
+                saidas: saidas,
+                showSub: []
+            }
+            list.push(category);
+
+
+            this.data = list;
+        }
+
+        let error = (error: any) => {
+        }
+
+        this.releasesService.findAll()
+            .subscribe(this.extractDataService.extract(success, error));
     }
 
     onGetData() {
         let success = (data: any) => {
-
-            console.log(data);
-            let colors = [];
-            let listData = [];
-            
-            let beforeItem = null;
-            let soma = 0;
-            for (let item of data) {
-
-                if (beforeItem != null && item.category.id != beforeItem.category.id) {
-                    colors.push(beforeItem.category.color);
-                    listData.push({
-                        value: soma,
-                        name: beforeItem.category.name
-                    });
-
-                    soma = 0;
-                    soma += item.value * -1;
-                } else {
-                    soma += item.value * -1;
-                }
-                beforeItem = item;
-            }
-            colors.push(beforeItem.category.color);
-            listData.push({
-                value: soma,
-                name: beforeItem.category.name
-            });
-
-            console.log(colors);
-            console.log(listData);
-
-
-            this.xx = {
+            this.categoryData = {
                 tooltip: {
                     trigger: 'item'
                 },
@@ -282,56 +310,21 @@ export class CategoryReportComponent implements OnInit {
                         show: false,
                         position: 'center'
                     },
-                    color: colors,
-                    data: listData
+                    color: data.colors,
+                    data: data.data
                 }]
             };
-
-
         }
 
-        let err = (error: any) => {
-            console.log(error);
+        let error = (error: any) => {
         }
 
-        this.releasesService.findAll()
-            .subscribe(this.extractDataService.extract(success, err));
+        this.reportService.getCategoryReportDto()
+            .subscribe(this.extractDataService.extract(success, error));
     }
 
     onAbriEFecha(value: any) {
         value.aberto = !value.aberto;
-
-        //console.log(value);
-
-        if (value.subCategorias && value.subCategorias.length > 0) {
-            console.log("TEM SUB");
-            if (value.aberto) {
-                console.log("Coloca");
-
-                value.subCategorias = value.showSub;
-            } else {
-                console.log("Tira");
-
-                value.subCategorias = [];
-            }
-
-        
-        } else {
-            if (value.aberto) {
-                console.log("Coloca");
-
-                value.subCategorias = value.showSub;
-            } else {
-                console.log("Tira");
-
-                value.subCategorias = [];
-            }
-
-            //value.saidas = [];
-        }
-
-        //value.saidas = [];
-        //value.subCategorias = [];
     }
 
     tiraSoSaidas(value: any) {

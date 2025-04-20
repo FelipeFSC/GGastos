@@ -101,6 +101,13 @@
     justify-content: center;
 }
 
+.button-edit-done-box {
+    margin-top: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
 .mat-fab {
     box-shadow: none;
     transition: .3s ease-in;

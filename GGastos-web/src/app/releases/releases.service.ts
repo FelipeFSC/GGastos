@@ -35,8 +35,24 @@ export class ReleasesService {
 		return this.httpService.post(this.url + this.appService.transactionUrl, transaction);
 	}
 
+	update(transaction: any, transactionId: number) {
+		return this.httpService.put(this.url + this.appService.transactionUrl + `/${transactionId}`, transaction);
+	}
+
+	delete(transactionId: number) {
+		return this.httpService.delete(this.url + this.appService.transactionUrl + `/${transactionId}`);
+	}
+
 	createFixed(transaction: any) {
 		return this.httpService.post(this.url + this.appService.fixedTransactionUrl, transaction);
+	}
+
+	updateFixed(transaction: any, transactionId: number) {
+		return this.httpService.put(this.url + this.appService.fixedTransactionUrl + `/${transactionId}`, transaction);
+	}
+
+	deleteFixed(transactionId: number) {
+		return this.httpService.delete(this.url + this.appService.fixedTransactionUrl + `/${transactionId}`);
 	}
 
 	isPaid(transactionId: number) {

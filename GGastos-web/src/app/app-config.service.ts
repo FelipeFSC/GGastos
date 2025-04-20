@@ -21,6 +21,12 @@ export class AppConfigService {
 
 	private privateRecurrenceType: string = "/recurrences-types";
 
+	private privateReports: string = "/reports";
+
+	public get reportsUrl(): string {
+		return this.privateReports;
+	}
+
 	public get recurrenceTypeUrl(): string {
 		return this.privateRecurrenceType;
 	}

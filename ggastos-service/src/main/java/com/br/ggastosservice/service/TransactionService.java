@@ -145,6 +145,24 @@ public class TransactionService {
         transactionRepository.save(transaction);
     }
 
+    public void update(Transaction transaction, long transactionId) throws Exception {
+        findOne(transactionId);
+        verifyTransaction(transaction);
+
+        transaction.setId(transactionId);
+
+        if (transaction.getFixedTransactionId() != null) {
+            transaction.setPaidDate(LocalDateTime.now());
+        }
+
+        transactionRepository.save(transaction);
+    }
+
+    public void delete(long transactionId) throws Exception {
+        Transaction transaction = findOne(transactionId);
+        transactionRepository.delete(transaction);
+    }
+
     private void verifyTransaction(Transaction transaction) throws Exception {
         TransactionType transactionType = transactionTypeService.findOne(transaction.getTransactionType().getId());
         transaction.setTransactionType(transactionType);

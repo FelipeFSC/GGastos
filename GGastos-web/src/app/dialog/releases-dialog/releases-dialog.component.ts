@@ -11,6 +11,8 @@ export class ReleasesDialogComponent implements OnInit {
 
     tittle: string = "";
 
+    editMode: boolean = false;
+
     divideType: string = "";
 
     isRepeatActive:boolean = false;
@@ -54,6 +56,7 @@ export class ReleasesDialogComponent implements OnInit {
         this.categorySubCategoryList = this.data.categories;
 
         if (this.data.editData) {
+            this.editMode = true;
             this.onLoadData(this.data.editData);
         } else {
             this.onLoadAccountsCombo(this.data.accounts);
@@ -66,7 +69,7 @@ export class ReleasesDialogComponent implements OnInit {
         if (data.value < 0) {
             data.value = data.value * -1;
         }
-        this.paymentValue = "R$ " + data.value.toFixed(2);
+        this.paymentValue = "R$ " + data.value.toFixed(2).replace('.', ',');
         this.paymentDate = data.transactionDate;
 
 
@@ -158,6 +161,15 @@ export class ReleasesDialogComponent implements OnInit {
             this.installmentValue = result.toFixed(2);
         }
     }
+
+    onDelete() {
+        if (this.isRepeatActive) {
+            this.dialogRef.close({fixedId: this.data.editData.id});
+
+        } else {
+            this.dialogRef.close({id: this.data.editData.id});
+        }
+    }
     
     onSave() {
         let moneyValue;
@@ -205,7 +217,6 @@ export class ReleasesDialogComponent implements OnInit {
             releaseData.recurrenceType = {id: this.paymentRangeSelected.id};
         }
 
-        console.log(this.categorySelected);
         this.dialogRef.close(releaseData);
     }
 

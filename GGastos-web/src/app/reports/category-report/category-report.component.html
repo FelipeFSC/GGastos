@@ -12,9 +12,9 @@
     </div>
 
     <div class="charts-box">
-        <div echarts [options]="xx" class="chart2-style"></div>
+        <div echarts [options]="categoryData" class="chart2-style"></div>
 
-        <div echarts [options]="xx" class="chart2-style"></div>
+        <div echarts [options]="categoryData" class="chart2-style"></div>
     </div>
     <hr class="horizontal-line">
     <div class="box-expenses">
@@ -31,7 +31,7 @@
                             <td class="td-tittle cell-center">{{item.data}}</td>
                             <td class="cell-right">{{item.valor}}</td>
                         </tr>
-                        <ng-container *ngIf="item.subCategorias.length === 0">
+                        <ng-container *ngIf="item.subCategorias.length === 0 && item.aberto">
                             <tr *ngFor="let subItem of item.saidas" style="color: blue;">
                                 <td class="td-tittle indent-1">{{subItem.nome}}</td>
                                 <td class="cell-center">{{subItem.data}}</td>
@@ -60,7 +60,11 @@
                         <ng-container *ngFor="let subItem of item.subCategorias">
                             <tr>
                                 <td class="td-tittle indent-1">
-                                    <input type="checkbox" (click)="onAbriEFecha(subItem)" name="scales"/>
+                                    <input type="checkbox" (cl
+                                    
+                                    
+                                    
+                                    ick)="onAbriEFecha(subItem)" name="scales"/>
                                     {{subItem.nome}}
                                 </td>
                                 <td class="cell-center">{{subItem.data}}</td>
@@ -75,8 +79,8 @@
                     </ng-container>
                     <tr>
                         <td class="td-tittle">TOTAL</td>
-                        <td class="cell-center">%100</td>
-                        <td class="cell-right">DALE DINHEIRO</td>
+                        <td class="cell-center">100%</td>
+                        <td class="cell-right">{{total}}</td>
                     </tr>
                 </tbody>
             </table>

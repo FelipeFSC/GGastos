@@ -62,6 +62,19 @@ public class FixedTransactionService {
         fixedTransactionRepository.save(fixedTransaction);
     }
 
+    public void update(FixedTransaction fixedTransaction, long fixedTransactionId) throws Exception {
+        findOne(fixedTransactionId);
+        verifyFixedTransaction(fixedTransaction);
+        
+        fixedTransaction.setId(fixedTransactionId);
+        fixedTransactionRepository.save(fixedTransaction);
+    }
+
+    public void delete(long fixedTransactionId) throws Exception {
+        FixedTransaction fixedTransaction = findOne(fixedTransactionId);
+        fixedTransactionRepository.delete(fixedTransaction);
+    }
+
     private void verifyFixedTransaction(FixedTransaction fixedTransaction) throws Exception {
         TransactionType transactionType = transactionTypeService.findOne(fixedTransaction.getTransactionType().getId());
         fixedTransaction.setTransactionType(transactionType);

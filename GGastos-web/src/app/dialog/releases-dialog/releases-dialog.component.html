@@ -171,19 +171,38 @@
         </div>
     </div>
 
-    <div class="button-done-box">
-        <div class="aux-button">
-            <span>Cancelar</span>
+    <div *ngIf="!editMode">
+        <div class="button-done-box">
+            <div class="aux-button">
+                <span>Cancelar</span>
+            </div>
+    
+            <div class="done-button-box">
+                <button mat-fab color="primary" (click)="onSave()">
+                    <mat-icon>check</mat-icon>
+                </button>
+            </div>
+    
+            <div class="aux-button">
+                <span>Salvar e criar outra</span>
+            </div>
         </div>
-
-        <div class="done-button-box">
-            <button mat-fab color="primary" (click)="onSave()">
-                <mat-icon>check</mat-icon>
-            </button>
-        </div>
-
-        <div class="aux-button">
-            <span>Salvar e criar outra</span>
+    </div>
+    <div *ngIf="editMode">
+        <div class="button-edit-done-box">
+            <div class="done-button-box">
+                <button mat-fab color="warn" (click)="onDelete()">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+    
+    
+            <div class="done-button-box">
+                <button mat-fab color="primary" (click)="onSave()">
+                    <mat-icon>check</mat-icon>
+                </button>
+            </div>
+    
         </div>
     </div>
 

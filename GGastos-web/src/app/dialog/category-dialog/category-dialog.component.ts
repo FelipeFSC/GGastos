@@ -34,6 +34,7 @@ export class CategoryDialogComponent implements OnInit {
 
     onLoad(data: any) {
         this.category.id = data.id;
+        this.category.categoryType = data.type;
         this.category.icon = data.icon;
         this.category.color = data.color;
         this.category.name = data.name;
