@@ -1,5 +1,6 @@
 package com.br.ggastosservice.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -58,6 +59,16 @@ public class AccountController {
     @DeleteMapping("/{accountId}")
     public void disable(@PathVariable long accountId) throws Exception {
         accountService.disable(accountId);
+    }
+
+    @GetMapping("/update-balance")
+    public BigDecimal getGeneralBalance() {
+        return accountService.getGeneralBalance();
+    }
+
+    @PutMapping("/{accountId}/update-balance")
+    public void updateBalance(@PathVariable long accountId) throws Exception {
+        accountService.updateBalance(accountId);
     }
 
 }

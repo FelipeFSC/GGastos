@@ -39,4 +39,12 @@ export class AccountsService {
 	disable(accountId: number) {
 		return this.httpService.delete(this.url + this.appService.accountUrl + `/${accountId}`);
 	}
+
+	updateBalance(accountId: number) {
+		return this.httpService.put(this.url + this.appService.accountUrl + `/${accountId}/update-balance`, "");
+	}
+
+	getGeneralBalance() {
+		return this.httpService.get(this.url + this.appService.accountUrl + `/update-balance`);
+	}
 }

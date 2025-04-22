@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { EChartsCoreOption } from 'echarts';
+import { AccountsService } from '../accounts/accounts.service';
+import { ExtractDataService } from '../extract-data.service';
+import { ReportsService } from '../reports/reports.service';
 
 @Component({
     selector: 'app-home',
@@ -8,6 +11,8 @@ import { EChartsCoreOption } from 'echarts';
 })
 
 export class HomeComponent implements OnInit {
+
+    balance: string = "";
 
     option: any = {
         series: [
@@ -86,9 +91,74 @@ export class HomeComponent implements OnInit {
 
     items: any = [{}, {}, {}];
 
-    constructor() { }
+    constructor(
+        private accountsService: AccountsService,
+        private extractDataService: ExtractDataService,
+        private reportService: ReportsService
+    ) { }
 
     ngOnInit(): void {
+        this.getGeneralBalance();
+        this.getCategoryGrafData();
+    }
+
+    getGeneralBalance() {
+        let success = (result: any) => {
+            this.balance = (result).toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.accountsService.getGeneralBalance()
+            .subscribe(this.extractDataService.extract(success, err));
+    }
+
+    getCategoryGrafData() {
+        let success = (result: any) => {
+            this.options = {
+                textStyle: {
+                    fontFamily: "monospace",
+                    fontSize: 11
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left'
+                },
+                series: [
+                    {
+                        type: 'pie',
+                        radius: '50px',
+                        left: 130,
+                        bottom: 0,
+                        height: 150,
+                        color: result.colors,
+                        data: result.data,
+                        emphasis: {
+                        itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.reportService.getCategoryReportDto(2)
+            .subscribe(this.extractDataService.extract(success, err));
     }
 
 }

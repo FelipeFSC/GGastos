@@ -1,5 +1,6 @@
 package com.br.ggastosservice.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,14 +8,19 @@ import org.springframework.stereotype.Service;
 
 import com.br.ggastosservice.model.Account;
 import com.br.ggastosservice.repository.AccountRepository;
+import com.br.ggastosservice.repository.TransactionRepository;
 
 @Service
 public class AccountService {
 
     private AccountRepository accountRepository;
 
-    public AccountService(AccountRepository accountRepository) {
+    private TransactionRepository transactionRepository;
+
+    public AccountService(AccountRepository accountRepository,
+            TransactionRepository transactionRepository) {
         this.accountRepository = accountRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     public Account findOne(long id) throws Exception  {
@@ -46,6 +52,33 @@ public class AccountService {
     public void disable(long categoryId) throws Exception {
         Account account = findOne(categoryId);
         account.setEnabled(false);
+        accountRepository.save(account);
+    }
+
+    public BigDecimal getGeneralBalance() {
+        BigDecimal tatolIncome = transactionRepository.findTotalValues(1);
+        BigDecimal totalExpense = transactionRepository.findTotalValues(2);
+
+        tatolIncome = tatolIncome == null ? BigDecimal.ZERO : tatolIncome;
+        totalExpense = totalExpense == null ? BigDecimal.ZERO : totalExpense;
+
+        BigDecimal result = BigDecimal.ZERO;
+        result = tatolIncome.add(totalExpense);
+        return result;
+    }
+
+    public void updateBalance(long accountId) throws Exception {
+        BigDecimal tatolIncome = transactionRepository.findTotalValuesByTransactionType(1, accountId);
+        BigDecimal totalExpense = transactionRepository.findTotalValuesByTransactionType(2, accountId);
+
+        tatolIncome = tatolIncome == null ? BigDecimal.ZERO : tatolIncome;
+        totalExpense = totalExpense == null ? BigDecimal.ZERO : totalExpense;
+
+        BigDecimal result = BigDecimal.ZERO;
+        result = tatolIncome.add(totalExpense);
+        
+        Account account = findOne(accountId);
+        account.setBalance(result);
         accountRepository.save(account);
     }
 

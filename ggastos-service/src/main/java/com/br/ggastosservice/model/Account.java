@@ -1,5 +1,7 @@
 package com.br.ggastosservice.model;
 
+import java.math.BigDecimal;
+
 import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
@@ -25,7 +27,7 @@ public class Account {
 
     private String color;
 
-    private double balance;
+    private BigDecimal balance;
 
     private boolean enabled;
 

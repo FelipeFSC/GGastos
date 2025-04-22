@@ -99,6 +99,17 @@ export class ReleasesComponent implements OnInit {
             .subscribe(this.extractDataService.extract(success, err));
     }
 
+    updateBalance(accountId: number) {
+        let success = (data: any) => {}
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+    
+        this.accountsService.updateBalance(accountId)
+            .subscribe(this.extractDataService.extract(success, err));
+    }
+
     pegarMesAtual(): string {
         const hoje = new Date();
         const ano = hoje.getFullYear();
@@ -404,6 +415,7 @@ export class ReleasesComponent implements OnInit {
 
         let success = () => {
             this.filtrarPorMesAno(this.mesAnoSelecionado);
+            this.updateBalance(transaction.account.id);
         }
 
         let err = (error: any) => {
@@ -417,6 +429,5 @@ export class ReleasesComponent implements OnInit {
             this.releasesService.create(transaction)
                 .subscribe(this.extractDataService.extract(success, err));
         }
-
     }
 }
