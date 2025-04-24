@@ -15,6 +15,10 @@ const routes: Routes = [
         loadChildren: () => import("./releases/releases.module").then(m => m.ReleasesModule),
     },
     {
+        path: 'releases-upload',
+        loadChildren: () => import("./releases-upload/releases-upload.module").then(m => m.ReleasesUploadModule),
+    },
+    {
         path: 'categories',
         loadChildren: () => import("./categories/categories.module").then(m => m.CategoriesModule),
     },

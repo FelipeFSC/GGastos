@@ -23,6 +23,10 @@ public class ReportService {
     public CateogoryReportDto generateCategoryReportDto(long transactionTypeId) {
         List<Transaction> transactions = transactionService.findByTransactionTypeId(transactionTypeId);
 
+        if (transactions == null || transactions.size() == 0) {
+            return new CateogoryReportDto();
+        }
+
         for (Transaction transaction : transactions) {
             if (transaction.getCategory() == null) {
                 transaction.setCategory(transaction.getSubCategory().getCategory());

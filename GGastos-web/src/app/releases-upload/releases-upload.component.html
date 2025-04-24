@@ -1,0 +1,45 @@
+<app-left-menu></app-left-menu>
+
+<p>releases-upload works!</p>
+
+<input type="file" (change)="onFileSelected($event)" accept=".csv" />
+
+<mat-card style="
+    width: 70%;
+    margin: auto;
+">
+
+    <mat-accordion *ngIf="groupedList.length">
+        <mat-expansion-panel *ngFor="let group of groupedList">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{ group.category }}
+                </mat-panel-title>
+                <mat-panel-description class="category-actions">
+                    <span>
+                        {{ group.transactions.length }} transações
+                    </span>
+
+                    <button mat-icon-button color="primary" (click)="onCategoryAction(group); $event.stopPropagation()">
+                        <mat-icon>download_done</mat-icon>
+                    </button>
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <mat-list>
+                <mat-list-item *ngFor="let tx of group.transactions">
+                    <div style="display: flex;  flex-direction: column; padding: 12px 0px;">
+                        <span><strong>Data:</strong> {{ tx.date }}</span>
+                        <span><strong>Valor:</strong> R$ {{ tx.amount.toFixed(2) }}</span>
+                        <span><strong>Descrição:</strong> {{ tx.description }}</span>
+                    </div>
+                </mat-list-item>
+            </mat-list>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+</mat-card>
+
+<div>
+    <br><br>
+</div>

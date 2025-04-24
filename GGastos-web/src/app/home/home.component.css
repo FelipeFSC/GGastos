@@ -74,15 +74,13 @@
 .dot {
     height: 9px;
     width: 10px;
-    background-color: #ff7d77;
     border-radius: 50%;
     display: inline-block;
-    margin-right: 8px;
+    margin-right: 20px;
 }
 
 .category-text {
     font-size: 15px;
-    color: #22cfda;
     font-weight: 500;
 }
 

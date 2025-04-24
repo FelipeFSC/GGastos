@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.br.ggastosservice.dto.TesteDto;
 import com.br.ggastosservice.model.Transaction;
 import com.br.ggastosservice.service.TransactionService;
 
@@ -40,6 +41,11 @@ public class TransactionController {
         return transactionService.findOne(transactionId);
     }
 
+    @GetMapping("/{transactionId}/aaaa")
+    public List<Transaction> findExpiredUnpaid(@PathVariable("transactionId") long transactionId) throws Exception {
+        return transactionService.findExpiredUnpaid(transactionId);
+    }
+
     @PostMapping()
     public void create(@RequestBody Transaction transaction) throws Exception {
         transactionService.create(transaction);
@@ -59,6 +65,14 @@ public class TransactionController {
     @PatchMapping("/{transactionId}/is-paid")
     public void isPaid(@PathVariable("transactionId") long transactionId) throws Exception {
         transactionService.paidTransaction(transactionId);
+    }
+
+
+
+
+    @PostMapping("/teste")
+    public void teste(@RequestBody TesteDto transactions) throws Exception {
+        transactionService.teste(transactions);
     }
 
 }

@@ -36,6 +36,7 @@ public class AccountService {
     }
 
     public Account create(Account account) {
+        account.setBalance(BigDecimal.ZERO);
         account.setIcon(account.getIcon().trim().toLowerCase());
         account.setEnabled(true);
         accountRepository.save(account);

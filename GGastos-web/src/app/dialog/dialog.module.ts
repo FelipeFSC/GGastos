@@ -9,6 +9,7 @@ import { ReleasesDialogComponent } from './releases-dialog/releases-dialog.compo
 import { CurrencyMaskDirective } from './currency-mask.directive';
 import { AccountDialogComponent } from './account-dialog/account-dialog.component';
 import { CardDialogComponent } from './card-dialog/card-dialog.component';
+import { TesteComponent } from './teste/teste.component';
 
 @NgModule({
     declarations: [
@@ -18,6 +19,7 @@ import { CardDialogComponent } from './card-dialog/card-dialog.component';
         ReleasesDialogComponent,
         AccountDialogComponent,
         CardDialogComponent,
+        TesteComponent,
     ],
     imports: [
         CommonModule,

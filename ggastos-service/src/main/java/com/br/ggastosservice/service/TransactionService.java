@@ -1,7 +1,9 @@
 package com.br.ggastosservice.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -13,6 +15,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.br.ggastosservice.dto.TesteDto;
+import com.br.ggastosservice.dto.TransactionUploadDto;
 import com.br.ggastosservice.model.Account;
 import com.br.ggastosservice.model.Category;
 import com.br.ggastosservice.model.CreditCard;
@@ -67,6 +71,10 @@ public class TransactionService {
 
     public List<Transaction> findByTransactionTypeId(long transactionTypeId) {
         return transactionRepository.findByTransactionTypeIdAndPaidDateNotNullOrderByCategoryIdAscSubCategoryCategoryIdAsc(transactionTypeId);
+    }
+
+    public List<Transaction> findExpiredUnpaid(long transactionId) {
+        return transactionRepository.findByTransactionTypeId(transactionId);
     }
 
     public List<Transaction> findByDate(String date) {
@@ -204,6 +212,35 @@ public class TransactionService {
             transaction.setPaidDate(null);
         }
         transactionRepository.save(transaction);
+    }
+
+
+    public void teste(TesteDto transactions) throws Exception {
+        Category category = categoryService.findOne(transactions.getCategoryId());
+        Account account = accountService.findOne(transactions.getAccountId());
+        TransactionType transactionType = transactionTypeService.findOne(1);
+
+
+        List<Transaction> transactionsList = new ArrayList<Transaction>();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        for (TransactionUploadDto item : transactions.getTransactions()) {
+            LocalDate date = LocalDate.parse(item.getDate(), formatter);
+            LocalDateTime dateTime = date.atStartOfDay();
+
+            Transaction transaction = new Transaction();
+            transaction.setAccount(account);
+            transaction.setCategory(category);
+            transaction.setTransactionType(transactionType);
+            transaction.setValue(item.getAmount());
+            transaction.setPaidDate(dateTime);
+            transaction.setTransactionDate(dateTime);
+            transaction.setDescription(item.getDescription());
+
+            transactionsList.add(transaction);
+        }
+
+        transactionRepository.saveAll(transactionsList);
     }
 
 }

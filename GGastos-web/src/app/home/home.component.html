@@ -21,6 +21,42 @@
                 <span class="title-text">
                     Minhas contas
                 </span>
+
+                <div class="box-content" *ngFor="let item of accounts; let i = index">
+                    <div style="
+                            display: flex;
+                            align-items: center;
+                            margin: 15px 0px;
+                        ">
+                        <div class="category" style="
+                                display: flex;
+                                align-items: center;
+                            ">
+                            <span class="category-icon-circle" [ngStyle]="{'background-color': item.color }">
+                                <mat-icon class="icon"> {{item.icon}} </mat-icon>
+                            </span>
+                            <span style="margin-left: 12px;"> {{item.nameCategoria}} </span>
+                        </div>
+
+                        <div class="box-balance-check" style="
+                                display: flex;
+                                justify-content: space-between;
+                                width: 100%;
+                            ">
+                            <span style="font-size: 15px;
+                                    color: #b3b6ae;
+                                    font-weight: 500;">
+                                {{item.name}}
+                            </span>
+                            <span style="font-size: 15px;
+                                        color: #3fad1d;
+                                        font-weight: 500;">
+                                R$ {{item.balance}}
+                            </span>
+                        </div>
+                    </div>
+                    <mat-divider *ngIf="i != (accounts.length-1)"></mat-divider>
+                </div>
             </div>
 
             <div class="card card-left content-card">
@@ -34,22 +70,27 @@
                     Contas a pagar
                 </span>
 
-                <mat-list *ngFor="let item of items; let i = index">
+                <mat-list *ngFor="let item of delayedTransactions; let i = index">
                     <mat-list-item>
-                        <span class="dot"></span>
+                        <span [ngStyle]="{'background-color': item.color }" class="dot"></span>
 
                         <div style="width: 70%;">
-                            <span class="category-text">Cartão </span> <span class="subcategory-text sub-text-color">Balada</span>
+                            <span [ngStyle]="{'color': item.color }" class="category-text">{{item.account}} </span> 
+                            <span class="subcategory-text sub-text-color">
+                                {{item.description}}
+                            </span>
                             <br>
-                            <span class="expense-date sub-text-color">25/06/2016</span>
+                            <span class="expense-date sub-text-color">{{item.date}}</span>
                         </div>
 
-                        <div style="width: 30%; text-align: right; display: flex; flex-direction: row; justify-content: flex-end;">
-                            <span class="expense-value sub-text-color">R$ -63,90</span>
-                            <mat-icon style="color: #ff7d77; width: 10px; margin-left: 8px; font-size: 19px; cursor: pointer;">thumb_up</mat-icon>
+                        <div
+                            style="width: 30%; text-align: right; display: flex; flex-direction: row; justify-content: flex-end; align-items: center;">
+                            <span class="expense-value sub-text-color">R$ {{item.value}}</span>
+                            <mat-icon style="color: #ff7d77; width: 10px; margin-left: 8px; font-size: 19px; cursor: pointer;"
+                                (click)="onCheck(item.id)">thumb_up</mat-icon>
                         </div>
                     </mat-list-item>
-                    <mat-divider *ngIf="i != (items.length-1)"></mat-divider>
+                    <mat-divider *ngIf="i != (delayedTransactions.length-1)"></mat-divider>
                 </mat-list>
             </div>
         </div>
@@ -80,7 +121,8 @@
                             <span class="expense-date sub-text-color">Gasto R$ 200,00</span>
                         </div>
 
-                        <div style="width: 30%; text-align: right; display: flex; flex-direction: row; justify-content: flex-end;">
+                        <div
+                            style="width: 30%; text-align: right; display: flex; flex-direction: row; justify-content: flex-end;">
                             <span class="expense-value sub-text-color" style="font-size: 23px;">11%</span>
                         </div>
                     </div>
@@ -100,7 +142,8 @@
                             <span class="expense-date sub-text-color">Gasto R$ 200,00</span>
                         </div>
 
-                        <div style="width: 30%; text-align: right; display: flex; flex-direction: row; justify-content: flex-end;">
+                        <div
+                            style="width: 30%; text-align: right; display: flex; flex-direction: row; justify-content: flex-end;">
                             <span class="expense-value sub-text-color" style="font-size: 23px;">11%</span>
                         </div>
                     </div>
