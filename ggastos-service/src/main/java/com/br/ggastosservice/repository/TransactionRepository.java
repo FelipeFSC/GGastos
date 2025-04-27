@@ -6,11 +6,21 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.br.ggastosservice.model.Transaction;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     
+    @Query(value = "SELECT * FROM transaction"
+        +" LEFT JOIN sub_category ON transaction.sub_category_id = sub_category.id"
+        +" LEFT JOIN category ON sub_category.category_id = category.id"
+        +" WHERE transaction.transaction_date BETWEEN :dataInicio AND :dataFim"
+        +" AND (transaction.category_id = :categoryId OR category.id = :categoryId)", nativeQuery = true)
+    List<Transaction> searchTransactionsByCategoryAndDate(@Param("categoryId") Long categoryId,
+        @Param("dataInicio") LocalDateTime dataInicio,
+        @Param("dataFim") LocalDateTime dataFim);
+
     List<Transaction> findAllByTransactionDateBetweenOrderByTransactionDate(LocalDateTime ano, LocalDateTime mes);
 
     List<Transaction> findByPaidDateNotNullOrderByCategoryIdAscSubCategoryAscPaidDateAsc();

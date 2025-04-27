@@ -77,6 +77,14 @@ public class TransactionService {
         return transactionRepository.findByTransactionTypeId(transactionId);
     }
 
+    public List<Transaction> findByDate(LocalDateTime date, long categoryId) {
+        LocalDateTime fim = date
+            .with(TemporalAdjusters.lastDayOfMonth())
+            .with(LocalTime.MAX);
+
+        return transactionRepository.searchTransactionsByCategoryAndDate(categoryId, date, fim);
+    }
+
     public List<Transaction> findByDate(String date) {
         int ano = Integer.parseInt(date.split("-")[0]);
         int mes = Integer.parseInt(date.split("-")[1]);
