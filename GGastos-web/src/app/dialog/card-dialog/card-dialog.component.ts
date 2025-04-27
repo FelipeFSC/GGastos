@@ -46,14 +46,12 @@ export class CardDialogComponent implements OnInit {
 
             for (let item of this.days) {
                 if (item === this.card.dueDate) {
-                    // console.log(item);
                     this.card.dueDate = item;
                 }
             }
 
             for (let item of this.accounts) {
                 if (item.id === data.account.id) {
-                    // console.log(item);
                     this.card.account = (item);
                 }
             }

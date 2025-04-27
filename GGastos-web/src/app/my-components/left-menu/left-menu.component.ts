@@ -31,6 +31,10 @@ export class LeftMenuComponent implements OnInit {
         this.router.navigate(['reports']);
     }
 
+    onSpendingLimit() {
+        this.router.navigate(['spending-limit']);
+    }
+
     onCategories() {
         this.router.navigate(['categories']);
     }

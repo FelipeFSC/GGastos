@@ -23,6 +23,10 @@ const routes: Routes = [
         loadChildren: () => import("./categories/categories.module").then(m => m.CategoriesModule),
     },
     {
+        path: 'spending-limit',
+        loadChildren: () => import("./spending-limit/spending-limit.module").then(m => m.SpendingLimitModule),
+    },
+    {
         path: 'reports',
         loadChildren: () => import("./reports/reports.module").then(m => m.ReportsModule),
     },

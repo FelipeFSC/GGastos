@@ -1,0 +1,43 @@
+<div mat-dialog-content>
+    <div class="title-text">
+        Novo limite de gastos
+    </div>
+
+    <mat-form-field class="example-full-width" appearance="outline">
+        <mat-label>Categoria</mat-label>
+        <mat-select [(ngModel)]="categorySelected">
+
+            <ng-container *ngFor="let item of categorySubCategoryList">
+                <mat-option [value]="item.category">
+                    <div style="display: flex; align-items: center;">
+                        <span class="category-icon-circle"
+                            [ngStyle]="{'background-color': item.category.color }">
+                            <mat-icon class="icon"> {{item.category.icon}} </mat-icon>
+                        </span>
+                        &nbsp;&nbsp;
+                        <span>
+                            {{item.category.name}}
+                        </span>
+                    </div>
+                </mat-option>
+            </ng-container>
+
+            <mat-select-trigger>
+                <ng-container *ngIf="categorySelected">
+                    {{categorySelected.name}}
+                </ng-container>
+            </mat-select-trigger>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width" appearance="outline">
+        <mat-label>Limite de gastos</mat-label>
+        <input matInput type="number" [(ngModel)]="limite" />
+      </mat-form-field>
+
+      <div style="text-align: center;">
+        <button mat-flat-button (click)="onClose()" color="warn">Cancelar</button>
+        &nbsp;
+        <button mat-flat-button (click)="onSave()" color="primary">Salvar</button>
+    </div>
+</div>

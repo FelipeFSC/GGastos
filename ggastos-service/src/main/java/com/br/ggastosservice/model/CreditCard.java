@@ -1,5 +1,7 @@
 package com.br.ggastosservice.model;
 
+import java.math.BigDecimal;
+
 import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
@@ -24,6 +26,8 @@ public class CreditCard {
     private String icon;
 
     private String color;
+
+    private BigDecimal balance;
 
     @Column(name = "card_limit")
     private double cardLimit;

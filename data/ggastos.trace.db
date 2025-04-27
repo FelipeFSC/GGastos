@@ -976,3 +976,96 @@ SELECT SUM(transaction) FROM TRANSACTION where transaction_type_id = 2 AND paid_
 2025-04-21 23:19:53 jdbc[13]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT SUM(VALUE) AS TOTAL_VALUE FROM TRANSACTION WHERE TRANSACTION_TYPE_ID = :[*]TRANSACTIONTYPE AND PAID_DATE IS NOT NULL"; expected "ALL, ANY, SOME"; SQL statement:
 SELECT SUM(value) AS total_value FROM transaction where transaction_type_id = :transactionType AND paid_date IS NOT NULL [42001-200]
+2025-04-23 22:22:35 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM TRANSACTION WHERE PAID_DATE >= DATE_TRUNC('month', CURRENT_DATE) AND PAID_DATE < DATE_TRUNC('month', CURRENT_DATE + INTERVAL '1 month')[*] AND TRANSACTION_TYPE_ID = ?"; expected "[, ::, AT, FORMAT, *, /, %, +, -, ||, ~, !~, NOT, LIKE, ILIKE, REGEXP, IS, IN, BETWEEN, AND, OR, YEAR, MONTH, DAY, HOUR, MINUTE, SECOND"; SQL statement:
+SELECT * FROM transaction where paid_date >= DATE_TRUNC('month', CURRENT_DATE) AND paid_date < DATE_TRUNC('month', CURRENT_DATE + INTERVAL '1 month') AND transaction_type_id = ? [42001-200]
+2025-04-23 22:23:20 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM TRANSACTION WHERE PAID_DATE >= DATE_TRUNC('month', CURRENT_DATE) AND PAID_DATE < DATE_TRUNC('month', CURRENT_DATE + INTERVAL '1 month')[*] AND TRANSACTION_TYPE_ID = ?"; expected "[, ::, AT, FORMAT, *, /, %, +, -, ||, ~, !~, NOT, LIKE, ILIKE, REGEXP, IS, IN, BETWEEN, AND, OR, YEAR, MONTH, DAY, HOUR, MINUTE, SECOND"; SQL statement:
+SELECT * FROM transaction where paid_date >= DATE_TRUNC('month', CURRENT_DATE) AND paid_date < DATE_TRUNC('month', CURRENT_DATE + INTERVAL '1 month') AND transaction_type_id = ? [42001-200]
+2025-04-27 01:24:16 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SPENDING_LIMIT ADD COLUMN LIMIT[*] DECIMAL(19,2)"; expected "identifier"; SQL statement:
+alter table spending_limit add column limit decimal(19,2) [42001-200]
+2025-04-27 01:28:34 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SPENDING_LIMIT ADD COLUMN LIMIT[*] DECIMAL(19,2)"; expected "identifier"; SQL statement:
+alter table spending_limit add column limit decimal(19,2) [42001-200]
+2025-04-27 01:31:31 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SPENDING_LIMIT ADD COLUMN LIMIT[*] DECIMAL(19,2)"; expected "identifier"; SQL statement:
+alter table spending_limit add column limit decimal(19,2) [42001-200]
+2025-04-27 01:31:33 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SPENDING_LIMIT ADD COLUMN LIMIT[*] DECIMAL(19,2)"; expected "identifier"; SQL statement:
+alter table spending_limit add column limit decimal(19,2) [42001-200]
+2025-04-27 01:31:47 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SPENDING_LIMIT ADD COLUMN LIMIT[*] DECIMAL(19,2)"; expected "identifier"; SQL statement:
+alter table spending_limit add column limit decimal(19,2) [42001-200]
+2025-04-27 01:32:25 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SPENDING_LIMIT ADD COLUMN LIMIT[*] DECIMAL(19,2)"; expected "identifier"; SQL statement:
+alter table spending_limit add column limit decimal(19,2) [42001-200]
+2025-04-27 01:33:05 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SPENDING_LIMIT ADD COLUMN LIMIT[*] DECIMAL(19,2)"; expected "identifier"; SQL statement:
+alter table spending_limit add column limit decimal(19,2) [42001-200]
+2025-04-27 01:33:22 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SPENDING_LIMIT ADD COLUMN LIMIT[*] DECIMAL(19,2)"; expected "identifier"; SQL statement:
+alter table spending_limit add column limit decimal(19,2) [42001-200]
+2025-04-27 01:35:09 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SPENDING_LIMIT ADD COLUMN LIMIT[*] DECIMAL(19,2)"; expected "identifier"; SQL statement:
+alter table spending_limit add column limit decimal(19,2) [42001-200]
+2025-04-27 01:35:31 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SPENDING_LIMIT ADD COLUMN LIMIT[*] DECIMAL(19,2)"; expected "identifier"; SQL statement:
+alter table spending_limit add column limit decimal(19,2) [42001-200]
+2025-04-27 01:40:28 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SPENDING_LIMIT ADD COLUMN LIMIT[*] DECIMAL(19,2)"; expected "identifier"; SQL statement:
+alter table spending_limit add column limit decimal(19,2) [42001-200]
+2025-04-27 01:41:06 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SPENDING_LIMIT ADD COLUMN LIMIT[*] DECIMAL(19,2)"; expected "identifier"; SQL statement:
+alter table spending_limit add column limit decimal(19,2) [42001-200]
+2025-04-27 01:41:27 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SPENDING_LIMIT ADD COLUMN LIMIT[*] DECIMAL(19,2)"; expected "identifier"; SQL statement:
+alter table spending_limit add column limit decimal(19,2) [42001-200]
+2025-04-27 01:42:33 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SPENDING_LIMIT ADD COLUMN LIMIT[*] DECIMAL(19,2)"; expected "identifier"; SQL statement:
+alter table spending_limit add column limit decimal(19,2) [42001-200]
+2025-04-27 01:42:37 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SPENDING_LIMIT ADD COLUMN LIMIT[*] DECIMAL(19,2)"; expected "identifier"; SQL statement:
+alter table spending_limit add column limit decimal(19,2) [42001-200]
+2025-04-27 01:43:24 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SPENDING_LIMIT ADD COLUMN LIMIT[*] DECIMAL(19,2)"; expected "identifier"; SQL statement:
+alter table spending_limit add column limit decimal(19,2) [42001-200]
+2025-04-27 01:44:05 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SPENDING_LIMIT ADD COLUMN LIMIT[*] DECIMAL(19,2)"; expected "identifier"; SQL statement:
+alter table spending_limit add column limit decimal(19,2) [42001-200]
+2025-04-27 01:44:09 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SPENDING_LIMIT ADD COLUMN LIMIT[*] DECIMAL(19,2)"; expected "identifier"; SQL statement:
+alter table spending_limit add column limit decimal(19,2) [42001-200]
+2025-04-27 01:44:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SPENDING_LIMIT ADD COLUMN LIMIT[*] DECIMAL(19,2)"; expected "identifier"; SQL statement:
+alter table spending_limit add column limit decimal(19,2) [42001-200]
+2025-04-27 01:45:33 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SPENDING_LIMIT ADD COLUMN LIMIT[*] DECIMAL(19,2)"; expected "identifier"; SQL statement:
+alter table spending_limit add column limit decimal(19,2) [42001-200]
+2025-04-27 01:47:16 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SPENDING_LIMIT ADD COLUMN LIMIT[*] DECIMAL(19,2)"; expected "identifier"; SQL statement:
+alter table spending_limit add column limit decimal(19,2) [42001-200]
+2025-04-27 03:16:02 jdbc[35]: null
+org.h2.message.DbException: The connection was not closed by the application and is garbage collected [90018-200]
+	at org.h2.message.DbException.get(DbException.java:205)
+	at org.h2.message.DbException.get(DbException.java:181)
+	at org.h2.message.DbException.get(DbException.java:170)
+	at org.h2.jdbc.JdbcConnection.closeOld(JdbcConnection.java:245)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:186)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:152)
+	at org.h2.Driver.connect(Driver.java:69)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:364)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:206)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:476)
+	at com.zaxxer.hikari.pool.HikariPool.access$100(HikariPool.java:71)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:726)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:712)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: org.h2.jdbc.JdbcSQLNonTransientConnectionException: The connection was not closed by the application and is garbage collected [90018-200]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:622)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:429)
+	... 18 more

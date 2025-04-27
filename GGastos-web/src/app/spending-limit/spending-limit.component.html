@@ -1,0 +1,66 @@
+<app-left-menu></app-left-menu>
+
+<div class="general-content-box">
+    <div class="box-menu">
+        <span class="titulo-menu">Limite de gastos</span>
+
+        <div class="date-select-box">
+            <button mat-icon-button (click)="alterarMes(-1)">
+                <mat-icon>chevron_left</mat-icon>
+            </button>
+
+            <input type="month" [(ngModel)]="mesAnoSelecionado" (change)="filtrarPorMesAno(mesAnoSelecionado)" />
+
+            <button mat-icon-button (click)="alterarMes(1)">
+                <mat-icon>chevron_right</mat-icon>
+            </button>
+        </div>
+
+        <button mat-mini-fab (click)="onSave()" color="primary">
+            <mat-icon>add</mat-icon>
+        </button>
+    </div>
+
+    <mat-divider style="position: absolute; left: 0; right: 0;"></mat-divider>
+
+    <div class="summary">
+        <h2>despesas</h2>
+        <p>{{ geralGasto }} de <span>{{ geralOrcamento }}</span></p>
+
+        <div class="progress-container">
+            <mat-progress-bar
+                mode="determinate"
+                [value]="((geralGasto / geralOrcamento) * 100)"
+                [ngClass]="getClasseProgresso(((geralGasto / geralOrcamento) * 100))"
+                class="geral-progress-bar main-progress">
+            </mat-progress-bar>
+        </div>
+    </div>
+
+    <div *ngFor="let item of categorias" class="category">
+        <div class="category-icon-circle" [ngStyle]="{'background-color': item.color}">
+            <mat-icon class="icon">{{ item.icon }}</mat-icon>
+        </div>
+
+        <div class="details">
+            <div class="top-row">
+                <div class="title">{{ item.title }}</div>
+                <div class="amount-edit">
+                    <span class="amount">{{ item.spent }} de {{ item.limit }}</span>
+                    <mat-icon class="edit-icon" (click)="onEdit(item)">edit</mat-icon>
+                </div>
+            </div>
+
+            <div class="progress-container-item">
+                <mat-progress-bar mode="determinate"
+                    [value]="item.percentValue"
+                    [ngClass]="getClasseProgresso(item.percentValue)"
+                    class="item-progress-bar">
+                </mat-progress-bar>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<br><br><br>

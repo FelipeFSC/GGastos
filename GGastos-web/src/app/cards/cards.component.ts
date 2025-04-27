@@ -14,7 +14,7 @@ import { Account } from '../accounts/account.model';
 })
 export class CardsComponent implements OnInit {
 
-    onEditEcreen: boolean = false;
+    onViewiEcreen: boolean = false;
 
     selectedCard: Card = {};
 
@@ -32,7 +32,7 @@ export class CardsComponent implements OnInit {
     }
 
     onList() {
-        this.onEditEcreen = false;
+        this.onViewiEcreen = false;
 
         let success = (res: any) => {
             let list: Card[] = [];
@@ -94,7 +94,7 @@ export class CardsComponent implements OnInit {
                 closingDate: result.closingDate,
                 dueDate: result.dueDate,
                 account: {
-                    id: result.account
+                    id: result.account.id
                 }
             }
             this.onSave(card);
@@ -102,12 +102,12 @@ export class CardsComponent implements OnInit {
     }
 
     onOpenList() {
-        this.onEditEcreen = false;
+        this.onViewiEcreen = false;
     }
 
     onOpenEdit(card: Card) {
         this.selectedCard = card;
-        this.onEditEcreen = true;
+        this.onViewiEcreen = true;
     }
 
     onSave(card: Card) {

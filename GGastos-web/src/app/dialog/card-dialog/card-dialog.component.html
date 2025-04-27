@@ -13,7 +13,7 @@
 
     <br><br>
 
-    <mat-form-field appearance="legacy">
+    <mat-form-field appearance="outline">
         <mat-label>Icone</mat-label>
         <input [(ngModel)]="card.icon" matInput placeholder="Exemplo: love">
     </mat-form-field>
@@ -24,40 +24,42 @@
     <hr class="simple-horizontal-line">
     <br><br>
 
-    <mat-form-field class="example-full-width" appearance="fill">
+    <mat-form-field class="example-full-width" appearance="outline">
         <mat-label>Nome do cartão</mat-label>
         <input  [(ngModel)]="card.name" matInput>
     </mat-form-field>
 
-    <mat-form-field class="example-full-width" appearance="fill">
+    <mat-form-field class="example-full-width" appearance="outline">
         <mat-label>Limite</mat-label>
         <input [(ngModel)]="value" appCurrencyMask matInput>
     </mat-form-field>
 
     <div class="form-group">
-        <mat-form-field class="example-half-width" appearance="fill">
+        <mat-form-field class="example-half-width" appearance="outline">
             <mat-label>Fecha dia</mat-label>
             <mat-select [(ngModel)]="card.closingDate">
-                <mat-option *ngFor="let day of days" value="{{day}}">
+                <mat-option *ngFor="let day of days" [value]="day">
                     {{day}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
 
-        <mat-form-field class="example-half-width" appearance="fill">
+        <mat-form-field class="example-half-width" appearance="outline">
             <mat-label>Vence dia</mat-label>
             <mat-select [(ngModel)]="card.dueDate">
-                <mat-option *ngFor="let day of days" value="{{day}}">
+                <mat-option *ngFor="let day of days" [value]="day">
                     {{day}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
     </div>
 
-    <mat-form-field class="example-full-width" appearance="fill">
+    <mat-form-field class="example-full-width" appearance="outline">
         <mat-label>Conta de pagamento padrão</mat-label>
         <mat-select [(ngModel)]="card.account">
-            <mat-option *ngFor="let item of accounts" value="{{item.id!}}">{{item.name}}</mat-option>
+            <mat-option *ngFor="let item of accounts" [value]="item">
+                {{item.name}}
+            </mat-option>
         </mat-select>
     </mat-form-field>
 

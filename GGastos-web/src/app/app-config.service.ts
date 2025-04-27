@@ -23,6 +23,12 @@ export class AppConfigService {
 
 	private privateReports: string = "/reports";
 
+	private privateSpendingLimit: string = "/spending-limit";
+
+	public get spendingLimitUrl() {
+		return this.privateSpendingLimit;
+	}
+
 	public get reportsUrl(): string {
 		return this.privateReports;
 	}

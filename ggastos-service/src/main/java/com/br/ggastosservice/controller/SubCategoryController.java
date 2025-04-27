@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/sub-category")
 public class SubCategoryController {
     
-    SubCategoryService subCategoryService;
+    private SubCategoryService subCategoryService;
 
     public SubCategoryController(SubCategoryService subCategoryService) {
         this.subCategoryService = subCategoryService;
