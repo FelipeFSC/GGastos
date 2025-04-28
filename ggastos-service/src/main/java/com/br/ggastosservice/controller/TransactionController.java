@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.br.ggastosservice.dto.TesteDto;
 import com.br.ggastosservice.model.Transaction;
+import com.br.ggastosservice.service.SpendingLimitService;
 import com.br.ggastosservice.service.TransactionService;
 
 @RestController
@@ -22,8 +23,12 @@ public class TransactionController {
     
     private TransactionService transactionService;
 
-    public TransactionController(TransactionService transactionService) {
+    private SpendingLimitService spendingLimitService;
+
+    public TransactionController(TransactionService transactionService
+            , SpendingLimitService spendingLimitService) {
         this.transactionService = transactionService;
+        this.spendingLimitService = spendingLimitService;
     }
 
     @GetMapping("/date/{date}")
@@ -65,6 +70,7 @@ public class TransactionController {
     @PatchMapping("/{transactionId}/is-paid")
     public void isPaid(@PathVariable("transactionId") long transactionId) throws Exception {
         transactionService.paidTransaction(transactionId);
+        spendingLimitService.updateSpendLimitBalanceByCategory(transactionId);
     }
 
 

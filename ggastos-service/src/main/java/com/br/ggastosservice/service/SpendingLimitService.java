@@ -3,6 +3,7 @@ package com.br.ggastosservice.service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +43,15 @@ public class SpendingLimitService {
         return spendingLimitRepository.findAll();
     }
 
+    public List<SpendingLimit> findCurrentMonth() {
+        YearMonth mesAtual = YearMonth.now();
+
+        LocalDateTime inicioDoMes = mesAtual.atDay(1).atStartOfDay();
+        LocalDateTime fimDoMes = mesAtual.atEndOfMonth().atTime(23, 59, 59);
+
+        return spendingLimitRepository.findByFilterDateBetween(inicioDoMes, fimDoMes);
+    }
+
     public SpendingLimit create(SpendingLimit spendingLimit) throws Exception {
         Category category = categoryService.findOne(spendingLimit.getCategory().getId());
         
@@ -54,6 +64,33 @@ public class SpendingLimitService {
         return spendingLimit;
     }
 
+    public void updateSpendLimitBalanceByCategory(long transactionId) throws Exception {
+        Transaction transaction = transactionService.findOne(transactionId);
+
+        long categoryId = 0;
+        if (transaction.getCategory() == null) {
+            categoryId = transaction.getSubCategory().getCategory().getId();
+        } else {
+            categoryId = transaction.getCategory().getId();
+        }
+
+        YearMonth mesAtual = YearMonth.now();
+        LocalDateTime inicioDoMes = mesAtual.atDay(1).atStartOfDay();
+        LocalDateTime fimDoMes = mesAtual.atEndOfMonth().atTime(23, 59, 59);
+
+        SpendingLimit spendingLimit = spendingLimitRepository.findByCategoryIdAndFilterDateBetween(
+            categoryId, inicioDoMes, fimDoMes);
+
+        if (spendingLimit != null) {
+            List<Transaction> transactions = transactionService.findByDate(spendingLimit.getFilterDate(), categoryId);
+            BigDecimal spend = BigDecimal.ZERO;
+            for (Transaction item : transactions) {
+                spend = spend.add(item.getValue());
+            }
+            spendingLimit.setSpent(spend.abs());
+            spendingLimitRepository.save(spendingLimit);
+        }
+    }
 
     private void spendLimitVerification(SpendingLimit spendingLimit, Category category) throws Exception {
         LocalDateTime fim = spendingLimit.getFilterDate()

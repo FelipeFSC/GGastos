@@ -32,6 +32,11 @@ public class SpendingLimitController {
         return spendingLimitService.findAll();
     }
 
+    @GetMapping("/current-month")
+    public List<SpendingLimit> findCurrentMonth() {
+        return spendingLimitService.findCurrentMonth();
+    }
+
     @PostMapping()
     public void create(@RequestBody SpendingLimit spendingLimit) throws Exception {
         spendingLimitService.create(spendingLimit);

@@ -87,7 +87,7 @@
                             style="width: 30%; text-align: right; display: flex; flex-direction: row; justify-content: flex-end; align-items: center;">
                             <span class="expense-value sub-text-color">R$ {{item.value}}</span>
                             <mat-icon style="color: #ff7d77; width: 10px; margin-left: 8px; font-size: 19px; cursor: pointer;"
-                                (click)="onCheck(item.id)">thumb_up</mat-icon>
+                                (click)="onCheck(item)">thumb_up</mat-icon>
                         </div>
                     </mat-list-item>
                     <mat-divider *ngIf="i != (delayedTransactions.length-1)"></mat-divider>
@@ -106,10 +106,36 @@
 
             <div class="card card-right content-card">
                 <span class="title-text">
-                    Metas do mês atual
+                    Limites do mês atual
                 </span>
 
                 <mat-list>
+                    <div *ngFor="let item of spendingLimits; let i = index">
+                        <div style="display: flex; align-items: center;">
+                            <div echarts [options]="item.chart" class="chart2-style"></div>
+
+                            <div style="width: 70%;">
+                                <span class="category-text" [ngStyle]="{'color': item.color }">{{item.name}}</span>
+                                <br>
+                                <span class="expense-date sub-text-color">Limite: R$ {{item.limit}}</span>
+                                <br>
+                                <span class="expense-date sub-text-color">Gasto: R$ {{item.spent}}</span>
+                            </div>
+
+                            <div
+                                style="width: 30%; text-align: right; display: flex; flex-direction: row; justify-content: flex-end;">
+                                <span class="expense-value" [ngStyle]="{'color': item.statusColor }" style="font-size: 23px;">{{item.percentValue}}%</span>
+                            </div>
+                        </div>
+    
+                        <div *ngIf="i != (spendingLimits.length-1)">
+                            <br>
+                                <mat-divider></mat-divider>
+                            <br>
+                        </div>
+                    </div>
+
+                    <!--
                     <div style="display: flex; align-items: center;">
                         <div echarts [options]="option" class="chart2-style"></div>
 
@@ -126,28 +152,7 @@
                             <span class="expense-value sub-text-color" style="font-size: 23px;">11%</span>
                         </div>
                     </div>
-
-                    <br>
-                    <mat-divider></mat-divider>
-                    <br>
-
-                    <div style="display: flex; align-items: center;">
-                        <div echarts [options]="option" class="chart2-style"></div>
-
-                        <div style="width: 70%;">
-                            <span class="category-text">Meta geral de despesa</span>
-                            <br>
-                            <span class="expense-date sub-text-color">Meta: R$ 1.800,00</span>
-                            <br>
-                            <span class="expense-date sub-text-color">Gasto R$ 200,00</span>
-                        </div>
-
-                        <div
-                            style="width: 30%; text-align: right; display: flex; flex-direction: row; justify-content: flex-end;">
-                            <span class="expense-value sub-text-color" style="font-size: 23px;">11%</span>
-                        </div>
-                    </div>
-
+                    -->
                 </mat-list>
             </div>
         </div>

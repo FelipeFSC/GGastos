@@ -22,4 +22,8 @@ export class SpendingLimitService {
 	findAll() {
 		return this.httpService.get(this.url + this.appService.spendingLimitUrl);
 	}
+
+	findCurrentMonth() {
+		return this.httpService.get(this.url + this.appService.spendingLimitUrl + `/current-month`);
+	}
 }
