@@ -322,6 +322,7 @@ export class HomeComponent implements OnInit {
     onCheck(transaction: any) {
         let success = () => {
             this.getDelayedTransactions();
+            this.updateGeneralBalance();
 
             this.getCategoryGrafData();
             this.updateSpendingLimit(transaction.categoryId);
@@ -332,6 +333,21 @@ export class HomeComponent implements OnInit {
         }
 
         this.releasesService.isPaid(transaction.id)
+            .subscribe(this.extractDataService.extract(success, err));
+    }
+
+    updateGeneralBalance() {
+        let success = (result: any) => {
+            this.animateNumberSmooth(this.balance, result, 1000, val => {
+                this.balance = val;
+            });
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.accountsService.getGeneralBalance()
             .subscribe(this.extractDataService.extract(success, err));
     }
 
