@@ -15,20 +15,20 @@
         </div>
 
         <div class="date-select-box">
-
             <button mat-icon-button (click)="alterarMes(-1)">
                 <mat-icon>chevron_left</mat-icon>
             </button>
 
-            <input
-                type="month"
-                [(ngModel)]="mesAnoSelecionado"
-                (change)="filtrarPorMesAno(mesAnoSelecionado)"/>
+            <span class="month-display" (click)="abrirSeletor()">
+                {{ dataSelecionadaComoDate | date: 'MMMM yyyy' : '' : 'pt-BR' }}
+            </span>
+
+            <input #inputMes type="month" [(ngModel)]="mesAnoSelecionado"
+                (change)="filtrarPorMesAno(mesAnoSelecionado!)" class="hidden-month-input" />
 
             <button mat-icon-button (click)="alterarMes(1)">
                 <mat-icon>chevron_right</mat-icon>
             </button>
-
         </div>
 
         <div>
@@ -54,31 +54,22 @@
                 <div class="box-item" *ngFor="let item of geral.gastos" (click)="onEditItem(item.obj)">
                     <div class="box-category-options">
                         <div class="category">
-                            <span class="category-icon-circle"
-                                [ngStyle]="{'background-color': item.cor }">
+                            <span class="category-icon-circle" [ngStyle]="{'background-color': item.cor }">
                                 <mat-icon class="icon"> {{item.icone}} </mat-icon>
                             </span>
                             <span style="margin-left: 12px;"> {{item.nameCategoria}} </span>
                         </div>
                         <div class="options">
-                            <mat-icon *ngIf="item.isAnotacao" class="mini-icon"
-                                #tooltip="matTooltip"
-                                matTooltip={{item.isAnotacao}}
-                                matTooltipPosition='below'>chat
+                            <mat-icon *ngIf="item.isAnotacao" class="mini-icon" #tooltip="matTooltip"
+                                matTooltip={{item.isAnotacao}} matTooltipPosition='below'>chat
                             </mat-icon>
 
-                            <mat-icon *ngIf="item.isAnexo"
-                                (click)="onDownloadFile($event)"
-                                class="mini-icon"
-                                #tooltip="matTooltip"
-                                matTooltip={{item.isAnexo.nome}}
-                                matTooltipPosition='below'>image
+                            <mat-icon *ngIf="item.isAnexo" (click)="onDownloadFile($event)" class="mini-icon"
+                                #tooltip="matTooltip" matTooltip={{item.isAnexo.nome}} matTooltipPosition='below'>image
                             </mat-icon>
 
-                            <mat-icon *ngIf="item.isFixo" class="mini-icon"
-                                #tooltip="matTooltip"
-                                matTooltip="Lançamento fixo"
-                                matTooltipPosition='below'>cached
+                            <mat-icon *ngIf="item.isFixo" class="mini-icon" #tooltip="matTooltip"
+                                matTooltip="Lançamento fixo" matTooltipPosition='below'>cached
                             </mat-icon>
                         </div>
                     </div>
@@ -86,15 +77,13 @@
                         {{item.tipoConta}}
                     </div>
                     <div class="box-balance-check">
-                        <mat-icon
-                            (click)="onCheck($event, item.obj)" 
-                            [ngClass]="{
+                        <mat-icon (click)="onCheck($event, item.obj)" [ngClass]="{
                                 'aprovada': item.paidDate !== null,
                                 'pendente': item.paidDate === null
                             }">
                             thumb_up
                         </mat-icon>
-    
+
                         <span>
                             {{item.valor}}
                         </span>

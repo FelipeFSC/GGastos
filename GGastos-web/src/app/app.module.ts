@@ -1,4 +1,6 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -11,6 +13,7 @@ import { AppConfigService } from './app-config.service';
 import { HttpClientModule } from '@angular/common/http';
 import { ReportsModule } from './reports/reports.module';
 
+registerLocaleData(localePt);
 @NgModule({
     declarations: [
         AppComponent,
@@ -25,9 +28,10 @@ import { ReportsModule } from './reports/reports.module';
         ReportsModule
     ],
     providers: [
+        { provide: LOCALE_ID, useValue: 'pt-BR' },
         AppConfigService,
         HttpService,
     ],
-    bootstrap: [AppComponent]
+    bootstrap: [AppComponent],
 })
 export class AppModule { }

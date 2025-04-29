@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ReleasesDialogComponent } from '../dialog/releases-dialog/releases-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AccountsService } from '../accounts/accounts.service';
@@ -14,6 +14,8 @@ import { RecurrencesTypesService } from '../recurrences-types/categories.service
 })
 
 export class ReleasesComponent implements OnInit {
+
+    @ViewChild('inputMes') inputMes!: ElementRef;
 
     modeloDados: any = [];
 
@@ -45,6 +47,22 @@ export class ReleasesComponent implements OnInit {
         this.findExpensesCategory();
 
         this.filtrarPorMesAno(this.mesAnoSelecionado);
+    }
+
+    abrirSeletor() {
+        const input = this.inputMes.nativeElement;
+        input.style.pointerEvents = 'auto';
+        input.focus();
+        input.showPicker?.();
+        setTimeout(() => input.style.pointerEvents = 'none', 200);
+      }
+
+    get dataSelecionadaComoDate(): Date {
+        if (!this.mesAnoSelecionado) {
+            this.mesAnoSelecionado = this.pegarMesAtual();
+        }
+        const [ano, mes] = this.mesAnoSelecionado.split('-').map(Number);
+        return new Date(ano, mes - 1);
     }
 
     findAllAccountsAndCreditCards () {

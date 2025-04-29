@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SpendingLimitDialogComponent } from '../dialog/spending-limit-dialog/spending-limit-dialog.component';
 import { CategoriesService } from '../categories/categories.service';
@@ -13,18 +13,15 @@ import { SpendingLimitService } from './spending-limit.service';
 })
 export class SpendingLimitComponent implements OnInit {
 
+    @ViewChild('inputMes') inputMes!: ElementRef;
+
     mesAnoSelecionado: string = this.pegarMesAtual();
 
     geralGasto = 1100;
     geralOrcamento = 1550;
     geralProgresso = 71;
 
-    categorias: any = [
-        { title: 'Assinaturas e serviços', icon: 'desktop_windows', color: '#6c63ff', value: 0, spent: 0, limit: 250 },
-        { title: 'Bares e restaurantes', icon: 'local_bar', color: '#5c5470', value: 50, spent: 200, limit: 400 },
-        { title: 'Casa', icon: 'home', color: '#6c9eff', value: 85, spent: 600, limit: 700 },
-        { title: 'Cuidados pessoais', icon: 'person', color: '#d32f2f', value: 100, spent: 300, limit: 200 }
-    ];
+    categorias: any = [];
 
     expenseCategories: any = [];
 
@@ -38,6 +35,22 @@ export class SpendingLimitComponent implements OnInit {
     ngOnInit(): void {
         this.findExpensesCategory();
         this.findAll();
+    }
+
+    abrirSeletor() {
+        const input = this.inputMes.nativeElement;
+        input.style.pointerEvents = 'auto';
+        input.focus();
+        input.showPicker?.();
+        setTimeout(() => input.style.pointerEvents = 'none', 200);
+    }
+
+    get dataSelecionadaComoDate(): Date {
+        if (!this.mesAnoSelecionado) {
+            this.mesAnoSelecionado = this.pegarMesAtual();
+        }
+        const [ano, mes] = this.mesAnoSelecionado.split('-').map(Number);
+        return new Date(ano, mes - 1);
     }
 
     pegarMesAtual(): string {
@@ -66,7 +79,7 @@ export class SpendingLimitComponent implements OnInit {
 
 
     getClasseProgresso(progresso: number) {
-        if (progresso > 95){
+        if (progresso > 95) {
             return 'cor-vermelha';
         } else if (progresso > 75) {
             return 'cor-amarela';

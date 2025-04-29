@@ -9,7 +9,12 @@
                 <mat-icon>chevron_left</mat-icon>
             </button>
 
-            <input type="month" [(ngModel)]="mesAnoSelecionado" (change)="filtrarPorMesAno(mesAnoSelecionado)" />
+            <span class="month-display" (click)="abrirSeletor()">
+                {{ dataSelecionadaComoDate | date: 'MMMM yyyy' : '' : 'pt-BR' }}
+            </span>
+
+            <input #inputMes type="month" [(ngModel)]="mesAnoSelecionado"
+                (change)="filtrarPorMesAno(mesAnoSelecionado!)" class="hidden-month-input" />
 
             <button mat-icon-button (click)="alterarMes(1)">
                 <mat-icon>chevron_right</mat-icon>
