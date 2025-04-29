@@ -14,7 +14,7 @@ import { SpendingLimitService } from '../spending-limit/spending-limit.service';
 
 export class HomeComponent implements OnInit {
 
-    balance: string = "";
+    balance: number = 0;
 
     option: any = {
         series: [
@@ -95,6 +95,8 @@ export class HomeComponent implements OnInit {
 
     delayedTransactions: any = [];
 
+    spendingLimits: any = [];
+
     constructor(
         private accountsService: AccountsService,
         private extractDataService: ExtractDataService,
@@ -102,6 +104,8 @@ export class HomeComponent implements OnInit {
         private reportService: ReportsService,
         private spendingLimitService: SpendingLimitService
     ) { }
+
+    valorAnimado: number = 0;
 
     ngOnInit(): void {
         this.getGeneralBalance();
@@ -112,11 +116,105 @@ export class HomeComponent implements OnInit {
         this.getSpendingLimits();
     }
 
-    spendingLimits: any = [];
+
+    animateNumberSmooth(start: number, end: number, duration: number, callback: (val: number) => void) {
+        const startTime = performance.now();
+
+        const animate = (currentTime: number) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const value = start + (end - start) * progress;
+
+            callback(Math.round(value * 100) / 100);
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            }
+        };
+
+        requestAnimationFrame(animate);
+    }
+
+
+    animateNumberSmoothColor(start: number, end: number, duration: number, callback: (val: number, color: string) => void) {
+        const startTime = performance.now();
+
+        const animate = (currentTime: number) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const value = start + (end - start) * progress;
+
+            const color = this.getClasseProgresso(value);
+
+            callback(Math.round(value), color);
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            }
+        };
+
+        requestAnimationFrame(animate);
+    }
+
+
+    updateSpendingLimit(categoryId: number) {
+        let success = (result: any) => {
+            const updatedData = result.find((r: any) => r.category.id === categoryId);
+
+            let percentValue: number = ((updatedData.spent / updatedData.spentLimit) * 100);
+
+            for (let i = 0; i < this.spendingLimits.length; i++) {
+                if (this.spendingLimits[i].categoryId === categoryId) {
+                    let chart = {
+                        series: [
+                            {
+                                name: 'Access From',
+                                type: 'pie',
+                                radius: ['60%', '40%'],
+                                height: 65,
+                                left: 0,
+                                avoidLabelOverlap: false,
+                                label: {
+                                    show: false,
+                                    position: 'center'
+                                },
+                                labelLine: {
+                                    show: false
+                                },
+                                color: [
+                                    updatedData.category.color,
+                                    '#eaeded',
+                                ],
+                                data: [
+                                    { value: percentValue, name: 'meta' },
+                                    { value: (100 - percentValue), name: 'gasto' },
+                                ]
+                            }
+                        ]
+                    };
+                    let statusColor = this.getClasseProgresso(percentValue);
+
+                    this.spendingLimits[i].chart = chart;
+                    this.spendingLimits[i].statusColor = statusColor;
+                    this.spendingLimits[i].spent = updatedData.spent;
+                    this.spendingLimits[i].percentValue = percentValue.toFixed(0);
+                    this.spendingLimits[i].limit = updatedData.spentLimit;
+
+                    this.animateNumberSmoothColor(this.spendingLimits[i].animatedPercent, Number(this.spendingLimits[i].percentValue), 1000, (val, color) => {
+                        this.spendingLimits[i].animatedPercent = val;
+                        this.spendingLimits[i].statusColor = color;
+                    });
+                }
+            }
+        }
+
+        let err = (error: any) => {
+        }
+
+        this.spendingLimitService.findCurrentMonth()
+            .subscribe(this.extractDataService.extract(success, err));
+    }
 
     getSpendingLimits() {
         let success = (result: any) => {
-            console.log(result);
             let list = [];
 
             for (let item of result) {
@@ -152,18 +250,27 @@ export class HomeComponent implements OnInit {
                 let statusColor = this.getClasseProgresso(percentValue);
                 let data = {
                     id: item.id,
+                    categoryId: item.category.id,
                     chart: chart,
                     color: item.category.color,
                     statusColor: statusColor,
                     name: item.category.name,
                     spent: item.spent,
                     percentValue: percentValue.toFixed(0),
-                    limit: item.spentLimit
+                    limit: item.spentLimit,
+                    animatedPercent: 0,
                 }
 
                 list.push(data);
             }
             this.spendingLimits = list;
+
+            this.spendingLimits.forEach((item: any) => {
+                this.animateNumberSmoothColor(0, Number(item.percentValue), 1000, (val, color) => {
+                    item.animatedPercent = val;
+                    item.statusColor = color;
+                });
+            });
         }
 
         let err = (error: any) => {
@@ -174,7 +281,7 @@ export class HomeComponent implements OnInit {
     }
 
     getClasseProgresso(progresso: number) {
-        if (progresso > 95){
+        if (progresso > 95) {
             return '#d72638';
         } else if (progresso > 75) {
             return '#f59638';
@@ -186,9 +293,6 @@ export class HomeComponent implements OnInit {
     getDelayedTransactions() {
         let success = (result: any) => {
             let list = [];
-            console.log(result);
-
-
 
             for (let item of result) {
                 let categoryId = item.category == null ? item.subCategory.category.id : item.category.id;
@@ -220,17 +324,12 @@ export class HomeComponent implements OnInit {
             this.getDelayedTransactions();
 
             this.getCategoryGrafData();
-            this.getSpendingLimits();
+            this.updateSpendingLimit(transaction.categoryId);
         }
 
         let err = (error: any) => {
             console.log(error);
         }
-
-        console.log(transaction);
-
-        this.getSpendingLimits();
-
 
         this.releasesService.isPaid(transaction.id)
             .subscribe(this.extractDataService.extract(success, err));
@@ -238,9 +337,8 @@ export class HomeComponent implements OnInit {
 
     getGeneralBalance() {
         let success = (result: any) => {
-            this.balance = (result).toLocaleString('pt-BR', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
+            this.animateNumberSmooth(0, result, 1000, val => {
+                this.balance = val;
             });
         }
 

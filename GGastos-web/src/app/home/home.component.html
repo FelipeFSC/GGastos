@@ -110,7 +110,7 @@
                 </span>
 
                 <mat-list>
-                    <div *ngFor="let item of spendingLimits; let i = index">
+                    <div *ngFor="let item of spendingLimits; let i = index;">
                         <div style="display: flex; align-items: center;">
                             <div echarts [options]="item.chart" class="chart2-style"></div>
 
@@ -124,7 +124,7 @@
 
                             <div
                                 style="width: 30%; text-align: right; display: flex; flex-direction: row; justify-content: flex-end;">
-                                <span class="expense-value" [ngStyle]="{'color': item.statusColor }" style="font-size: 23px;">{{item.percentValue}}%</span>
+                                <span class="expense-value" [ngStyle]="{'color': item.statusColor }" style="font-size: 23px;">{{item.animatedPercent}}%</span>
                             </div>
                         </div>
     
@@ -134,25 +134,6 @@
                             <br>
                         </div>
                     </div>
-
-                    <!--
-                    <div style="display: flex; align-items: center;">
-                        <div echarts [options]="option" class="chart2-style"></div>
-
-                        <div style="width: 70%;">
-                            <span class="category-text">Meta geral de despesa</span>
-                            <br>
-                            <span class="expense-date sub-text-color">Meta: R$ 1.800,00</span>
-                            <br>
-                            <span class="expense-date sub-text-color">Gasto R$ 200,00</span>
-                        </div>
-
-                        <div
-                            style="width: 30%; text-align: right; display: flex; flex-direction: row; justify-content: flex-end;">
-                            <span class="expense-value sub-text-color" style="font-size: 23px;">11%</span>
-                        </div>
-                    </div>
-                    -->
                 </mat-list>
             </div>
         </div>
