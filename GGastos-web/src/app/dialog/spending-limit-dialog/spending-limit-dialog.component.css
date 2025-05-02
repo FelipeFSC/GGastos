@@ -15,3 +15,16 @@
 .mat-icon {
     margin-right: 0px!important;
 }
+
+.title {
+    margin-left: 10px;
+    font-size: 13px;
+    color: #333;
+}
+
+.category-box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}

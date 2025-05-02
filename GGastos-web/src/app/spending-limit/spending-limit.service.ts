@@ -19,6 +19,10 @@ export class SpendingLimitService {
 		return this.httpService.post(this.url + this.appService.spendingLimitUrl, spendingLimit);
 	}
 
+	update(spendingLimitId: number, spendingLimit: any) {
+		return this.httpService.put(this.url + this.appService.spendingLimitUrl + `/${spendingLimitId}`, spendingLimit);
+	}
+
 	findAll() {
 		return this.httpService.get(this.url + this.appService.spendingLimitUrl);
 	}

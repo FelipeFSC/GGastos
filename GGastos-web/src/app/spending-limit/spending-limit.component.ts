@@ -9,7 +9,7 @@ import { SpendingLimitService } from './spending-limit.service';
     selector: 'app-spending-limit',
     templateUrl: './spending-limit.component.html',
     styleUrls: ['./spending-limit.component.css'],
-    encapsulation: ViewEncapsulation.None,
+    encapsulation: ViewEncapsulation.Emulated,
 })
 export class SpendingLimitComponent implements OnInit {
 
@@ -132,7 +132,6 @@ export class SpendingLimitComponent implements OnInit {
 
     findAll() {
         let success = (data: any) => {
-            console.log(data);
             let list = [];
             let totalSpend = 0;
             let totalSpendLimit = 0;
@@ -168,6 +167,27 @@ export class SpendingLimitComponent implements OnInit {
     }
 
     onEdit(item: any) {
-        console.log(item);
+        let dialogRef = this.dialog.open(SpendingLimitDialogComponent, {
+            width: '400px',
+            data: {
+                categories: this.expenseCategories,
+                editData: item
+            }
+        });
+
+        dialogRef.afterClosed().subscribe((result: any) => {
+            if (result) {
+                console.log(result);
+                let success = (accountsCreditCards: any) => {
+                }
+        
+                let err = (error: any) => {
+                    console.log(error);
+                }
+        
+                this.spendingLimitService.update(item.id, result)
+                    .subscribe(this.extractDataService.extract(success, err));
+            }
+        });
     }
 }

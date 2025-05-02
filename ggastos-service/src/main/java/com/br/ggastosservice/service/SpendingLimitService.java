@@ -64,6 +64,16 @@ public class SpendingLimitService {
         return spendingLimit;
     }
 
+    public void update(long spendingLimitId, SpendingLimit spendingLimit) throws Exception {
+        SpendingLimit find = findOne(spendingLimitId);
+        spendingLimit.setCategory(find.getCategory());
+        spendingLimit.setSpent(find.getSpent());
+        spendingLimit.setCreateDate(find.getCreateDate());
+        spendingLimit.setId(spendingLimitId);
+        spendingLimitRepository.save(spendingLimit);
+    }
+
+
     public void updateSpendLimitBalanceByCategory(long transactionId) throws Exception {
         Transaction transaction = transactionService.findOne(transactionId);
 

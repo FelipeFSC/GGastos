@@ -3,7 +3,14 @@
         Novo limite de gastos
     </div>
 
-    <mat-form-field class="example-full-width" appearance="outline">
+    <div *ngIf="editMode" class="category-box">
+        <div class="category-icon-circle" [ngStyle]="{'background-color': icon.color}">
+            <mat-icon class="icon">{{ icon.icon }}</mat-icon>
+        </div>
+        <div class="title">{{ icon.title }}</div>
+    </div>
+
+    <mat-form-field *ngIf="!editMode" class="example-full-width" appearance="outline">
         <mat-label>Categoria</mat-label>
         <mat-select [(ngModel)]="categorySelected">
 

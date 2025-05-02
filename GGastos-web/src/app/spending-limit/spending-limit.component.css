@@ -4,9 +4,9 @@
     width: 100% !important;
 }
 
-.mat-progress-bar-buffer {
-    background: #edeaed !important;
-}
+:host ::ng-deep .mat-progress-bar .mat-progress-bar-buffer {
+    background: #edeaed;
+  }
 
 .mat-progress-bar {
     height: 15px !important;
@@ -14,15 +14,15 @@
     width: 100% !important;
 }
 
-.cor-vermelha .mat-progress-bar-fill::after {
+:host ::ng-deep .cor-vermelha .mat-progress-bar-fill::after {
     background-color: #d72638 !important;
 }
 
-.cor-amarela .mat-progress-bar-fill::after {
+:host ::ng-deep .cor-amarela .mat-progress-bar-fill::after {
     background-color: #f59638 !important;
 }
 
-.cor-verde .mat-progress-bar-fill::after {
+:host ::ng-deep .cor-verde .mat-progress-bar-fill::after {
     background-color: #129e3f !important;
 }
 
@@ -39,11 +39,12 @@
 }
 
 .date-select-box {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
     display: flex;
+    align-content: center;
+    justify-content: space-around;
     align-items: center;
+    flex-direction: row;
+    width: 40%;
 }
 
 

@@ -10,6 +10,10 @@ export class SpendingLimitDialogComponent implements OnInit {
 
     categorySelected: any = {};
 
+    editMode: boolean = false;
+
+    icon: any = {color: "", icon: "", title: ""};
+
     categorySubCategoryList: any[] = [];
 
     limite: number = 0;
@@ -21,6 +25,19 @@ export class SpendingLimitDialogComponent implements OnInit {
 
     ngOnInit(): void {
         this.categorySubCategoryList = this.data.categories;
+        if (this.data.editData) {
+            console.log("edit mode");
+            this.onLoadData(this.data.editData);
+        }
+    }
+
+    onLoadData(data: any) {
+        this.limite = data.limit;
+        this.icon.color = data.color;
+        this.icon.icon = data.icon;
+        this.icon.title = data.title;
+        this.editMode = true;
+
     }
 
     onSave() {
