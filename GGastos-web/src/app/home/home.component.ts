@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { EChartsCoreOption } from 'echarts';
 import { AccountsService } from '../accounts/accounts.service';
 import { ExtractDataService } from '../extract-data.service';
 import { ReportsService } from '../reports/reports.service';
 import { ReleasesService } from '../releases/releases.service';
 import { SpendingLimitService } from '../spending-limit/spending-limit.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
     selector: 'app-home',
@@ -108,14 +108,164 @@ export class HomeComponent implements OnInit {
     valorAnimado: number = 0;
 
     ngOnInit(): void {
-        this.getGeneralBalance();
-        this.getCategoryGrafData();
-        this.getAccounts();
-
-        this.getDelayedTransactions();
-        this.getSpendingLimits();
+        forkJoin({
+            totalBalance: this.accountsService.getGeneralBalance(),
+            categoryGraph: this.reportService.getCategoryReportDto(2),
+            accounts: this.accountsService.findByEnabled(true),
+            delayedTransactions: this.releasesService.findExpiredUnpaid(2),
+            spendingLimits: this.spendingLimitService.findCurrentMonth(),
+        }).subscribe({
+            next: (res) => {
+                this.getGeneralBalance(res.totalBalance);
+                this.getCategoryGrafData(res.categoryGraph);
+                this.getAccounts(res.accounts);
+                this.getDelayedTransactions(res.delayedTransactions);
+                this.getSpendingLimits(res.spendingLimits);
+            },
+            error: (err) => {
+                console.log(err)
+            }
+        });
     }
 
+    getGeneralBalance(result: any) {
+        this.animateNumberSmooth(this.balance, result, 1000, val => {
+            this.balance = val;
+        });
+    }
+
+    getCategoryGrafData(result: any) {
+        this.options = {
+            textStyle: {
+                fontFamily: "monospace",
+                fontSize: 11
+            },
+            tooltip: {
+                trigger: 'item'
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left'
+            },
+            series: [
+                {
+                    type: 'pie',
+                    radius: '50px',
+                    left: 130,
+                    bottom: 0,
+                    height: 150,
+                    color: result.colors,
+                    data: result.data,
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        }
+    }
+
+    getAccounts(result: any) {
+        let lista = [];
+        for (let item of result) {
+            let data = {
+                id: item.id,
+                name: item.name,
+                icon: item.icon,
+                color: item.color,
+                balance: this.formatValue(item.balance),
+                enabled: item.enabled,
+                main: item.main,
+                user: item.user
+            }
+
+            lista.push(data);
+        }
+        this.accounts = lista;
+    }
+
+    getDelayedTransactions(result: any) {
+        let list = [];
+
+        for (let item of result) {
+            let categoryId = item.category == null ? item.subCategory.category.id : item.category.id;
+            let account = item.account ? item.account.name : "";
+            let color = item.category ? item.category.color : item.subCategory.category.color;
+            let data = {
+                id: item.id,
+                color: color,
+                account: account,
+                date: new Date(item.transactionDate).toLocaleDateString('pt-BR'),
+                description: item.description,
+                categoryId: categoryId,
+                value: this.formatValue(item.value)
+            }
+            list.push(data);
+        }
+        this.delayedTransactions = list;
+    }
+
+    getSpendingLimits(result: any) {
+        let list = [];
+
+        for (let item of result) {
+            let percentValue: number = ((item.spent / item.spentLimit) * 100);
+            let chart = {
+                series: [
+                    {
+                        name: 'Access From',
+                        type: 'pie',
+                        radius: ['60%', '40%'],
+                        height: 65,
+                        left: 0,
+                        avoidLabelOverlap: false,
+                        label: {
+                            show: false,
+                            position: 'center'
+                        },
+                        labelLine: {
+                            show: false
+                        },
+                        color: [
+                            item.category.color,
+                            '#eaeded',
+                        ],
+                        data: [
+                            { value: percentValue, name: 'meta' },
+                            { value: (100 - percentValue), name: 'gasto' },
+                        ]
+                    }
+                ]
+            };
+
+            let statusColor = this.getClasseProgresso(percentValue);
+            let data = {
+                id: item.id,
+                categoryId: item.category.id,
+                chart: chart,
+                color: item.category.color,
+                statusColor: statusColor,
+                name: item.category.name,
+                spent: item.spent,
+                percentValue: percentValue.toFixed(0),
+                limit: item.spentLimit,
+                animatedPercent: 0,
+            }
+
+            list.push(data);
+        }
+        this.spendingLimits = list;
+
+        this.spendingLimits.forEach((item: any) => {
+            this.animateNumberSmoothColor(0, Number(item.percentValue), 1000, (val, color) => {
+                item.animatedPercent = val;
+                item.statusColor = color;
+            });
+        });
+    }
 
     animateNumberSmooth(start: number, end: number, duration: number, callback: (val: number) => void) {
         const startTime = performance.now();
@@ -154,6 +304,36 @@ export class HomeComponent implements OnInit {
         requestAnimationFrame(animate);
     }
 
+    onCheck(transaction: any) {
+        let success = () => {
+            this.updateSpendingLimit(transaction.categoryId);
+            this.updateHome();
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.releasesService.isPaid(transaction.id)
+            .subscribe(this.extractDataService.extract(success, err));
+    }
+
+    updateHome() {
+        forkJoin({
+            totalBalance: this.accountsService.getGeneralBalance(),
+            categoryGraph: this.reportService.getCategoryReportDto(2),
+            delayedTransactions: this.releasesService.findExpiredUnpaid(2),
+        }).subscribe({
+            next: (res) => {
+                this.getGeneralBalance(res.totalBalance);
+                this.getCategoryGrafData(res.categoryGraph);
+                this.getDelayedTransactions(res.delayedTransactions);
+            },
+            error: (err) => {
+                console.log(err)
+            }
+        });
+    }
 
     updateSpendingLimit(categoryId: number) {
         let success = (result: any) => {
@@ -213,73 +393,6 @@ export class HomeComponent implements OnInit {
             .subscribe(this.extractDataService.extract(success, err));
     }
 
-    getSpendingLimits() {
-        let success = (result: any) => {
-            let list = [];
-
-            for (let item of result) {
-                let percentValue: number = ((item.spent / item.spentLimit) * 100);
-                let chart = {
-                    series: [
-                        {
-                            name: 'Access From',
-                            type: 'pie',
-                            radius: ['60%', '40%'],
-                            height: 65,
-                            left: 0,
-                            avoidLabelOverlap: false,
-                            label: {
-                                show: false,
-                                position: 'center'
-                            },
-                            labelLine: {
-                                show: false
-                            },
-                            color: [
-                                item.category.color,
-                                '#eaeded',
-                            ],
-                            data: [
-                                { value: percentValue, name: 'meta' },
-                                { value: (100 - percentValue), name: 'gasto' },
-                            ]
-                        }
-                    ]
-                };
-
-                let statusColor = this.getClasseProgresso(percentValue);
-                let data = {
-                    id: item.id,
-                    categoryId: item.category.id,
-                    chart: chart,
-                    color: item.category.color,
-                    statusColor: statusColor,
-                    name: item.category.name,
-                    spent: item.spent,
-                    percentValue: percentValue.toFixed(0),
-                    limit: item.spentLimit,
-                    animatedPercent: 0,
-                }
-
-                list.push(data);
-            }
-            this.spendingLimits = list;
-
-            this.spendingLimits.forEach((item: any) => {
-                this.animateNumberSmoothColor(0, Number(item.percentValue), 1000, (val, color) => {
-                    item.animatedPercent = val;
-                    item.statusColor = color;
-                });
-            });
-        }
-
-        let err = (error: any) => {
-        }
-
-        this.spendingLimitService.findCurrentMonth()
-            .subscribe(this.extractDataService.extract(success, err));
-    }
-
     getClasseProgresso(progresso: number) {
         if (progresso > 95) {
             return '#d72638';
@@ -289,159 +402,11 @@ export class HomeComponent implements OnInit {
         return '#129e3f';
     }
 
-
-    getDelayedTransactions() {
-        let success = (result: any) => {
-            let list = [];
-
-            for (let item of result) {
-                let categoryId = item.category == null ? item.subCategory.category.id : item.category.id;
-                let account = item.account ? item.account.name : "";
-                let color = item.category ? item.category.color : item.subCategory.category.color;
-                let data = {
-                    id: item.id,
-                    color: color,
-                    account: account,
-                    date: new Date(item.transactionDate).toLocaleDateString('pt-BR'),
-                    description: item.description,
-                    categoryId: categoryId,
-                    value: this.formatValue(item.value)
-                }
-                list.push(data);
-            }
-            this.delayedTransactions = list;
-        }
-
-        let err = (error: any) => {
-        }
-
-        this.releasesService.findExpiredUnpaid(2)
-            .subscribe(this.extractDataService.extract(success, err));
-    }
-
-    onCheck(transaction: any) {
-        let success = () => {
-            this.getDelayedTransactions();
-            this.updateGeneralBalance();
-
-            this.getCategoryGrafData();
-            this.updateSpendingLimit(transaction.categoryId);
-        }
-
-        let err = (error: any) => {
-            console.log(error);
-        }
-
-        this.releasesService.isPaid(transaction.id)
-            .subscribe(this.extractDataService.extract(success, err));
-    }
-
-    updateGeneralBalance() {
-        let success = (result: any) => {
-            this.animateNumberSmooth(this.balance, result, 1000, val => {
-                this.balance = val;
-            });
-        }
-
-        let err = (error: any) => {
-            console.log(error);
-        }
-
-        this.accountsService.getGeneralBalance()
-            .subscribe(this.extractDataService.extract(success, err));
-    }
-
-    getGeneralBalance() {
-        let success = (result: any) => {
-            this.animateNumberSmooth(0, result, 1000, val => {
-                this.balance = val;
-            });
-        }
-
-        let err = (error: any) => {
-            console.log(error);
-        }
-
-        this.accountsService.getGeneralBalance()
-            .subscribe(this.extractDataService.extract(success, err));
-    }
-
-    getAccounts() {
-        let success = (result: any) => {
-            let lista = [];
-            for (let item of result) {
-                let data = {
-                    id: item.id,
-                    name: item.name,
-                    icon: item.icon,
-                    color: item.color,
-                    balance: this.formatValue(item.balance),
-                    enabled: item.enabled,
-                    main: item.main,
-                    user: item.user
-                }
-
-                lista.push(data);
-            }
-            this.accounts = lista;
-        }
-
-        let err = (error: any) => {
-            console.log(error);
-        }
-
-        this.accountsService.findByEnabled(true)
-            .subscribe(this.extractDataService.extract(success, err));
-    }
-
     formatValue(value: number): string {
         return (value).toLocaleString('pt-BR', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
         });
-    }
-
-    getCategoryGrafData() {
-        let success = (result: any) => {
-            this.options = {
-                textStyle: {
-                    fontFamily: "monospace",
-                    fontSize: 11
-                },
-                tooltip: {
-                    trigger: 'item'
-                },
-                legend: {
-                    orient: 'vertical',
-                    left: 'left'
-                },
-                series: [
-                    {
-                        type: 'pie',
-                        radius: '50px',
-                        left: 130,
-                        bottom: 0,
-                        height: 150,
-                        color: result.colors,
-                        data: result.data,
-                        emphasis: {
-                            itemStyle: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)'
-                            }
-                        }
-                    }
-                ]
-            }
-        }
-
-        let err = (error: any) => {
-            console.log(error);
-        }
-
-        this.reportService.getCategoryReportDto(2)
-            .subscribe(this.extractDataService.extract(success, err));
     }
 
 }

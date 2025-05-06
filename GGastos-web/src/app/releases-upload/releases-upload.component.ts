@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { TesteComponent } from '../dialog/teste/teste.component';
 import { ExtractDataService } from '../extract-data.service';
 import { CategoriesService } from '../categories/categories.service';
 import { ReleasesService } from '../releases/releases.service';
 import { AccountsService } from '../accounts/accounts.service';
+import { RecurrencesTypesService } from '../recurrences-types/categories.service';
 
 @Component({
     selector: 'app-releases-upload',
@@ -13,146 +13,102 @@ import { AccountsService } from '../accounts/accounts.service';
 })
 export class ReleasesUploadComponent implements OnInit {
 
+    @ViewChild('inputMes') inputMes!: ElementRef;
+
+    modeloDados: any = [];
+
+    dataSource: any = [];
+
+    totalReceita: number = 0;
+    totalDespesa: number = 0;
+
+    expenseCategories: any = [];
+    incomeCategories: any = [];
+
+    transacoes = [];
+
+    filtros: any[] = [];
+    filtroSelecionado: any | null = null;
+
     constructor(
         private dialog: MatDialog,
         private extractDataService: ExtractDataService,
         private categoriesService: CategoriesService,
         private releasesService: ReleasesService,
         private accountsService: AccountsService,
+        private recurrencesTypesService: RecurrencesTypesService,
     ) { }
 
     ngOnInit(): void {
-        this.findAllAccountsAndCreditCards();
         this.findIncomeCategory();
         this.findExpensesCategory();
+
+        this.filtros = this.gerarFiltros(this.transacoes);
     }
 
-    groupedList: any[] = [];
-    expanded: boolean[] = [];
 
 
-    onFileSelected(event: Event): void {
-        const input = event.target as HTMLInputElement;
-        if (!input.files?.length) return;
+    gerarFiltros(dados: any[]): any[] {
+        const mapa = new Map<string, any>();
 
-        const file = input.files[0];
-        const reader = new FileReader();
+        for (const item of dados) {
+            const data = new Date(item.data);
+            const mes = data.getMonth();
+            const ano = data.getFullYear();
+            const key = `${mes}-${ano}`;
 
-        reader.onload = () => {
-            const text = reader.result as string;
-            const transactions = this.parseCSV(text);
-            this.groupedList = this.groupByDescription(transactions);
-            this.expanded = new Array(this.groupedList.length).fill(false); // inicia tudo fechado
-
-
-            this.boraArrumar(this.groupedList);
-        };
-
-        reader.readAsText(file);
-    }
-
-    toggle(index: number): void {
-        this.expanded[index] = !this.expanded[index];
-    }
-
-    parseCSV(csv: string): any[] {
-        const lines = csv.trim().split('\n');
-        const transactions: any[] = [];
-
-        for (const line of lines) {
-            const [date, amount, id, ...descParts] = line.split(',');
-            let description = descParts.join(',').trim();
-            description = this.cleanDescription(description);
-
-            transactions.push({
-                date: date.trim(),
-                amount: parseFloat(amount),
-                id: id.trim(),
-                description,
-            });
+            if (!mapa.has(key)) {
+                mapa.set(key, {
+                    mes,
+                    ano,
+                    label: data.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }),
+                    total: 1
+                });
+            } else {
+                mapa.get(key)!.total += 1;
+            }
         }
 
-        return transactions;
+        return Array.from(mapa.values()).sort((a, b) => {
+            const dataA = new Date(a.ano, a.mes);
+            const dataB = new Date(b.ano, b.mes);
+            return dataB.getTime() - dataA.getTime();
+        });
     }
 
-    cleanDescription(desc: string): string {
-        desc = desc.replace(/•{3}\.\d{3}\.\d{3}-•{2}/g, '');
+    selecionarFiltro(filtro: any) {
+        this.filtroSelecionado = filtro;
 
-        // Remove "Transferência..." genérica (com ou sem Pix)
-        desc = desc.replace(/Transfer[êe]ncia (recebida|enviada)( pelo Pix)?\s*[-:]?\s*/gi, '');
+        this.dataSource = filtro;
 
-        // Remove "Pix recebido de", "Pix enviado para", etc.
-        desc = desc.replace(/Pix (recebido de|enviado para)\s*[-:]?\s*/gi, '');
+        let list = [];
 
-        // Remove agência e conta
-        desc = desc.replace(/Agência:\s*\d+/gi, '');
-        desc = desc.replace(/Conta:\s*\d+/gi, '');
+        let gastos = [];
+        let beforeDay;
+        for (let item of filtro.transacoes) {
+            let day = new Date(item.data).getDate();
 
-        // Remove espaços duplicados e hifens extras
-        desc = desc.replace(/-+/g, '-');
-        desc = desc.replace(/\s{2,}/g, ' ').trim();
+            let gasto = {
+                cor: "#cacaca",
+                icone: "image",
+                description: item.descricao,
+                valor: item.valor
+            };
 
-        // Se ainda sobrar hífen no final ou início, remove
-        desc = desc.replace(/^-+|-+$/g, '').trim();
-
-        return desc;
-    }
-
-    groupByDescription(transactions: any[]): any[] {
-        const map = new Map<string, any[]>();
-
-        for (const tx of transactions) {
-            const category = this.extractCategoryName(tx.description);
-
-            if (!map.has(category)) {
-                map.set(category, []);
+            if (day != beforeDay && beforeDay) {
+                list.push({
+                    date: beforeDay,
+                    gastos: gastos
+                });
+                gastos = [];
+                gastos.push(gasto);
+            } else {
+                gastos.push(gasto);
             }
 
-            map.get(category)!.push(tx);
+            beforeDay = day;
         }
-
-        // Agora convertemos para o formato [{ category, transactions }]
-        return Array.from(map.entries()).map(([category, transactions]) => ({
-            category,
-            transactions,
-        }));
-    }
-
-    extractCategoryName(description: string): string {
-        if (description.includes('NuInvest')) return 'NuInvest';
-        if (description.includes('Pix - VANESSA')) return 'Pix - VANESSA';
-        if (description.includes('Rendimento')) return 'Rendimentos';
-        return description;
-    }
-
-    boraArrumar(data: any) {
-        console.log("aaaaaaaaaaaaaaaaaaa");
-        // console.log(data);
-
-        console.log(data);
-
-        for (let item of data) {
-
-        }
-
-    }
-
-
-
-    accounts: any = [];
-    expenseCategories: any = [];
-    incomeCategories: any = [];
-    findAllAccountsAndCreditCards () {
-        let success = (accountsCreditCards: any) => {
-            this.accounts = accountsCreditCards;
-        }
-
-        let err = (error: any) => {
-            console.log(error);
-        }
-
-        this.accountsService.findAllAccountsAndCreditCards()
-            .subscribe(this.extractDataService.extract(success, err));
+        this.dataSource = list;
     }
 
     findIncomeCategory() {
@@ -182,47 +138,88 @@ export class ReleasesUploadComponent implements OnInit {
     }
 
 
+    pegarMesAtual(): string {
+        const hoje = new Date();
+        const ano = hoje.getFullYear();
+        const mes = (hoje.getMonth() + 1).toString().padStart(2, '0');
+        return `${ano}-${mes}`;
+    }
 
 
-    onCategoryAction(item: any): void {
-        console.log('Cliquei na categoria:');
-
-
-        const dialogRef = this.dialog.open(TesteComponent, {
-            width: '600px',
-            data: {
-                groupedList: item,
-                accounts: this.accounts,
-                expenseCategories: this.expenseCategories,
-                incomeCategories: this.incomeCategories
-            }
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                console.log('Usuário confirmou:', result);
-
-                let success = (data: any) => {}
-        
-                let err = (error: any) => {}
-        
-                let data = {
-                    accountId: result.account.id,
-                    categoryId: result.category.id,
-                    transactions: result.transactions.transactions
-                }
-
-                console.log(data);
-
-                this.releasesService.teste(data)
-                    .subscribe(this.extractDataService.extract(success, err));
-
-            } else {
-                console.log('Usuário cancelou');
-            }
-        });
-
-        // this.groupedList = this.groupedList.filter(group => group !== item);
+    onCheck(event: MouseEvent, transaction: any) {
 
     }
+
+    handleFileUpload(event: Event) {
+        const input = event.target as HTMLInputElement;
+
+        if (!input.files?.length) return;
+
+        const file = input.files[0];
+        const reader = new FileReader();
+
+        reader.onload = () => {
+            const text = reader.result as string;
+            const linhas = text.split('\n').filter(l => l.trim() !== '');
+
+            linhas.shift();
+
+            const transacoes: any[] = linhas.map((linha) => {
+                const [dataStr, valorStr, identificador, desc] = linha.split(',').map(s => s.trim());
+                const [dia, mes, ano] = dataStr.split('/').map(n => parseInt(n, 10));
+
+                let descricao = desc.split(' - ')[0];
+                if (desc.split(' - ')[1]) {
+                    descricao += " - " + desc.split(' - ')[1];
+                }
+                return {
+                    data: new Date(ano, mes - 1, dia),
+                    valor: parseFloat(valorStr),
+                    identificador,
+                    descricao
+                };
+            });
+
+            this.organizarPorMes(transacoes);
+        };
+
+        reader.readAsText(file);
+    }
+
+    organizarPorMes(transacoes: any[]) {
+        const mapa = new Map<string, any>();
+
+        for (const t of transacoes) {
+            const mes = t.data.getMonth();
+            const ano = t.data.getFullYear();
+            const key = `${mes}-${ano}`;
+
+            if (!mapa.has(key)) {
+                mapa.set(key, {
+                    mes,
+                    ano,
+                    label: t.data.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }),
+                    total: 1,
+                    transacoes: [t]
+                });
+            } else {
+                const filtro = mapa.get(key)!;
+                filtro.total += 1;
+                filtro.transacoes.push(t);
+            }
+        }
+
+        this.filtros = Array.from(mapa.values()).sort((a, b) => {
+            const dataA = new Date(a.ano, a.mes);
+            const dataB = new Date(b.ano, b.mes);
+            return dataB.getTime() - dataA.getTime();
+        });
+
+        console.log('Filtros gerados:', this.filtros);
+    }
+
+    salvar() {
+        console.log('Salvar');
+    }
+
 }

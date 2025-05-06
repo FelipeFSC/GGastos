@@ -52,6 +52,15 @@ public class SpendingLimitService {
         return spendingLimitRepository.findByFilterDateBetween(inicioDoMes, fimDoMes);
     }
 
+    public List<SpendingLimit> findByMonthAndYear(String date) {
+        YearMonth yearMonth = YearMonth.parse(date);
+
+        LocalDateTime inicioDoMes = yearMonth.atDay(1).atStartOfDay();
+        LocalDateTime fimDoMes = yearMonth.atEndOfMonth().atTime(23, 59, 59);
+    
+        return spendingLimitRepository.findByFilterDateBetween(inicioDoMes, fimDoMes);
+    }
+
     public SpendingLimit create(SpendingLimit spendingLimit) throws Exception {
         Category category = categoryService.findOne(spendingLimit.getCategory().getId());
         

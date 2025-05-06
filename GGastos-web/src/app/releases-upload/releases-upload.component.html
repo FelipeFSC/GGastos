@@ -1,45 +1,97 @@
 <app-left-menu></app-left-menu>
 
-<p>releases-upload works!</p>
 
-<input type="file" (change)="onFileSelected($event)" accept=".csv" />
+<div class="box-general">
+    <div class="box-menu">
 
-<mat-card style="
-    width: 70%;
-    margin: auto;
-">
+        <div class="carousel-container">
+            <div class="carousel">
+                <button *ngFor="let filtro of filtros" [ngClass]="{'active': filtroSelecionado === filtro}"
+                    class="carousel-button" (click)="selecionarFiltro(filtro)">
 
-    <mat-accordion *ngIf="groupedList.length">
-        <mat-expansion-panel *ngFor="let group of groupedList">
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    {{ group.category }}
-                </mat-panel-title>
-                <mat-panel-description class="category-actions">
-                    <span>
-                        {{ group.transactions.length }} transações
+                    {{ filtro.label | titlecase }}
+                    <span class="contador">({{ filtro.total }})</span>
+
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="box-filter">
+
+    </div>
+
+    <div class="box-content" *ngFor="let data of dataSource; let i = index">
+
+        <div class="box-data">
+            <span class="box-content-date"> {{data.date}} </span>
+
+            <div class="box-content-itens">
+                <div class="box-item" *ngFor="let item of data.gastos">
+                    <span class="category-icon-circle" [ngStyle]="{'background-color': item.cor }">
+                        <mat-icon class="icon"> {{item.icone}} </mat-icon>
                     </span>
+                    <div class="box-category-options">
+                        <div class="category">
+                            
+                            <span style="margin-left: 12px;"> {{item.description}} </span>
+                        </div>
 
-                    <button mat-icon-button color="primary" (click)="onCategoryAction(group); $event.stopPropagation()">
-                        <mat-icon>download_done</mat-icon>
-                    </button>
-                </mat-panel-description>
-            </mat-expansion-panel-header>
-
-            <mat-list>
-                <mat-list-item *ngFor="let tx of group.transactions">
-                    <div style="display: flex;  flex-direction: column; padding: 12px 0px;">
-                        <span><strong>Data:</strong> {{ tx.date }}</span>
-                        <span><strong>Valor:</strong> R$ {{ tx.amount.toFixed(2) }}</span>
-                        <span><strong>Descrição:</strong> {{ tx.description }}</span>
                     </div>
-                </mat-list-item>
-            </mat-list>
-        </mat-expansion-panel>
-    </mat-accordion>
+                    <div class="box-account">
+                        
+                    </div>
 
-</mat-card>
+                    <div class="box-balance-check">
+                        <mat-icon (click)="onCheck($event, item.obj)" [ngClass]="{
+                                'aprovada': item.paidDate !== null,
+                                'pendente': item.paidDate === null
+                            }">
+                            thumb_up
+                        </mat-icon>
+
+                        <span>
+                            {{item.valor}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr *ngIf="i < dataSource.length-1" class="simple-horizontal-line">
+    </div>
+    <hr class="simple-horizontal-line">
+    <div class="box-total">
+        <div class="box-itens-total">
+            <div class="space-between">
+                <span style="color: #858782">Total Receita</span>
+                <span style="font-size: 16px; color: #858782">{{totalReceita.toFixed(2)}}</span>
+            </div>
+            <div class="space-between">
+                <span style="color: #858782">Total Despesas</span>
+                <span style="font-size: 16px; color: #858782">{{totalDespesa.toFixed(2)}}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button mat-fab color="accent" class="floating-button left" (click)="fileInput.click()">
+    <mat-icon>upload_file</mat-icon>
+  </button>
+
+<button mat-fab color="primary" class="floating-button right" (click)="salvar()">
+    <mat-icon>save</mat-icon>
+</button>
 
 <div>
     <br><br>
+    <br><br>
+    <br><br>
 </div>
+
+<input 
+  type="file" 
+  #fileInput 
+  hidden 
+  (change)="handleFileUpload($event)" />

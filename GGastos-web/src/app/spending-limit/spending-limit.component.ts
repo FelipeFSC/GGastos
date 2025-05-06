@@ -34,7 +34,7 @@ export class SpendingLimitComponent implements OnInit {
 
     ngOnInit(): void {
         this.findExpensesCategory();
-        this.findAll();
+        this.findCurrentMonth();
     }
 
     abrirSeletor() {
@@ -74,7 +74,39 @@ export class SpendingLimitComponent implements OnInit {
     }
 
     filtrarPorMesAno(valor: string) {
-        // this.onList(valor);
+        let success = (data: any) => {
+            let list = [];
+            let totalSpend = 0;
+            let totalSpendLimit = 0;
+
+            for (let item of data) {
+                totalSpend += item.spent;
+                totalSpendLimit += item.spentLimit;
+
+                let category = {
+                    id: item.id,
+                    title: item.category.name,
+                    icon: item.category.icon,
+                    color: item.category.color,
+                    percentValue: ((item.spent / item.spentLimit) * 100),
+                    spent: item.spent,
+                    limit: item.spentLimit
+                }
+                list.push(category);
+            }
+            this.geralGasto = totalSpend;
+            this.geralOrcamento = totalSpendLimit;
+            this.geralProgresso = ((totalSpend / totalSpendLimit) * 100);
+
+            this.categorias = list;
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.spendingLimitService.findDate(valor)
+            .subscribe(this.extractDataService.extract(success, err));
     }
 
 
@@ -130,7 +162,7 @@ export class SpendingLimitComponent implements OnInit {
     }
 
 
-    findAll() {
+    findCurrentMonth() {
         let success = (data: any) => {
             let list = [];
             let totalSpend = 0;
@@ -162,7 +194,7 @@ export class SpendingLimitComponent implements OnInit {
             console.log(error);
         }
 
-        this.spendingLimitService.findAll()
+        this.spendingLimitService.findCurrentMonth()
             .subscribe(this.extractDataService.extract(success, err));
     }
 
