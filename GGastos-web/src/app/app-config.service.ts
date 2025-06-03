@@ -7,6 +7,8 @@ export class AppConfigService {
 
 	private privateBaseUrl: string = 'http://localhost:8081';
 
+	private privateBaseN8n: string = 'http://localhost:5678/webhook';
+
 	private privateCategory: string = "/categories";
 
 	private privateSubCategory: string = "/sub-category";
@@ -63,5 +65,9 @@ export class AppConfigService {
 
 	public get cardUrl(): string {
 		return this.privateCard;
+	}
+
+	public get n8nUrl(): string {
+		return this.privateBaseN8n;
 	}
 }

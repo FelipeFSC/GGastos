@@ -27,6 +27,10 @@ export class LeftMenuComponent implements OnInit {
         this.router.navigate(['releases-upload']);
     }
 
+    onInvestments() {
+        this.router.navigate(['investments']);
+    }
+
     onReports() {
         this.router.navigate(['reports']);
     }

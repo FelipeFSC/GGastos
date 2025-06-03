@@ -1,0 +1,128 @@
+<app-left-menu></app-left-menu>
+
+<div class="container">
+    <h1>Fundos Imobiliários</h1>
+
+    <br>
+
+    <mat-card>
+        <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Pesquisar fundo</mat-label>
+            <input matInput [(ngModel)]="filtro" placeholder="Digite o nome ou código">
+            <button mat-icon-button matSuffix *ngIf="filtro" (click)="filtro=''">
+                <mat-icon>close</mat-icon>
+            </button>
+            <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+
+        <div class="resumo-grid">
+            <mat-card class="resumo-card" *ngFor="let item of resumo.slice(0, 6)">
+                <div class="resumo-conteudo">
+                    <div class="titulo">{{ item.titulo }}</div>
+                    <div class="valor">{{ item.valor }}</div>
+                </div>
+            </mat-card>
+        </div>
+        <br>
+        <mat-card class="resumo-card">
+            <div class="">
+                <div class="titulo">{{ resumo[6].titulo }}</div>
+                <div class="valor">{{ resumo[6].valor }}</div>
+            </div>
+        </mat-card>
+
+
+        <br><br>
+        <div class="charts-box">
+            <div echarts [options]="option" class="chart2-style"></div>
+        </div>
+
+        <br>
+        <div class="quatro-cards-container">
+            <mat-card class="quatro-card" *ngFor="let item of dados">
+                <div class="quatro-conteudo">
+                    <div class="quatro-titulo">{{ item.titulo }}</div>
+                    <div class="quatro-valor">{{ item.valor }}</div>
+                </div>
+            </mat-card>
+        </div>
+    </mat-card>
+
+    <br><br>
+
+    <div class="cards-container">
+        <mat-card class="painel-card">
+            <mat-card-title>Maiores Altas</mat-card-title>
+            <div class="table-wrapper">
+                <table mat-table [dataSource]="melhoresFiltrados()" class="mat-elevation-z2">
+                    <ng-container matColumnDef="nome">
+                        <th mat-header-cell *matHeaderCellDef> Nome </th>
+                        <td mat-cell *matCellDef="let fundo"> {{ fundo.nome }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="codigo">
+                        <th mat-header-cell *matHeaderCellDef> Código </th>
+                        <td mat-cell *matCellDef="let fundo"> {{ fundo.codigo }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="rentabilidade">
+                        <th mat-header-cell *matHeaderCellDef> Rentabilidade (%) </th>
+                        <td mat-cell *matCellDef="let fundo"> {{ fundo.rentabilidade }} </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="colunas"></tr>
+                    <tr mat-row *matRowDef="let row; columns: colunas;"></tr>
+                </table>
+            </div>
+        </mat-card>
+
+        <mat-card class="painel-card">
+            <mat-card-title>Maiores Baixas</mat-card-title>
+            <div class="table-wrapper">
+                <table mat-table [dataSource]="pioresFiltrados()" class="mat-elevation-z2">
+                    <ng-container matColumnDef="nome">
+                        <th mat-header-cell *matHeaderCellDef> Nome </th>
+                        <td mat-cell *matCellDef="let fundo"> {{ fundo.nome }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="codigo">
+                        <th mat-header-cell *matHeaderCellDef> Código </th>
+                        <td mat-cell *matCellDef="let fundo"> {{ fundo.codigo }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="rentabilidade">
+                        <th mat-header-cell *matHeaderCellDef> Rentabilidade (%) </th>
+                        <td mat-cell *matCellDef="let fundo"> {{ fundo.rentabilidade }} </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="colunas"></tr>
+                    <tr mat-row *matRowDef="let row; columns: colunas;"></tr>
+                </table>
+            </div>
+        </mat-card>
+    </div>
+
+
+    <br><br>
+
+    <mat-card>
+    <mat-card-title>Fundos Sugeridos</mat-card-title>
+
+    <div class="mini-cards-wrapper">
+        <mat-card class="mini-card" *ngFor="let fundo of destaques">
+            <div class="mini-card-header">
+                <span class="sigla">{{ fundo.codigo }}</span>
+                <span class="porcentagem" [ngClass]="{ positivo: fundo.variacao >= 0, negativo: fundo.variacao < 0 }">
+                    {{ fundo.variacao }}%
+                </span>
+            </div>
+            <div class="valor">R$ {{ fundo.valor }}</div>
+            <div class="info">
+                <strong>Cotação:</strong> {{ fundo.valor }}<br>
+                <strong>Dividend Yield:</strong> {{ fundo.dy }}%
+            </div>
+        </mat-card>
+    </div>
+    </mat-card>
+</div>
