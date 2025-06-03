@@ -29,6 +29,16 @@ export class InvestmentsComponent implements OnInit {
 
 
 
+    colunasGrafico: string[] = ['codigo', 'nome', 'setor', 'cotacao', 'dy', 'liquidez'];
+
+    fundos = [
+        { codigo: 'HGLG11', nome: 'CSHG Logística', setor: 'Logístico', cotacao: 168.75, dy: 0.92, liquidez: 150000 },
+        { codigo: 'VISC11', nome: 'Vinci Shoppings', setor: 'Shoppings', cotacao: 110.00, dy: 0.88, liquidez: 120000 },
+        { codigo: 'XPLG11', nome: 'XP Log', setor: 'Logístico', cotacao: 122.30, dy: 0.85, liquidez: 100000 },
+        // ...mais dados se quiser
+    ];
+
+
 
     colunas: string[] = ['nome', 'codigo', 'rentabilidade'];
 

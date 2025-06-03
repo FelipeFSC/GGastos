@@ -90,6 +90,19 @@ table tr:last-of-type td {
 
 
 
+.tabela-scroll {
+    overflow-x: auto;
+}
+
+.tabela-fundos {
+    width: 100%;
+    min-width: 800px;
+}
+
+th.mat-header-cell {
+    font-weight: bold;
+}
+
 
 
 .resumo-grid {
@@ -127,6 +140,8 @@ table tr:last-of-type td {
     font-weight: bold;
     color: #333;
 }
+
+
 
 
 
