@@ -26,7 +26,7 @@ public class CategoryService {
         this.subCategoryRepository = subCategoryRepository;
     }
 
-    public List<CategoriesDto> prepareList(List<Category> categories) {    
+    public List<CategoriesDto> prepareList(List<Category> categories) {
         List<CategoriesDto> CategoriesDtoList = new ArrayList<CategoriesDto>();
         for (Category category : categories) {
             List<SubCategory> subcategories = subCategoryRepository.findByCategoryIdAndEnabled(category.getId(), true);

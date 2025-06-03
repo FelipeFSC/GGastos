@@ -7,7 +7,7 @@ export class AppConfigService {
 
 	private privateBaseUrl: string = 'http://localhost:8081';
 
-	private privateCategory: string = "/category";
+	private privateCategory: string = "/categories";
 
 	private privateSubCategory: string = "/sub-category";
 
@@ -40,7 +40,7 @@ export class AppConfigService {
 	public get fixedTransactionUrl(): string {
 		return this.privateFixedTransaction;
 	}
-	
+
 	public get transactionUrl(): string {
 		return this.privateTransaction;
 	}

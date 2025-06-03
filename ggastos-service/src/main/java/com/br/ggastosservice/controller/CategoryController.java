@@ -16,7 +16,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/categories")
 public class CategoryController {
 
     private CategoryService categoryService;

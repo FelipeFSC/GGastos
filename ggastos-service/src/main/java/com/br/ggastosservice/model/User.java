@@ -26,7 +26,7 @@ public class User {
     // password / email
 
     private LocalDateTime createDate;
-    
+
     private LocalDateTime updateDate;
 
 }
