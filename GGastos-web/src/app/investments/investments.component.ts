@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ExtractDataService } from '../extract-data.service';
+import { InvestmentsService } from './investments.service';
 
 @Component({
     selector: 'app-investments',
@@ -19,7 +21,6 @@ export class InvestmentsComponent implements OnInit {
         { titulo: 'Setor', valor: 'Logística' }
     ];
 
-
     dados = [
         { titulo: 'Dividendos Mês', valor: 'R$ 1.250,00' },
         { titulo: 'Rendimento Médio', valor: '0,95%' },
@@ -29,147 +30,214 @@ export class InvestmentsComponent implements OnInit {
 
 
 
-    colunasGrafico: string[] = ['codigo', 'nome', 'setor', 'cotacao', 'dy', 'liquidez'];
+    colunasGrafico: string[] = ['tipo', 'dataCom', 'pagamento', 'cotacao', 'valor', 'yield'];
+    fundos: any = [];
 
-    fundos = [
-        { codigo: 'HGLG11', nome: 'CSHG Logística', setor: 'Logístico', cotacao: 168.75, dy: 0.92, liquidez: 150000 },
-        { codigo: 'VISC11', nome: 'Vinci Shoppings', setor: 'Shoppings', cotacao: 110.00, dy: 0.88, liquidez: 120000 },
-        { codigo: 'XPLG11', nome: 'XP Log', setor: 'Logístico', cotacao: 122.30, dy: 0.85, liquidez: 100000 },
-        // ...mais dados se quiser
-    ];
+    colunas: string[] = ['codigo', 'valor', 'dividendYield'];
+    altas: any = [];
+    baixas: any = [];
+    sugeridos: any = [];
 
-
-
-    colunas: string[] = ['nome', 'codigo', 'rentabilidade'];
-
-    melhores = [
-        { nome: 'Fundo XP Logística', codigo: 'XPLG11', rentabilidade: 4.2 },
-        { nome: 'Fundo BTG Corporate', codigo: 'BRCR11', rentabilidade: 3.8 },
-        { nome: 'Fundo HGLG', codigo: 'HGLG11', rentabilidade: 4.5 }
-    ];
-
-    piores = [
-        { nome: 'Fundo Mall REIT', codigo: 'MALL11', rentabilidade: -1.8 },
-        { nome: 'Fundo VBI Logística', codigo: 'LVBI11', rentabilidade: -2.4 },
-        { nome: 'Fundo TRX Real Estate', codigo: 'TRXF11', rentabilidade: -1.5 }
-    ];
-
-
-    destaques = [
-        { codigo: 'XPLG11', valor: 122.30, variacao: 1.8, dy: 0.85 },
-        { codigo: 'HGLG11', valor: 168.75, variacao: 2.1, dy: 0.92 },
-        { codigo: 'BRCR11', valor: 97.10, variacao: -0.7, dy: 0.78 },
-        { codigo: 'VISC11', valor: 110.00, variacao: 1.2, dy: 0.88 },
-        { codigo: 'RBRF11', valor: 95.50, variacao: -1.1, dy: 0.72 }
-    ];
-
-    constructor() { }
+    constructor(
+        private extractDataService: ExtractDataService,
+        private investmentsService: InvestmentsService,
+    ) { }
 
     ngOnInit(): void {
-    }
-
-    melhoresFiltrados() {
-        return this.melhores.filter(f =>
-            f.nome.toLowerCase().includes(this.filtro.toLowerCase()) ||
-            f.codigo.toLowerCase().includes(this.filtro.toLowerCase())
-        );
-    }
-
-    pioresFiltrados() {
-        return this.piores.filter(f =>
-            f.nome.toLowerCase().includes(this.filtro.toLowerCase()) ||
-            f.codigo.toLowerCase().includes(this.filtro.toLowerCase())
-        );
+        this.onListResume();
     }
 
 
+    valor: any = [];
+    yield: any = [];
 
+    getFii() {
+        let success = (res: any) => {
+            let dadosResumo = [];
+            let dadosGrafico = [];
+            for (let item of res) {
+                if (Object.keys(item)[0] === "dadosTratados") {
+                    let resumo = {
+                        titulo: item.dadosTratados[0],
+                        valor: item.dadosTratados[1]
+                    }
+                    dadosResumo.push(resumo);
+                } else if (Object.keys(item)[0] === "myNewField") {
+                    let valor = [];
+                    let yieldData = [];
+                    for (let subItem of item.myNewField.slice(4, 9)) {
+                        let data = {
+                            tipo: subItem[0],
+                            dataCom: subItem[1],
+                            pagamento: subItem[2],
+                            cotacao: subItem[3],
+                            valor: subItem[4],
+                            yield: subItem[5]
+                        }
 
+                        valor.push(subItem[4]);
+                        yieldData.push(subItem[5]);
 
+                        dadosGrafico.push(data);
+                    }
 
-
-
-
-
-
-
-    option: any = {
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-                type: 'cross',
-                crossStyle: {
-                    color: '#999'
+                    this.valor = valor;
+                    this.yield = yieldData;
                 }
             }
-        },
-        toolbox: {
-            feature: {
-                dataView: { show: true, readOnly: false },
-                magicType: { show: true, type: ['line', 'bar'] },
-                restore: { show: true },
-                saveAsImage: { show: true }
+            this.fundos = dadosGrafico;
+            this.resumo = dadosResumo;
+
+            this.generateGraft();
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.investmentsService.getFii(this.filtro)
+            .subscribe(this.extractDataService.extract(success, err));
+    }
+
+    onListResume() {
+        let success = (res: any) => {
+            let altas: any = [];
+            let baixas: any = [];
+            let sugeridos: any = [];
+
+            for (let item of res) {
+
+                if (Object.keys(item)[0] === "tag_alta") {
+                    let alta = {
+                        codigo: item.tag_alta,
+                        valor: item.preco_alta,
+                        dividendYield: item.porcent_alta,
+                        descricao: item.titulo_alta
+                    }
+                    altas.push(alta);
+                } else if (Object.keys(item)[0] === "tag_baixa") {
+                    let baixa = {
+                        codigo: item.tag_baixa,
+                        valor: item.preco_baixa,
+                        dividendYield: item.porcent_baixa,
+                        descricao: item.titulo_baixa
+                    }
+                    baixas.push(baixa);
+                } else {
+                    let sugerido = {
+                        codigo: item.cod_sugerido,
+                        valor: item.cotacao_dividendYield[0],
+                        dividendYield: item.cotacao_dividendYield[1],
+                    }
+                    sugeridos.push(sugerido);
+                }
             }
-        },
-        legend: {
-            data: ['Evaporation', 'Precipitation', 'Temperature']
-        },
-        xAxis: [
-            {
-                type: 'category',
-                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+
+            this.altas = altas;
+            this.baixas = baixas;
+            this.sugeridos = sugeridos;
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.investmentsService.getResume()
+            .subscribe(this.extractDataService.extract(success, err));
+    }
+
+
+
+    option: any = {};
+
+    generateGraft() {
+        console.log(this.valor);
+        console.log(this.yield);
+
+        const valoresNumericos = this.valor.map((v: any) =>
+            parseFloat(parseFloat(v.replace('R$', '').replace(',', '.')).toFixed(2))
+        );
+
+        const percentuaisNumericos = this.yield.map((p: any) =>
+            parseFloat(parseFloat(p.replace('%', '').replace(',', '.')).toFixed(2))
+        );
+
+        this.option = {
+            tooltip: {
+                trigger: 'axis',
                 axisPointer: {
-                    type: 'shadow'
-                }
-            }
-        ],
-        yAxis: [
-            {
-                type: 'value',
-                name: 'Precipitation',
-                min: 0,
-                max: 250,
-                interval: 50,
-                axisLabel: {
-                    formatter: '{value} ml'
+                    type: 'cross',
+                    crossStyle: {
+                        color: '#999'
+                    }
                 }
             },
-            {
-                type: 'value',
-                name: 'Temperature',
-                min: 0,
-                max: 25,
-                interval: 5,
-                axisLabel: {
-                    formatter: '{value} °C'
+            toolbox: {
+                feature: {
+                    dataView: { show: true, readOnly: false },
+                    magicType: { show: true, type: ['line', 'bar'] },
+                    restore: { show: true },
+                    saveAsImage: { show: true }
                 }
-            }
-        ],
-        series: [
-            {
-                name: 'Evaporation',
-                type: 'bar',
-                tooltip: {
-                    valueFormatter: function (value: any) {
-                        return value as number + ' ml';
-                    }
-                },
-                data: [
-                    2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3
-                ]
             },
-            {
-                name: 'Temperature',
-                type: 'line',
-                yAxisIndex: 1,
-                tooltip: {
-                    valueFormatter: function (value: any) {
-                        return value as number + ' °C';
+            legend: {
+                data: ['Dividendos', 'Precipitation', 'Dvidend yield']
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: 'Precipitation',
+                    min: 0,
+                    max: 1.2,
+                    interval: 0.2,
+                    axisLabel: {
+                        formatter: 'R$ {value}'
                     }
                 },
-                data: [2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2]
-            }
-        ]
-    };
+                {
+                    type: 'value',
+                    name: 'Dvidend yield',
+                    min: 0,
+                    max: 1.2,
+                    interval: 0.2,
+                    axisLabel: {
+                        formatter: '{value}%'
+                    }
+                }
+            ],
+            series: [
+                {
+                    name: 'Dividendos',
+                    type: 'bar',
+                    tooltip: {
+                        valueFormatter: function (value: any) {
+                            return value;
+                        }
+                    },
+                    data: valoresNumericos
+                },
+                {
+                    name: 'Dvidend yield',
+                    type: 'line',
+                    yAxisIndex: 1,
+                    tooltip: {
+                        valueFormatter: function (value: any) {
+                            return value;
+                        }
+                    },
+                    data: percentuaisNumericos
+                }
+            ]
+        };
+    }
 
 }
