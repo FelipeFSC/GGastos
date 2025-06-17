@@ -60,7 +60,7 @@ export class ReleasesService {
 	}
 
 	findExpiredUnpaid(transactionId: number) {
-		return this.httpService.get(this.url + this.appService.transactionUrl + `/${transactionId}/aaaa`);
+		return this.httpService.get(this.url + this.appService.transactionUrl + `/${transactionId}/expired-unpaid`);
 	}
 
 

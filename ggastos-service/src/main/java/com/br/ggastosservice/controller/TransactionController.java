@@ -20,7 +20,7 @@ import com.br.ggastosservice.service.TransactionService;
 @RestController
 @RequestMapping("/transactions")
 public class TransactionController {
-    
+
     private TransactionService transactionService;
 
     private SpendingLimitService spendingLimitService;
@@ -46,7 +46,7 @@ public class TransactionController {
         return transactionService.findOne(transactionId);
     }
 
-    @GetMapping("/{transactionId}/aaaa")
+    @GetMapping("/{transactionId}/expired-unpaid")
     public List<Transaction> findExpiredUnpaid(@PathVariable("transactionId") long transactionId) throws Exception {
         return transactionService.findExpiredUnpaid(transactionId);
     }

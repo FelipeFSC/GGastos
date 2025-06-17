@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import com.br.ggastosservice.model.Transaction;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-    
+
     @Query(value = "SELECT * FROM transaction"
         +" LEFT JOIN sub_category ON transaction.sub_category_id = sub_category.id"
         +" LEFT JOIN category ON sub_category.category_id = category.id"
