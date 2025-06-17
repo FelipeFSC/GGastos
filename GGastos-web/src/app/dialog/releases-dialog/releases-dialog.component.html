@@ -1,209 +1,207 @@
 <div style="max-width: 350px; padding: 10px 5px; height: auto;">
+    <form #form="ngForm" (ngSubmit)="onSave(form)">
 
-    <div class="title-text">
-        {{tittle}}
-    </div>
+        <div class="title-text">
+            {{tittle}}
+        </div>
 
-    <mat-form-field class="example-full-width" appearance="outline">
-        <mat-label>Descrição</mat-label>
-        <input [(ngModel)]="description" matInput>
-    </mat-form-field>
-    
-    <div class="form-group">
-        <mat-form-field class="example-half-width" appearance="outline">
-            <mat-label>Valor</mat-label>
-            <input (input)="valorAlterado()" [(ngModel)]="paymentValue" appCurrencyMask matInput>
-        </mat-form-field>
-        
-        <mat-form-field class="example-half-width" color="accent" appearance="outline">
-            <mat-label>Custom calendar color</mat-label>
-            <input [(ngModel)]="paymentDate" matInput [matDatepicker]="picker2">
-            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-            <mat-datepicker #picker2 color="primary"></mat-datepicker>
-        </mat-form-field>
-    </div>
-    
-    <div class="form-group">
-        <mat-form-field class="example-half-width" appearance="outline">
-            <mat-label>Conta/Cartão</mat-label>
-            <mat-select [(ngModel)]="accountSelected">
-                <mat-optgroup *ngFor="let item of accountAndCreditCards"
-                    [label]="item.name">
-
-                    <mat-option *ngFor="let creditCard of item.list" [value]="creditCard">
-                        {{creditCard.name}}
-                    </mat-option>
-                </mat-optgroup>
-            </mat-select>
-        </mat-form-field>
-
-        <mat-form-field class="example-half-width" appearance="outline">
-            <mat-label>Categoria</mat-label>
-            <mat-select [(ngModel)]="categorySelected">
-
-                <ng-container *ngFor="let item of categorySubCategoryList">
-                    <mat-option [value]="item.category">
-                        <div style="display: flex; align-items: center;">
-                            <span class="category-icon-circle"
-                                [ngStyle]="{'background-color': item.category.color }">
-                                <mat-icon class="icon"> {{item.category.icon}} </mat-icon>
-                            </span>
-                            &nbsp;&nbsp;
-                            <span>
-                                {{item.category.name}}
-                            </span>
-                        </div>
-                    </mat-option>
-
-                    <ng-container *ngFor="let subCategory of item.subCategory">
-                        <mat-option [value]="subCategory">
-                            <span>
-                                <i [ngStyle]="{'color': item.category.color }" class="mark-circle">&#xf111;</i>
-                                &nbsp;&nbsp;
-                                {{subCategory.name}}
-                            </span>
-                        </mat-option>
-                    </ng-container>
-                </ng-container>
-
-                <mat-select-trigger>
-                    <ng-container *ngIf="categorySelected">
-                        {{categorySelected.name}}
-                    </ng-container>
-                </mat-select-trigger>
-            </mat-select>
-        </mat-form-field>
-    </div>
-
-    <div *ngIf="isChatActive">
-        <hr class="simple-horizontal-line">
-
-        <div class="tittle-text"> Observação </div>
         <mat-form-field class="example-full-width" appearance="outline">
-            <mat-label>Textarea</mat-label>
-            <textarea matInput></textarea>
-          </mat-form-field>
-    </div>
+            <mat-label>Descrição</mat-label>
+            <input required [(ngModel)]="description" name="description" matInput>
+        </mat-form-field>
 
-    <div class="repeat-box" *ngIf="isRepeatActive">
-        <hr class="simple-horizontal-line">
+        <div class="form-group">
+            <mat-form-field class="example-half-width" appearance="outline">
+                <mat-label>Valor</mat-label>
+                <input (input)="valorAlterado()" required [(ngModel)]="paymentValue" name="paymentValue" appCurrencyMask matInput>
+            </mat-form-field>
 
-        <section class="example-section">
-            <div class="tittle-text">Repetir</div>
-            <mat-radio-group [(ngModel)]="divideType" class="radio-group-box">
-                <mat-radio-button value="fixed">é uma despesa fixa</mat-radio-button>
-                <mat-radio-button class="mat-radio-button" value="divided">é um lançamento parcelado em</mat-radio-button>
-            </mat-radio-group>
-        </section>
+            <mat-form-field class="example-half-width" color="accent" appearance="outline">
+                <mat-label>Custom calendar color</mat-label>
+                <input required [(ngModel)]="paymentDate" name="paymentDate" matInput [matDatepicker]="picker2">
+                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                <mat-datepicker #picker2 color="primary"></mat-datepicker>
+            </mat-form-field>
+        </div>
 
-        <div *ngIf="divideType === 'fixed'" class="select-box">
-            <mat-form-field class="example-full-width" appearance="outline">
-                <mat-label>Select</mat-label>
-                <mat-select [(ngModel)]="paymentRangeSelected">
-                    <mat-option [value]="0"> - </mat-option>
-                    <mat-option *ngFor="let item of paymentRange" [value]="item">
-                        {{item.name}}
-                    </mat-option>
+        <div class="form-group">
+            <mat-form-field class="example-half-width" appearance="outline">
+                <mat-label>Conta/Cartão</mat-label>
+                <mat-select required [(ngModel)]="accountSelected" name="accountSelected">
+                    <mat-optgroup *ngFor="let item of accountAndCreditCards"
+                        [label]="item.name">
+
+                        <mat-option *ngFor="let creditCard of item.list" [value]="creditCard">
+                            {{creditCard.name}}
+                        </mat-option>
+                    </mat-optgroup>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field class="example-half-width" appearance="outline">
+                <mat-label>Categoria</mat-label>
+                <mat-select required [(ngModel)]="categorySelected" name="categorySelected">
+
+                    <ng-container *ngFor="let item of categorySubCategoryList">
+                        <mat-option [value]="item.category">
+                            <div style="display: flex; align-items: center;">
+                                <span class="category-icon-circle"
+                                    [ngStyle]="{'background-color': item.category.color }">
+                                    <mat-icon class="icon"> {{item.category.icon}} </mat-icon>
+                                </span>
+                                &nbsp;&nbsp;
+                                <span>
+                                    {{item.category.name}}
+                                </span>
+                            </div>
+                        </mat-option>
+
+                        <ng-container *ngFor="let subCategory of item.subCategory">
+                            <mat-option [value]="subCategory">
+                                <span>
+                                    <i [ngStyle]="{'color': item.category.color }" class="mark-circle">&#xf111;</i>
+                                    &nbsp;&nbsp;
+                                    {{subCategory.name}}
+                                </span>
+                            </mat-option>
+                        </ng-container>
+                    </ng-container>
+
+                    <mat-select-trigger>
+                        <ng-container *ngIf="categorySelected">
+                            {{categorySelected.name}}
+                        </ng-container>
+                    </mat-select-trigger>
                 </mat-select>
             </mat-form-field>
         </div>
 
-        <div *ngIf="divideType === 'divided'" class="select-box">
-            <div class="form-group">
-                <mat-form-field class="example-half-width" appearance="outline">
-                    <mat-label>Valor</mat-label>
-                    <input [(ngModel)]="valorParcela" (input)="valorAlterado()" type="number" matInput>
-                </mat-form-field>
-    
-                <mat-form-field class="example-half-width" appearance="outline">
+        <div *ngIf="isChatActive">
+            <hr class="simple-horizontal-line">
+
+            <div class="tittle-text"> Observação </div>
+            <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Textarea</mat-label>
+                <textarea matInput></textarea>
+            </mat-form-field>
+        </div>
+
+        <div class="repeat-box" *ngIf="isRepeatActive">
+            <hr class="simple-horizontal-line">
+
+            <section class="example-section">
+                <div class="tittle-text">Repetir</div>
+                <mat-radio-group required [(ngModel)]="divideType" name="divideType" class="radio-group-box">
+                    <mat-radio-button value="fixed">é uma despesa fixa</mat-radio-button>
+                    <mat-radio-button class="mat-radio-button" value="divided">é um lançamento parcelado em</mat-radio-button>
+                </mat-radio-group>
+            </section>
+
+            <div *ngIf="divideType === 'fixed'" class="select-box">
+                <mat-form-field class="example-full-width" appearance="outline">
                     <mat-label>Select</mat-label>
-                    <mat-select>
-                        <mat-option> - </mat-option>
-                        <mat-option *ngFor="let item of paymentRange" value="item.name">
+                    <mat-select required [(ngModel)]="paymentRangeSelected" name="paymentRangeSelected">
+                        <mat-option *ngFor="let item of paymentRange" [value]="item">
                             {{item.name}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
 
-            <div>
-                - Serão lançadas <span style="color: #f96161;">{{valorParcela}} parcelas</span> de <span style="color: #688e50;">R$ {{installmentValue}}</span>
-                <br>
-                <span class="subtext">
-                    Em caso de divisão não exata, a sobra será somada à primeira parcela.
+            <div *ngIf="divideType === 'divided'" class="select-box">
+                <div class="form-group">
+                    <mat-form-field class="example-half-width" appearance="outline">
+                        <mat-label>Valor</mat-label>
+                        <input required [(ngModel)]="valorParcela" name="valorParcela" (input)="valorAlterado()" type="number" matInput>
+                    </mat-form-field>
+
+                    <mat-form-field class="example-half-width" appearance="outline">
+                        <mat-label>Select</mat-label>
+                        <mat-select>
+                            <mat-option *ngFor="let item of paymentRange" value="item.name">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div>
+                    - Serão lançadas <span style="color: #f96161;">{{valorParcela}} parcelas</span> de <span style="color: #688e50;">R$ {{installmentValue}}</span>
+                    <br>
+                    <span class="subtext">
+                        Em caso de divisão não exata, a sobra será somada à primeira parcela.
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="options-container">
+            <div class="container-button">
+                <div class="button-options" [ngClass]="{'button-active': isRepeatActive}" (click)="onRepeat()">
+                    <mat-icon class="icon-options" [ngClass]="{'icon-active': isRepeatActive}">
+                        cached
+                    </mat-icon>
+                </div>
+                <span class="button-text">
+                    Repetir
+                </span>
+            </div>
+
+            <div class="container-button">
+                <div class="button-options" [ngClass]="{'button-active': isChatActive}" (click)="onChat()">
+                    <mat-icon class="icon-options" [ngClass]="{'icon-active': isChatActive}">
+                        chat
+                    </mat-icon>
+                </div>
+                <span class="button-text">
+                    Observação
+                </span>
+            </div>
+
+            <div class="container-button">
+                <div class="button-options" [ngClass]="{'button-active': isAttachmentActive}" (click)="onAttachment()">
+                    <mat-icon class="icon-options" [ngClass]="{'icon-active': isAttachmentActive}">
+                        attachment
+                    </mat-icon>
+                </div>
+                <span class="button-text">
+                    Anexo
                 </span>
             </div>
         </div>
-    </div>
 
-    <div class="options-container">
-        <div class="container-button">
-            <div class="button-options" [ngClass]="{'button-active': isRepeatActive}" (click)="onRepeat()">
-                <mat-icon class="icon-options" [ngClass]="{'icon-active': isRepeatActive}">
-                    cached
-                </mat-icon>
-            </div>
-            <span class="button-text">
-                Repetir
-            </span>
-        </div>
+        <div *ngIf="!editMode">
+            <div class="button-done-box">
+                <div class="aux-button">
+                    <span>Cancelar</span>
+                </div>
 
-        <div class="container-button">
-            <div class="button-options" [ngClass]="{'button-active': isChatActive}" (click)="onChat()">
-                <mat-icon class="icon-options" [ngClass]="{'icon-active': isChatActive}">
-                    chat
-                </mat-icon>
-            </div>
-            <span class="button-text">
-                Observação
-            </span>
-        </div>
+                <div class="done-button-box">
+                    <button mat-fab [disabled]="!form.valid" color="primary" type="submit">
+                        <mat-icon>check</mat-icon>
+                    </button>
+                </div>
 
-        <div class="container-button">
-            <div class="button-options" [ngClass]="{'button-active': isAttachmentActive}" (click)="onAttachment()">
-                <mat-icon class="icon-options" [ngClass]="{'icon-active': isAttachmentActive}">
-                    attachment
-                </mat-icon>
-            </div>
-            <span class="button-text">
-                Anexo
-            </span>
-        </div>
-    </div>
-
-    <div *ngIf="!editMode">
-        <div class="button-done-box">
-            <div class="aux-button">
-                <span>Cancelar</span>
-            </div>
-    
-            <div class="done-button-box">
-                <button mat-fab color="primary" (click)="onSave()">
-                    <mat-icon>check</mat-icon>
-                </button>
-            </div>
-    
-            <div class="aux-button">
-                <span>Salvar e criar outra</span>
+                <div class="aux-button">
+                    <span>Salvar e criar outra</span>
+                </div>
             </div>
         </div>
-    </div>
-    <div *ngIf="editMode">
-        <div class="button-edit-done-box">
-            <div class="done-button-box">
-                <button mat-fab color="warn" (click)="onDelete()">
-                    <mat-icon>delete</mat-icon>
-                </button>
-            </div>
-    
-    
-            <div class="done-button-box">
-                <button mat-fab color="primary" (click)="onSave()">
-                    <mat-icon>check</mat-icon>
-                </button>
-            </div>
-    
-        </div>
-    </div>
+        <div *ngIf="editMode">
+            <div class="button-edit-done-box">
+                <div class="done-button-box">
+                    <button mat-fab color="warn" (click)="onDelete()">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
 
+                <div class="done-button-box">
+                    <button mat-fab [disabled]="!form.valid" color="primary" type="submit">
+                        <mat-icon>check</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </form>
 </div>

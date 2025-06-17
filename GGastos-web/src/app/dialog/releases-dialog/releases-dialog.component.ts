@@ -1,4 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Utils } from 'src/app/util/utils';
 
@@ -39,11 +40,11 @@ export class ReleasesDialogComponent implements OnInit {
 
     paymentRange: any[] = [];
 
-    paymentRangeSelected: any = {};
+    paymentRangeSelected: any = null;
 
-    accountSelected: any = {};
+    accountSelected: any = null;
 
-    categorySelected: any = {};
+    categorySelected: any = null;
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: any,
@@ -184,11 +185,11 @@ export class ReleasesDialogComponent implements OnInit {
             this.dialogRef.close({id: this.data.editData.id});
         }
     }
-    
-    onSave() {
+
+    onSave(form: NgForm) {
         let moneyValue;
         moneyValue = Utils.getMoneyValue(this.paymentValue);
-        
+
         let categoryId = 0;
         let subCategoryId = 0;
         if (this.categorySelected.category) {
