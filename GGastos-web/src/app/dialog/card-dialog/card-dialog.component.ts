@@ -1,4 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Card } from 'src/app/cards/card.model';
 import { Utils } from 'src/app/util/utils';
@@ -64,19 +65,20 @@ export class CardDialogComponent implements OnInit {
         this.styleColor = {'background-color':this.card.color};
     }
 
-    onSave() {
-        let numberValue = 1;
+    onSave(form: NgForm) {
+        if (form.valid) {
+            let numberValue = 1;
+            if (this.value) {
+                numberValue = Utils.getMoneyValue(this.value);
+            }
+            this.card.cardLimit = numberValue;
 
-        if (this.value) {
-            numberValue = Utils.getMoneyValue(this.value);
+            this.dialogRef.close(this.card);
         }
-        this.card.cardLimit = numberValue;
-
-        this.dialogRef.close(this.card);
     }
 
     onClose() {
-        this.dialogRef.close();
+        this.dialogRef.close(null);
     }
 
 }

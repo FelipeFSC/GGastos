@@ -1,75 +1,75 @@
 <div style="max-width: 350px; padding: 10px 5px; height: auto;">
+    <form #form="ngForm" (ngSubmit)="onSave(form)">
+        <div class="example-box">
+            <span class="card-icon-circle icon-box" [ngStyle]="styleColor"><mat-icon class="icon">{{card.icon}}</mat-icon></span>
+            &nbsp;
+        </div>
 
+        <br><br>
 
-    <div class="example-box">
-        <span class="card-icon-circle icon-box" [ngStyle]="styleColor"><mat-icon class="icon">{{card.icon}}</mat-icon></span>
-        &nbsp;
-    </div>
+        <label for="favcolor">Selecione a cor do circulo:</label>&nbsp;
+        <input type="color" (change)="changeColor()" [(ngModel)]="card.color" name="color">
 
-    <br><br>
+        <br><br>
 
-    <label for="favcolor">Selecione a cor do circulo:</label>&nbsp;
-    <input type="color" (change)="changeColor()" [(ngModel)]="card.color">
+        <mat-form-field appearance="outline">
+            <mat-label>Icone</mat-label>
+            <input [(ngModel)]="card.icon" name="icon" matInput placeholder="Exemplo: love">
+        </mat-form-field>
+        Icones:&nbsp;
+        <a href="https://fonts.google.com/icons" target="_blank">google icons</a>
 
-    <br><br>
+        <br><br>
+        <hr class="simple-horizontal-line">
+        <br><br>
 
-    <mat-form-field appearance="outline">
-        <mat-label>Icone</mat-label>
-        <input [(ngModel)]="card.icon" matInput placeholder="Exemplo: love">
-    </mat-form-field>
-    Icones:&nbsp;
-    <a href="https://fonts.google.com/icons" target="_blank">google icons</a>
+        <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Nome do cartão</mat-label>
+            <input required [(ngModel)]="card.name" name="name" matInput>
+        </mat-form-field>
 
-    <br><br>
-    <hr class="simple-horizontal-line">
-    <br><br>
+        <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Limite</mat-label>
+            <input required [(ngModel)]="value" name="value" appCurrencyMask matInput>
+        </mat-form-field>
 
-    <mat-form-field class="example-full-width" appearance="outline">
-        <mat-label>Nome do cartão</mat-label>
-        <input  [(ngModel)]="card.name" matInput>
-    </mat-form-field>
+        <div class="form-group">
+            <mat-form-field class="example-half-width" appearance="outline">
+                <mat-label>Fecha dia</mat-label>
+                <mat-select required [(ngModel)]="card.closingDate" name="closingDate">
+                    <mat-option *ngFor="let day of days" [value]="day">
+                        {{day}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
 
-    <mat-form-field class="example-full-width" appearance="outline">
-        <mat-label>Limite</mat-label>
-        <input [(ngModel)]="value" appCurrencyMask matInput>
-    </mat-form-field>
+            <mat-form-field class="example-half-width" appearance="outline">
+                <mat-label>Vence dia</mat-label>
+                <mat-select required [(ngModel)]="card.dueDate" name="dueDate">
+                    <mat-option *ngFor="let day of days" [value]="day">
+                        {{day}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
 
-    <div class="form-group">
-        <mat-form-field class="example-half-width" appearance="outline">
-            <mat-label>Fecha dia</mat-label>
-            <mat-select [(ngModel)]="card.closingDate">
-                <mat-option *ngFor="let day of days" [value]="day">
-                    {{day}}
+        <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Conta de pagamento padrão</mat-label>
+            <mat-select required [(ngModel)]="card.account" name="account">
+                <mat-option *ngFor="let item of accounts" [value]="item">
+                    {{item.name}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
 
-        <mat-form-field class="example-half-width" appearance="outline">
-            <mat-label>Vence dia</mat-label>
-            <mat-select [(ngModel)]="card.dueDate">
-                <mat-option *ngFor="let day of days" [value]="day">
-                    {{day}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-    </div>
+        <br><br>
+        <hr class="simple-horizontal-line">
+        <br><br>
 
-    <mat-form-field class="example-full-width" appearance="outline">
-        <mat-label>Conta de pagamento padrão</mat-label>
-        <mat-select [(ngModel)]="card.account">
-            <mat-option *ngFor="let item of accounts" [value]="item">
-                {{item.name}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-
-    <br><br>
-    <hr class="simple-horizontal-line">
-    <br><br>
-
-    <div style="text-align: center;">
-        <button mat-flat-button (click)="onClose()" color="warn">Cancelar</button>
-        &nbsp;
-        <button mat-flat-button (click)="onSave()" color="primary">Salvar</button>
-    </div>
+        <div style="text-align: center;">
+            <button mat-flat-button (click)="onClose()" color="warn">Cancelar</button>
+            &nbsp;
+            <button mat-flat-button type="submit" [disabled]="!form.valid" color="primary">Salvar</button>
+        </div>
+    </form>
 </div>
