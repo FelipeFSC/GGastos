@@ -1,4 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
@@ -40,6 +41,12 @@ export class AccountDialogComponent implements OnInit {
 
     onClose() {
         this.dialogRef.close();
+    }
+
+    onSave(form: NgForm) {
+        if (form.valid) {
+            this.dialogRef.close(this.account);
+        }
     }
 
 }

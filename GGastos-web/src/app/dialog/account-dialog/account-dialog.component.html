@@ -1,42 +1,45 @@
-<div>
+<form #form="ngForm" (ngSubmit)="onSave(form)">
 
-    <div class="example-box">
-        <span class="category-icon-circle icon-box" [ngStyle]="styleColor"><mat-icon class="icon">{{account.icon}}</mat-icon></span>
-        &nbsp;
-        <span>{{account.name}}</span>
+    <div>
+
+        <div class="example-box">
+            <span class="category-icon-circle icon-box" [ngStyle]="styleColor"><mat-icon class="icon">{{account.icon}}</mat-icon></span>
+            &nbsp;
+            <span>{{account.name}}</span>
+        </div>
+
+        <br><br>
+
+        <label for="favcolor">Selecione a cor do circulo:</label>&nbsp;
+        <input type="color" name="color" (change)="changeColor()" [(ngModel)]="account.color">
+
+        <br><br>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Icone</mat-label>
+            <input [(ngModel)]="account.icon" name="icon" matInput placeholder="Exemplo: love">
+        </mat-form-field>
+        Icones:&nbsp;
+        <a href="https://fonts.google.com/icons" target="_blank">google icons</a>
+
+        <br>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nome da conta</mat-label>
+            <input required [(ngModel)]="account.name" name="name" matInput placeholder="Exemplo: NuBank">
+        </mat-form-field>
+
+        <mat-checkbox [(ngModel)]="account.addOverall" name="overall" class="example-margin" style="color: #858782;">Não somar no Saldo Geral</mat-checkbox>
+
+
     </div>
-
-    <br><br>
-
-    <label for="favcolor">Selecione a cor do circulo:</label>&nbsp;
-    <input type="color" (change)="changeColor()" [(ngModel)]="account.color">
-
-    <br><br>
-
-    <mat-form-field appearance="outline">
-        <mat-label>Icone</mat-label>
-        <input [(ngModel)]="account.icon" matInput placeholder="Exemplo: love">
-    </mat-form-field>
-    Icones:&nbsp;
-    <a href="https://fonts.google.com/icons" target="_blank">google icons</a>
-
+    <br>
     <br>
 
-    <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Nome da conta</mat-label>
-        <input [(ngModel)]="account.name" matInput placeholder="Exemplo: NuBank">
-    </mat-form-field>
+    <div>
+        <button mat-stroked-button type="submit" [disabled]="!form.valid">Salvar</button>
+        &nbsp;
+        <button mat-stroked-button (click)="onClose()">Cancelar</button>
+    </div>
 
-    <mat-checkbox [(ngModel)]="account.addOverall" class="example-margin" style="color: #858782;">Não somar no Saldo Geral</mat-checkbox>
-
-
-</div>
-<br>
-<br>
-
-<div>
-    <button mat-stroked-button [mat-dialog-close]="account">Salvar</button>
-    &nbsp;
-    <button mat-stroked-button (click)="onClose()">Cancelar</button>
-</div>
-
+</form>
