@@ -5,11 +5,7 @@
             <div class="menu-box">
                 <button mat-button (click)="onHome()">Visão Geral</button>
 
-                <button mat-button [matMenuTriggerFor]="releasesMenu">Lançamentos</button>
-                <mat-menu #releasesMenu="matMenu">
-                    <button mat-menu-item (click)="onReleases()">Unitário</button>
-                    <button mat-menu-item (click)="onUploads()">Upload</button>
-                  </mat-menu>
+                <button mat-button (click)="onReleases()">Lançamentos</button>
 
                 <button mat-button (click)="onSpendingLimit()">Limite de Gastos</button>
 

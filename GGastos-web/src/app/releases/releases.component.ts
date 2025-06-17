@@ -6,6 +6,7 @@ import { ExtractDataService } from '../extract-data.service';
 import { CategoriesService } from '../categories/categories.service';
 import { ReleasesService } from './releases.service';
 import { RecurrencesTypesService } from '../recurrences-types/categories.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-releases',
@@ -36,7 +37,8 @@ export class ReleasesComponent implements OnInit {
         private extractDataService: ExtractDataService,
         private categoriesService: CategoriesService,
         private releasesService: ReleasesService,
-        private recurrencesTypesService: RecurrencesTypesService
+        private recurrencesTypesService: RecurrencesTypesService,
+        private router: Router,
     ) { }
 
     ngOnInit(): void {
@@ -112,7 +114,7 @@ export class ReleasesComponent implements OnInit {
         let err = (error: any) => {
             console.log(error);
         }
-    
+
         this.recurrencesTypesService.findAll()
             .subscribe(this.extractDataService.extract(success, err));
     }
@@ -123,7 +125,7 @@ export class ReleasesComponent implements OnInit {
         let err = (error: any) => {
             console.log(error);
         }
-    
+
         this.accountsService.updateBalance(accountId)
             .subscribe(this.extractDataService.extract(success, err));
     }
@@ -191,7 +193,7 @@ export class ReleasesComponent implements OnInit {
                     obj: item
                 };
                 /*
-                  isAnexo {id: 12, nome: "nome"}  
+                  isAnexo {id: 12, nome: "nome"}
                 */
 
                 if (day != beforeDay && beforeDay) {
@@ -243,7 +245,7 @@ export class ReleasesComponent implements OnInit {
 
             result.value = result.value * -1;
             result.transactionType = {id: 2};
-            
+
             if (result.recurrenceType.id) {
                 this.onCreateFixed(result);
             } else {
@@ -254,7 +256,7 @@ export class ReleasesComponent implements OnInit {
 
     onRevenue() {
         let dialogRef = this.dialog.open(ReleasesDialogComponent, {
-            data: { 
+            data: {
                 title: "Nova receita",
                 recurrencesTypes: this.recurrencesTypes,
                 accounts: this.accounts,
@@ -363,10 +365,10 @@ export class ReleasesComponent implements OnInit {
 
         if (item.id) {
             this.releasesService.findOneTransaction(item.id)
-                .subscribe(this.extractDataService.extract(success, err));            
+                .subscribe(this.extractDataService.extract(success, err));
         } else {
             this.releasesService.findOneFixeTransaction(item.fixedTransactionId)
-                .subscribe(this.extractDataService.extract(success, err));      
+                .subscribe(this.extractDataService.extract(success, err));
         }
     }
 
@@ -447,5 +449,9 @@ export class ReleasesComponent implements OnInit {
             this.releasesService.create(transaction)
                 .subscribe(this.extractDataService.extract(success, err));
         }
+    }
+
+    onUploads() {
+        this.router.navigate(['releases', 'upload']);
     }
 }
