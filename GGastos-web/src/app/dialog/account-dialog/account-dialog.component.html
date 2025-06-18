@@ -36,10 +36,10 @@
     <br>
     <br>
 
-    <div>
-        <button mat-stroked-button type="submit" [disabled]="!form.valid">Salvar</button>
+    <div style="text-align: center;">
+        <button mat-flat-button (click)="onClose()" color="warn">Cancelar</button>
         &nbsp;
-        <button mat-stroked-button (click)="onClose()">Cancelar</button>
+        <button mat-flat-button type="submit" [disabled]="!form.valid" color="primary">Salvar</button>
     </div>
 
 </form>

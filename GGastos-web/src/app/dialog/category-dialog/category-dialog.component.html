@@ -1,52 +1,52 @@
 <div mat-dialog-content>
     <form #form="ngForm" (ngSubmit)="onSave(form)">
-    <div class="example-box">
-        <span class="category-icon-circle icon-box" [ngStyle]="styleColor"><mat-icon class="icon">{{category.icon}}</mat-icon></span>
-        &nbsp;
-        <span>{{category.name}}</span>
-    </div>
+        <div class="example-box">
+            <span class="category-icon-circle icon-box" [ngStyle]="styleColor"><mat-icon class="icon">{{category.icon}}</mat-icon></span>
+            &nbsp;
+            <span>{{category.name}}</span>
+        </div>
 
-    <br><br>
+        <br><br>
 
-    <section class="example-section">
-        <div class="tittle-text">Tipo da categoria</div>
+        <section class="example-section">
+            <div class="tittle-text">Tipo da categoria</div>
+            <br>
+            <mat-radio-group [(ngModel)]="category.categoryType" name="categoryType" class="radio-group-box">
+                <mat-radio-button value="despesa">Despesa</mat-radio-button>
+                &nbsp; &nbsp;
+                <mat-radio-button class="mat-radio-button" value="receita">Receita</mat-radio-button>
+            </mat-radio-group>
+        </section>
+
         <br>
-        <mat-radio-group [(ngModel)]="category.categoryType" name="categoryType" class="radio-group-box">
-            <mat-radio-button value="despesa">Despesa</mat-radio-button>
-            &nbsp; &nbsp;
-            <mat-radio-button class="mat-radio-button" value="receita">Receita</mat-radio-button>
-        </mat-radio-group>
-    </section>
+        <hr>
+        <br>
 
-    <br>
-    <hr>
-    <br>
+        <label for="favcolor">Selecione a cor do circulo:</label>&nbsp;
+        <input type="color" (change)="changeColor()" [(ngModel)]="category.color" name="color">
 
-    <label for="favcolor">Selecione a cor do circulo:</label>&nbsp;
-    <input type="color" (change)="changeColor()" [(ngModel)]="category.color" name="color">
+        <br><br>
 
-    <br><br>
+        <mat-form-field appearance="outline">
+            <mat-label>Icone</mat-label>
+            <input [(ngModel)]="category.icon" name="icon" matInput placeholder="Exemplo: love">
+        </mat-form-field>
+        Icones:&nbsp;
+        <a href="https://fonts.google.com/icons" target="_blank">google icons</a>
 
-    <mat-form-field appearance="outline">
-        <mat-label>Icone</mat-label>
-        <input [(ngModel)]="category.icon" name="icon" matInput placeholder="Exemplo: love">
-    </mat-form-field>
-    Icones:&nbsp;
-    <a href="https://fonts.google.com/icons" target="_blank">google icons</a>
+        <br>
 
-    <br>
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Categoria</mat-label>
+            <input required [(ngModel)]="category.name" name="name" matInput placeholder="Exemplo: Casa">
+        </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Categoria</mat-label>
-        <input required [(ngModel)]="category.name" name="name" matInput placeholder="Exemplo: Casa">
-    </mat-form-field>
+        <br><br>
 
-    <br><br>
-
-    <div>
-        <button mat-stroked-button [disabled]="!form.valid" type="submit">Salvar</button>
-        &nbsp;
-        <button mat-stroked-button (click)="onClose()">Cancelar</button>
-    </div>
+        <div style="text-align: center;">
+            <button mat-flat-button (click)="onClose()" color="warn">Cancelar</button>
+            &nbsp;
+            <button mat-flat-button [disabled]="!form.valid" type="submit" color="primary">Salvar</button>
+        </div>
     </form>
 </div>
