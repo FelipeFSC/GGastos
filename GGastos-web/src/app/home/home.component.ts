@@ -97,6 +97,8 @@ export class HomeComponent implements OnInit {
 
     spendingLimits: any = [];
 
+    today: string = "";
+
     constructor(
         private accountsService: AccountsService,
         private extractDataService: ExtractDataService,
@@ -108,11 +110,16 @@ export class HomeComponent implements OnInit {
     valorAnimado: number = 0;
 
     ngOnInit(): void {
+        const date = new Date();
+        const ano = date.getFullYear();
+        const mes = (date.getMonth() + 1).toString().padStart(2, '0');
+        this.today = `${ano}-${mes}`;
+
         forkJoin({
             totalBalance: this.accountsService.getGeneralBalance(),
             categoryGraph: this.reportService.getCategoryReportDto(2),
             accounts: this.accountsService.findByEnabled(true),
-            delayedTransactions: this.releasesService.findExpiredUnpaid(2),
+            delayedTransactions: this.releasesService.findByDate(this.today),
             spendingLimits: this.spendingLimitService.findCurrentMonth(),
         }).subscribe({
             next: (res) => {
@@ -191,6 +198,9 @@ export class HomeComponent implements OnInit {
         let list = [];
 
         for (let item of result) {
+            if (item.paidDate != null) {
+                continue;
+            }
             let categoryId = item.category == null ? item.subCategory.category.id : item.category.id;
             let account = item.account ? item.account.name : "";
             let color = item.category ? item.category.color : item.subCategory.category.color;
@@ -201,7 +211,8 @@ export class HomeComponent implements OnInit {
                 date: new Date(item.transactionDate).toLocaleDateString('pt-BR'),
                 description: item.description,
                 categoryId: categoryId,
-                value: this.formatValue(item.value)
+                value: this.formatValue(item.value),
+                obj: item
             }
             list.push(data);
         }
@@ -314,15 +325,20 @@ export class HomeComponent implements OnInit {
             console.log(error);
         }
 
-        this.releasesService.isPaid(transaction.id)
-            .subscribe(this.extractDataService.extract(success, err));
+        if (transaction.id) {
+            this.releasesService.isPaid(transaction.id)
+                .subscribe(this.extractDataService.extract(success, err));
+        } else {
+            this.releasesService.create(transaction)
+                .subscribe(this.extractDataService.extract(success, err));
+        }
     }
 
     updateHome() {
         forkJoin({
             totalBalance: this.accountsService.getGeneralBalance(),
             categoryGraph: this.reportService.getCategoryReportDto(2),
-            delayedTransactions: this.releasesService.findExpiredUnpaid(2),
+            delayedTransactions: this.releasesService.findByDate(this.today),
         }).subscribe({
             next: (res) => {
                 this.getGeneralBalance(res.totalBalance);

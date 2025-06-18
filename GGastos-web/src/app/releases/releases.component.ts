@@ -230,7 +230,7 @@ export class ReleasesComponent implements OnInit {
 
     onExpense() {
         let dialogRef = this.dialog.open(ReleasesDialogComponent, {
-            data: { 
+            data: {
                 title: "Nova despesa",
                 recurrencesTypes: this.recurrencesTypes,
                 accounts: this.accounts,

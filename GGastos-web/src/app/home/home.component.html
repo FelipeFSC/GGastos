@@ -87,7 +87,7 @@
                             style="width: 30%; text-align: right; display: flex; flex-direction: row; justify-content: flex-end; align-items: center;">
                             <span class="expense-value sub-text-color">R$ {{item.value}}</span>
                             <mat-icon style="color: #ff7d77; width: 10px; margin-left: 8px; font-size: 19px; cursor: pointer;"
-                                (click)="onCheck(item)">thumb_up</mat-icon>
+                                (click)="onCheck(item.obj)">thumb_up</mat-icon>
                         </div>
                     </mat-list-item>
                     <mat-divider *ngIf="i != (delayedTransactions.length-1)"></mat-divider>
@@ -127,7 +127,7 @@
                                 <span class="expense-value" [ngStyle]="{'color': item.statusColor }" style="font-size: 23px;">{{item.animatedPercent}}%</span>
                             </div>
                         </div>
-    
+
                         <div *ngIf="i != (spendingLimits.length-1)">
                             <br>
                                 <mat-divider></mat-divider>
