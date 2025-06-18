@@ -75,7 +75,7 @@ export class AccountsComponent implements OnInit {
                     icon: result.icon,
                     color: result.color,
                     balance: 0,
-                    addOverall: result.addOverall
+                    notInTotal: result.notInTotal
                 };
 
                 this.onEdit(account);
@@ -85,7 +85,7 @@ export class AccountsComponent implements OnInit {
                     name: result.name,
                     icon: result.icon,
                     color: result.color,
-                    addOverall: result.addOverall
+                    notInTotal: result.notInTotal
                 };
 
                 this.onSave(account);

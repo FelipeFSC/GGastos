@@ -11,7 +11,7 @@ import com.br.ggastosservice.repository.TransactionTypeRepository;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
-    
+
     @Autowired
     private TransactionTypeRepository transactionTypeRepository;
 

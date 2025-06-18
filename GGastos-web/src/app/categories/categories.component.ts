@@ -154,7 +154,7 @@ export class CategoriesComponent implements OnInit {
             }
         }
 
-        this.onSaveSubCategory(subCategory);  
+        this.onSaveSubCategory(subCategory);
     }
 
     onEditSubCategory(subCategory: any, category: any) {

@@ -31,8 +31,8 @@ public class Account {
 
     private boolean enabled;
 
-    @Column(name="main")
-    private boolean main;
+    @Column(name="not_in_total")
+    private boolean notInTotal;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

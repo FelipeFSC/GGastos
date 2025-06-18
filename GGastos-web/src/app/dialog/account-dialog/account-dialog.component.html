@@ -29,7 +29,7 @@
             <input required [(ngModel)]="account.name" name="name" matInput placeholder="Exemplo: NuBank">
         </mat-form-field>
 
-        <mat-checkbox [(ngModel)]="account.addOverall" name="overall" class="example-margin" style="color: #858782;">Não somar no Saldo Geral</mat-checkbox>
+        <mat-checkbox [(ngModel)]="account.notInTotal" name="overall" class="example-margin" style="color: #858782;">Não somar no Saldo Geral</mat-checkbox>
 
 
     </div>
@@ -37,7 +37,7 @@
     <br>
 
     <div style="text-align: center;">
-        <button mat-flat-button (click)="onClose()" color="warn">Cancelar</button>
+        <button mat-flat-button type="button" (click)="onClose()" color="warn">Cancelar</button>
         &nbsp;
         <button mat-flat-button type="submit" [disabled]="!form.valid" color="primary">Salvar</button>
     </div>

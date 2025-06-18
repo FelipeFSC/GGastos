@@ -48,7 +48,6 @@ export class CategoryDialogComponent implements OnInit {
     }
 
     onClose() {
-        this.category.name = null;
         this.dialogRef.close(null);
     }
 

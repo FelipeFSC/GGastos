@@ -77,7 +77,7 @@ public class AccountService {
 
         BigDecimal result = BigDecimal.ZERO;
         result = tatolIncome.add(totalExpense);
-        
+
         Account account = findOne(accountId);
         account.setBalance(result);
         accountRepository.save(account);

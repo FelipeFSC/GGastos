@@ -56,7 +56,7 @@
         <div class="content-box-edit">
             <div class="edit-saldo-text">R$ {{selectedAccount.balance?.toFixed(2)}}</div>
             <section class="checkbox-class">
-                <mat-checkbox [disabled]="true" [checked]="selectedAccount.addOverall" class="example-margin">Não somar no Saldo Geral</mat-checkbox>
+                <mat-checkbox [disabled]="true" [checked]="selectedAccount.notInTotal" class="example-margin">Não somar no Saldo Geral</mat-checkbox>
             </section>
         </div>
     </div>

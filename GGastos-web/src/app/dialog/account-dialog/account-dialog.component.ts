@@ -9,7 +9,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 })
 export class AccountDialogComponent implements OnInit {
 
-    account: any = {id: 0, icon: "account_balance_wallet", color: "#9d02d9", name: "NuBank", addOverall: false};
+    account: any = {id: 0, icon: "account_balance_wallet", color: "#9d02d9", name: "NuBank", notInTotal: false};
 
     styleColor: any = {'background-color':this.account.color};
 
@@ -29,7 +29,7 @@ export class AccountDialogComponent implements OnInit {
             this.account.icon = data.icon;
             this.account.color = data.color;
             this.account.name = data.name;
-            this.account.addOverall = data.addOverall;
+            this.account.notInTotal = data.notInTotal;
 
             this.styleColor = {'background-color':data.color};
         }
@@ -40,7 +40,8 @@ export class AccountDialogComponent implements OnInit {
     }
 
     onClose() {
-        this.dialogRef.close();
+        this.account.name = null;
+        this.dialogRef.close(null);
     }
 
     onSave(form: NgForm) {
