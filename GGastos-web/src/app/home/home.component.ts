@@ -317,7 +317,13 @@ export class HomeComponent implements OnInit {
 
     onCheck(transaction: any) {
         let success = () => {
-            this.updateSpendingLimit(transaction.categoryId);
+            let categoryId = 0;
+            if (transaction.category) {
+                categoryId = transaction.category.id;
+            } else {
+                categoryId = transaction.subCategory.category.id;
+            }
+            this.updateSpendingLimit(categoryId);
             this.updateHome();
         }
 
