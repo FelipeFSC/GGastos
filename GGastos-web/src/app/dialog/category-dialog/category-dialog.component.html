@@ -1,5 +1,5 @@
 <div mat-dialog-content>
-
+    <form #form="ngForm" (ngSubmit)="onSave(form)">
     <div class="example-box">
         <span class="category-icon-circle icon-box" [ngStyle]="styleColor"><mat-icon class="icon">{{category.icon}}</mat-icon></span>
         &nbsp;
@@ -11,7 +11,7 @@
     <section class="example-section">
         <div class="tittle-text">Tipo da categoria</div>
         <br>
-        <mat-radio-group [(ngModel)]="category.categoryType" class="radio-group-box">
+        <mat-radio-group [(ngModel)]="category.categoryType" name="categoryType" class="radio-group-box">
             <mat-radio-button value="despesa">Despesa</mat-radio-button>
             &nbsp; &nbsp;
             <mat-radio-button class="mat-radio-button" value="receita">Receita</mat-radio-button>
@@ -23,13 +23,13 @@
     <br>
 
     <label for="favcolor">Selecione a cor do circulo:</label>&nbsp;
-    <input type="color" (change)="changeColor()" [(ngModel)]="category.color">
+    <input type="color" (change)="changeColor()" [(ngModel)]="category.color" name="color">
 
     <br><br>
 
     <mat-form-field appearance="outline">
         <mat-label>Icone</mat-label>
-        <input [(ngModel)]="category.icon" matInput placeholder="Exemplo: love">
+        <input [(ngModel)]="category.icon" name="icon" matInput placeholder="Exemplo: love">
     </mat-form-field>
     Icones:&nbsp;
     <a href="https://fonts.google.com/icons" target="_blank">google icons</a>
@@ -38,15 +38,15 @@
 
     <mat-form-field appearance="outline" class="full-width">
         <mat-label>Categoria</mat-label>
-        <input [(ngModel)]="category.name" matInput placeholder="Exemplo: Casa">
+        <input required [(ngModel)]="category.name" name="name" matInput placeholder="Exemplo: Casa">
     </mat-form-field>
 
-</div>
-<br>
-<br>
+    <br><br>
 
-<div>
-    <button mat-stroked-button [mat-dialog-close]="category">Salvar</button>
-    &nbsp;
-    <button mat-stroked-button (click)="onClose()">Cancelar</button>
+    <div>
+        <button mat-stroked-button [disabled]="!form.valid" type="submit">Salvar</button>
+        &nbsp;
+        <button mat-stroked-button (click)="onClose()">Cancelar</button>
+    </div>
+    </form>
 </div>

@@ -1,4 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
@@ -47,7 +48,11 @@ export class CategoryDialogComponent implements OnInit {
     }
 
     onClose() {
-        this.dialogRef.close();
+        this.category.name = null;
+        this.dialogRef.close(null);
     }
 
+    onSave(form: NgForm) {
+        this.dialogRef.close(this.category);
+    }
 }

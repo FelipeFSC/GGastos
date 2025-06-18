@@ -55,7 +55,7 @@ export class CategoriesComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe((result: any) => {
-            if (result) {
+            if (result && result.name != null) {
                 if (result.id) {
                     this.categories.forEach((item: any) => {
                         if (item.id === result.id) {
