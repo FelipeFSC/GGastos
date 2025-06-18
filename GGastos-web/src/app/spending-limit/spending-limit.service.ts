@@ -23,6 +23,10 @@ export class SpendingLimitService {
 		return this.httpService.put(this.url + this.appService.spendingLimitUrl + `/${spendingLimitId}`, spendingLimit);
 	}
 
+	delete(spendingLimitId: number) {
+		return this.httpService.delete(this.url + this.appService.spendingLimitUrl + `/${spendingLimitId}`);
+	}
+
 	findAll() {
 		return this.httpService.get(this.url + this.appService.spendingLimitUrl);
 	}

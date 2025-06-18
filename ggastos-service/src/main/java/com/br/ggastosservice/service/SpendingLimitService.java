@@ -17,7 +17,7 @@ import com.br.ggastosservice.repository.SpendingLimitRepository;
 
 @Service
 public class SpendingLimitService {
-    
+
     private SpendingLimitRepository spendingLimitRepository;
 
     private CategoryService categoryService;
@@ -57,13 +57,13 @@ public class SpendingLimitService {
 
         LocalDateTime inicioDoMes = yearMonth.atDay(1).atStartOfDay();
         LocalDateTime fimDoMes = yearMonth.atEndOfMonth().atTime(23, 59, 59);
-    
+
         return spendingLimitRepository.findByFilterDateBetween(inicioDoMes, fimDoMes);
     }
 
     public SpendingLimit create(SpendingLimit spendingLimit) throws Exception {
         Category category = categoryService.findOne(spendingLimit.getCategory().getId());
-        
+
         spendLimitVerification(spendingLimit, category);
 
         spendingLimit.setCategory(category);
@@ -74,7 +74,10 @@ public class SpendingLimitService {
     }
 
     public void update(long spendingLimitId, SpendingLimit spendingLimit) throws Exception {
+        Category category = categoryService.findOne(spendingLimit.getCategory().getId());
         SpendingLimit find = findOne(spendingLimitId);
+        find.setCategory(category);
+
         spendingLimit.setCategory(find.getCategory());
         spendingLimit.setSpent(find.getSpent());
         spendingLimit.setCreateDate(find.getCreateDate());
@@ -82,6 +85,10 @@ public class SpendingLimitService {
         spendingLimitRepository.save(spendingLimit);
     }
 
+    public void delete(long spendingLimitId) throws Exception {
+        SpendingLimit find = findOne(spendingLimitId);
+        spendingLimitRepository.delete(find);
+    }
 
     public void updateSpendLimitBalanceByCategory(long transactionId) throws Exception {
         Transaction transaction = transactionService.findOne(transactionId);

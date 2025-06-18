@@ -53,6 +53,7 @@
                 <div class="amount-edit">
                     <span class="amount">{{ item.spent }} de {{ item.limit }}</span>
                     <mat-icon class="edit-icon" (click)="onEdit(item)">edit</mat-icon>
+                    <mat-icon class="delete-icon" (click)="onDelete(item.id)">delete</mat-icon>
                 </div>
             </div>
 

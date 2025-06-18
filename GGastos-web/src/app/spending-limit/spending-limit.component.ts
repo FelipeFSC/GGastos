@@ -150,7 +150,8 @@ export class SpendingLimitComponent implements OnInit {
     }
 
     onCreate(data: any) {
-        let success = (accountsCreditCards: any) => {
+        let success = () => {
+            this.findCurrentMonth();
         }
 
         let err = (error: any) => {
@@ -174,6 +175,7 @@ export class SpendingLimitComponent implements OnInit {
 
                 let category = {
                     id: item.id,
+                    category: {id: item.category.id},
                     title: item.category.name,
                     icon: item.category.icon,
                     color: item.category.color,
@@ -209,17 +211,31 @@ export class SpendingLimitComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe((result: any) => {
             if (result) {
-                console.log(result);
-                let success = (accountsCreditCards: any) => {
+                let success = () => {
+                    this.findCurrentMonth();
                 }
-        
+
                 let err = (error: any) => {
                     console.log(error);
                 }
-        
+                result.filterDate = `${this.mesAnoSelecionado}-01T00:00:00`;
+                result.category.id = item.category.id;
                 this.spendingLimitService.update(item.id, result)
                     .subscribe(this.extractDataService.extract(success, err));
             }
         });
+    }
+
+    onDelete(spendingLimitId: number) {
+        let success = () => {
+            this.findCurrentMonth();
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.spendingLimitService.delete(spendingLimitId)
+            .subscribe(this.extractDataService.extract(success, err));
     }
 }

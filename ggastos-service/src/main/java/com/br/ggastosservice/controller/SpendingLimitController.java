@@ -2,6 +2,7 @@ package com.br.ggastosservice.controller;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +17,7 @@ import com.br.ggastosservice.service.SpendingLimitService;
 @RestController
 @RequestMapping("/spending-limit")
 public class SpendingLimitController {
-    
+
     private SpendingLimitService spendingLimitService;
 
     private SpendingLimitController(SpendingLimitService spendingLimitService) {
@@ -48,9 +49,14 @@ public class SpendingLimitController {
         spendingLimitService.create(spendingLimit);
     }
 
+    @DeleteMapping("/{spendingLimitId}")
+    public void delete(@PathVariable("spendingLimitId") long spendingLimitId) throws Exception {
+        spendingLimitService.delete(spendingLimitId);
+    }
+
     @PutMapping("/{spendingLimitId}")
     public void update(@PathVariable("spendingLimitId") long spendingLimitId, @RequestBody SpendingLimit spendingLimit) throws Exception {
         spendingLimitService.update(spendingLimitId, spendingLimit);
     }
-    
+
 }

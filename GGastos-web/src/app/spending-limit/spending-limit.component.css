@@ -121,6 +121,12 @@
     cursor: pointer;
 }
 
+.delete-icon {
+    font-size: 18px;
+    color: #d05e5e;
+    cursor: pointer;
+}
+
 .progress-container {
     margin-top: 8px;
     width: 88%;
