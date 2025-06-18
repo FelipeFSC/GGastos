@@ -119,6 +119,7 @@ export class ReleasesComponent implements OnInit {
             .subscribe(this.extractDataService.extract(success, err));
     }
 
+    /*
     updateBalance(accountId: number) {
         let success = (data: any) => {}
 
@@ -129,6 +130,7 @@ export class ReleasesComponent implements OnInit {
         this.accountsService.updateBalance(accountId)
             .subscribe(this.extractDataService.extract(success, err));
     }
+    */
 
     pegarMesAtual(): string {
         const hoje = new Date();
@@ -435,7 +437,6 @@ export class ReleasesComponent implements OnInit {
 
         let success = () => {
             this.filtrarPorMesAno(this.mesAnoSelecionado);
-            this.updateBalance(transaction.account.id);
         }
 
         let err = (error: any) => {

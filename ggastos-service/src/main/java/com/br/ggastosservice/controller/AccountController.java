@@ -61,7 +61,7 @@ public class AccountController {
         accountService.disable(accountId);
     }
 
-    @GetMapping("/update-balance")
+    @GetMapping("/balance")
     public BigDecimal getGeneralBalance() {
         return accountService.getGeneralBalance();
     }

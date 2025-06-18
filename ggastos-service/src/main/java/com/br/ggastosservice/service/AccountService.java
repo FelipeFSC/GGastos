@@ -44,9 +44,11 @@ public class AccountService {
     }
 
     public void update(Account account, long accountId) throws Exception {
-        findOne(accountId);
+        Account beforeAccout = findOne(accountId);
         account.setId(accountId);
         account.setEnabled(true);
+
+        account.setBalance(beforeAccout.getBalance());
         accountRepository.save(account);
     }
 

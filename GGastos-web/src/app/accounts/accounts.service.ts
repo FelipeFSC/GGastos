@@ -45,6 +45,6 @@ export class AccountsService {
 	}
 
 	getGeneralBalance() {
-		return this.httpService.get(this.url + this.appService.accountUrl + `/update-balance`);
+		return this.httpService.get(this.url + this.appService.accountUrl + `/balance`);
 	}
 }

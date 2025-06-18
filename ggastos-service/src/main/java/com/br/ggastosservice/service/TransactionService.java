@@ -162,6 +162,8 @@ public class TransactionService {
         }
 
         transactionRepository.save(transaction);
+
+        accountService.updateBalance(transaction.getAccount().getId());
     }
 
     public void update(Transaction transaction, long transactionId) throws Exception {
@@ -175,11 +177,15 @@ public class TransactionService {
         }
 
         transactionRepository.save(transaction);
+
+        accountService.updateBalance(transaction.getAccount().getId());
     }
 
     public void delete(long transactionId) throws Exception {
         Transaction transaction = findOne(transactionId);
         transactionRepository.delete(transaction);
+
+        accountService.updateBalance(transaction.getAccount().getId());
     }
 
     private void verifyTransaction(Transaction transaction) throws Exception {
@@ -220,6 +226,8 @@ public class TransactionService {
             transaction.setPaidDate(null);
         }
         transactionRepository.save(transaction);
+
+        accountService.updateBalance(transaction.getAccount().getId());
     }
 
 

@@ -345,11 +345,13 @@ export class HomeComponent implements OnInit {
             totalBalance: this.accountsService.getGeneralBalance(),
             categoryGraph: this.reportService.getCategoryReportDto(2),
             delayedTransactions: this.releasesService.findByDate(this.today),
+            accounts: this.accountsService.findByEnabled(true),
         }).subscribe({
             next: (res) => {
                 this.getGeneralBalance(res.totalBalance);
                 this.getCategoryGrafData(res.categoryGraph);
                 this.getDelayedTransactions(res.delayedTransactions);
+                this.getAccounts(res.accounts);
             },
             error: (err) => {
                 console.log(err)
@@ -359,6 +361,10 @@ export class HomeComponent implements OnInit {
 
     updateSpendingLimit(categoryId: number) {
         let success = (result: any) => {
+            if (result.length === 0) {
+                return;
+            }
+
             const updatedData = result.find((r: any) => r.category.id === categoryId);
 
             let percentValue: number = ((updatedData.spent / updatedData.spentLimit) * 100);
