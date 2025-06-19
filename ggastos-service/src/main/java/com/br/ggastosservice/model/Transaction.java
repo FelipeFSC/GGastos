@@ -32,12 +32,18 @@ public class Transaction {
 
     private String description;
 
+    private String observation;
+
+    @Column(name = "paid_date")
     private LocalDateTime paidDate;
 
+    @Column(name = "transaction_date")
     private LocalDateTime transactionDate;
 
+    @Column(name = "create_date")
     private LocalDateTime createDate;
 
+    @Column(name = "update_date")
     private LocalDateTime updateDate;
 
     @ManyToOne
@@ -55,5 +61,9 @@ public class Transaction {
     @ManyToOne
     @JoinColumn(name = "sub_category_id")
     private SubCategory subCategory;
+
+    @ManyToOne
+    @JoinColumn(name = "file_id")
+    private FileAttachment selectedFile;
 
 }

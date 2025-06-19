@@ -67,7 +67,7 @@ export class CategoryReportComponent implements OnInit {
         let error = (error: any) => {
         }
 
-        this.releasesService.findAll()
+        this.releasesService.findPaidTransactionsInPeriod()
             .subscribe(this.extractDataService.extract(success, error));
     }
 
@@ -83,9 +83,9 @@ export class CategoryReportComponent implements OnInit {
             const categoria = tx.category || tx.subCategory?.category;
             const subCategoria = tx.subCategory;
             if (!categoria) return;
-    
+
             const catId = categoria.id;
-    
+
             // Criação da categoria no mapa, caso não exista
             if (!categoriasMap.has(catId)) {
                 categoriasMap.set(catId, {
@@ -99,22 +99,22 @@ export class CategoryReportComponent implements OnInit {
                     subCategorias: new Map<number | string, any>()
                 });
             }
-    
+
             const catObj = categoriasMap.get(catId);
-    
+
             // Formatação de dados de transação
             const dataFormatada = new Date(tx.transactionDate).toLocaleDateString('pt-BR');
             const valorFormatado = Math.abs(tx.value).toLocaleString('pt-BR', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             });
-    
+
             const saida = {
                 nome: tx.description,
                 data: dataFormatada,
                 valor: valorFormatado
             };
-    
+
             // Processa as subcategorias
             if (subCategoria) {
                 const subId = subCategoria.id;
@@ -129,11 +129,11 @@ export class CategoryReportComponent implements OnInit {
                         saidas: []
                     });
                 }
-    
+
                 const subObj = catObj.subCategorias.get(subId);
                 subObj.saidas.push(saida);
                 subObj.valor += Math.abs(tx.value);
-    
+
                 if (!subObj.data || new Date(tx.transactionDate) > new Date(subObj.data)) {
                     subObj.data = dataFormatada;
                 }
@@ -144,9 +144,9 @@ export class CategoryReportComponent implements OnInit {
                     rawDate: tx.transactionDate // para ordenar depois
                 });
             }
-    
+
             catObj.valor += Math.abs(tx.value);
-    
+
             if (!catObj.data || new Date(tx.transactionDate) > new Date(catObj.data)) {
                 catObj.data = dataFormatada;
             }
@@ -155,14 +155,14 @@ export class CategoryReportComponent implements OnInit {
         // Agora, finalizando a estrutura com porcentagens
         return Array.from(categoriasMap.values()).map((cat: any) => {
             const categoriaTotal = cat.valor;
-    
+
             // Verifica se categoriaTotal é um número válido e diferente de zero
             if (isNaN(categoriaTotal) || categoriaTotal === 0) {
                 cat.porcentagem = '0%';  // Evita NaN, atribui 0% se o total for inválido
             } else {
                 cat.porcentagem = ((categoriaTotal / categoriaTotal) * 100).toFixed(2) + "%";  // Caso categoria seja válida
             }
-    
+
             // Se tem subCategorias e também saidas diretas, cria subCategoria "implícita"
             if (cat.subCategorias.size > 0 && cat.saidasDiretas.length > 0) {
                 const pseudoSub: any = {
@@ -174,7 +174,7 @@ export class CategoryReportComponent implements OnInit {
                     aberto: false,
                     saidas: []
                 };
-    
+
                 // Processa as saidas diretas na subcategoria "implícita"
                 cat.saidasDiretas.forEach((saida: any) => {
                     pseudoSub.saidas.push({
@@ -182,16 +182,15 @@ export class CategoryReportComponent implements OnInit {
                         data: saida.data,
                         valor: saida.valor
                     });
-    
+
                     pseudoSub.valor += parseFloat(saida.valor.replace('.', '').replace(',', '.'));
-    
+
                     if (!pseudoSub.data || new Date(saida.rawDate) > new Date(pseudoSub.data)) {
                         pseudoSub.data = saida.data;
                     }
                 });
-    
+
                 // Formata o valor e calcula a porcentagem da subcategoria
-                /* */
                 pseudoSub.porcentagem = ((pseudoSub.valor / categoriaTotal) * 100).toFixed(2) + "%";
 
                 pseudoSub.valor = Math.abs(pseudoSub.valor).toLocaleString('pt-BR', {
@@ -212,32 +211,29 @@ export class CategoryReportComponent implements OnInit {
                 }
                 cat.subCategorias = subMap;
             }
-    
+
             // Se não tem subCategorias, mantemos as saidas direto
             cat.saidas = cat.subCategorias.size === 0 ? cat.saidasDiretas.map((saida: any) => ({
                 nome: saida.nome,
                 data: saida.data,
                 valor: saida.valor
             })) : [];
-    
+
             // Remove campo intermediário de saidasDiretas
             delete cat.saidasDiretas;
-    
-            // Converte subCategorias Map para array final
             cat.subCategorias = Array.from(cat.subCategorias.values());
-    
+
             // Verifica se categoriaTotal é um número válido
             if (isNaN(categoriaTotal) || categoriaTotal === 0) {
-                cat.porcentagem = '0%';  // Evita NaN, atribui 0% se o total for inválido
+                cat.porcentagem = '0%';
             } else {
                 cat.porcentagem = ((cat.valor / total) * 100).toFixed(2) + "%";
             }
-    
+
             this.total = total;
             return cat;
         });
     }
-
 
     onSetExpensesData(data: any) {
         this.expensesData = {

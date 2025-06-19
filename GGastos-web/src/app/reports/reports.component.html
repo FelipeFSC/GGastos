@@ -5,23 +5,25 @@
 
     <mat-tab-group class="mat-tab-group" (selectedTabChange)="onTabChange($event)" animationDuration="0ms">
         <mat-tab label="Categorias">
-            <app-category-report 
+            <app-category-report
                 *ngIf="typeList === 'categories'"
                 (isLoaded)="changeLoad()">
             </app-category-report>
         </mat-tab>
         <mat-tab label="Entradas x Saídas">
-            <app-input-output-report 
+            <app-input-output-report
                 *ngIf="typeList === 'inputsOutputs'"
                 (isLoaded)="changeLoad()">
             </app-input-output-report>
         </mat-tab>
+        <!--
         <mat-tab label="Contas">
-            <app-account-report 
+            <app-account-report
                 *ngIf="typeList === 'accounts'"
                 (isLoaded)="changeLoad()">
             </app-account-report>
         </mat-tab>
+        -->
     </mat-tab-group>
     <div *ngIf="isLoad" class="box-load">
         <img src="././assets/loadGif.gif" alt="load gif">

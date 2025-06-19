@@ -27,6 +27,12 @@ export class AppConfigService {
 
 	private privateSpendingLimit: string = "/spending-limit";
 
+	private privateFileAttachment: string = "/file-attachment";
+
+	public get fileAttachment() {
+		return this.privateFileAttachment;
+	}
+
 	public get spendingLimitUrl() {
 		return this.privateSpendingLimit;
 	}

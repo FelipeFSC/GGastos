@@ -10,25 +10,32 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.br.ggastosservice.dto.TesteDto;
 import com.br.ggastosservice.model.Transaction;
 import com.br.ggastosservice.service.SpendingLimitService;
 import com.br.ggastosservice.service.TransactionService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/transactions")
 public class TransactionController {
+
+    private ObjectMapper objectMapper;
 
     private TransactionService transactionService;
 
     private SpendingLimitService spendingLimitService;
 
     public TransactionController(TransactionService transactionService
-            , SpendingLimitService spendingLimitService) {
+            , SpendingLimitService spendingLimitService
+            , ObjectMapper objectMapper) {
         this.transactionService = transactionService;
         this.spendingLimitService = spendingLimitService;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping("/date/{date}")
@@ -39,6 +46,11 @@ public class TransactionController {
     @GetMapping("")
     public List<Transaction> findAll() throws Exception {
         return transactionService.findAll();
+    }
+
+    @GetMapping("/date-now")
+    public List<Transaction> findPaidTransactionsInPeriod() throws Exception {
+        return transactionService.findPaidTransactionsInPeriod();
     }
 
     @GetMapping("/{transactionId}")
@@ -52,8 +64,10 @@ public class TransactionController {
     }
 
     @PostMapping()
-    public void create(@RequestBody Transaction transaction) throws Exception {
-        transactionService.create(transaction);
+    public void create(@RequestParam("file") MultipartFile file, @RequestParam("data") String data) throws Exception {
+        Transaction transaction = objectMapper.readValue(data, Transaction.class);
+
+        transactionService.create(transaction, file);
     }
 
     @PutMapping("/{transactionId}")

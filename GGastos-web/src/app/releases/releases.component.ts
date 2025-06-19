@@ -270,13 +270,17 @@ export class ReleasesComponent implements OnInit {
             if (!result) {
                 return;
             }
+            const formData = new FormData();
+            formData.append('file', result.selectedFile);
 
             result.transactionType = {id: 1};
+            result.selectedFile = null;
+            formData.append('data', JSON.stringify(result));
 
             if (result.recurrenceType.id) {
                 this.onCreateFixed(result);
             } else {
-                this.onCreate(result);
+                this.onCreate(formData);
             }
         });
     }
@@ -322,7 +326,7 @@ export class ReleasesComponent implements OnInit {
             }
 
             let dialogRef = this.dialog.open(ReleasesDialogComponent, {
-                data: { 
+                data: {
                     title: "Nova receita",
                     recurrencesTypes: this.recurrencesTypes,
                     accounts: this.accounts,

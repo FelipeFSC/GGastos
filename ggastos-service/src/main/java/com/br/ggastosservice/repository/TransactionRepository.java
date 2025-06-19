@@ -26,6 +26,15 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     List<Transaction> findByPaidDateNotNullOrderByCategoryIdAscSubCategoryAscPaidDateAsc();
 
+    @Query("SELECT t FROM Transaction t " +
+       "WHERE t.paidDate IS NOT NULL " +
+       "AND t.transactionDate BETWEEN :start AND :end " +
+       "ORDER BY t.category.id ASC, t.subCategory.id ASC, t.paidDate ASC")
+    List<Transaction> findPaidTransactionsInPeriod(
+        @Param("start") LocalDateTime start,
+        @Param("end") LocalDateTime end
+    );
+
     List<Transaction> findByTransactionTypeIdAndPaidDateNotNullOrderByCategoryIdAscSubCategoryCategoryIdAsc(long transactionTypeId);
 
     @Query(value = "SELECT * FROM transaction"

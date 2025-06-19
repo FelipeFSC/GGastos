@@ -6,14 +6,14 @@
 .mini-icon {
     color: #c2c2bd;
     font-size: 12px;
-    margin-right: 0px; 
+    margin-right: 0px;
     align-content: center;
     cursor: pointer;
     transition: 200ms;
 }
 
 .mat-icon {
-    margin-right: 0px!important;
+    margin-right: 0px !important;
 }
 
 .container-button {
@@ -41,6 +41,7 @@
 .mat-radio-button {
     margin-top: 4px;
 }
+
 .select-box {
     margin-top: 15px;
 }
@@ -66,6 +67,7 @@
     border-radius: 50%;
     transition: all linear 150ms;
 }
+
 .button-active {
     background-color: #dbded8;
 }
@@ -79,8 +81,9 @@
     margin: -10px 0 0 -10px;
     transition: all linear 150ms;
 }
+
 .icon-active {
-    color: white;   
+    color: white;
 }
 
 
@@ -129,7 +132,8 @@
     color: #777;
     margin-top: 4px;
     opacity: 0;
-    transition: .2s cubic-bezier(1, -0.01, 0.59, 0.97);;
+    transition: .2s cubic-bezier(1, -0.01, 0.59, 0.97);
+    ;
     margin-top: 25px;
 }
 
@@ -141,4 +145,52 @@
     opacity: 1;
     cursor: pointer;
     margin-top: 0px;
+}
+
+
+
+
+.file-preview {
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    border: 1px solid #dfe4ea;
+    border-radius: 8px;
+    padding: 10px 14px;
+    max-width: 400px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    gap: 8px;
+}
+
+.file-info {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+    flex: 1;
+}
+
+.file-name {
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+.remove-btn {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ff4757;
+    padding: 4px;
+    transition: color 0.2s ease;
+}
+
+.remove-btn:hover {
+    color: #e84118;
 }

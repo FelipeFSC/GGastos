@@ -18,13 +18,13 @@
     </div>
     <hr class="horizontal-line">
     <div class="box-expenses">
-        <h4>Categorias de despesa</h4>
+        <h4>Despesas</h4>
         <body>
             <table>
                 <tbody>
                     <ng-container *ngFor="let item of data">
                         <tr>
-                            <td> 
+                            <td>
                                 <input type="checkbox" (click)="onAbriEFecha(item)" name="scales"/>
                                 {{item.nome}}
                             </td>
@@ -88,18 +88,81 @@
                 </tbody>
             </table>
         </body>
-
-        <h1>
-            asd
-            asd
-            asd
-        </h1>
-
     </div>
 
     <hr class="horizontal-line">
     <div class="box-revenues">
-        <h4>Categorias de receita</h4>
+        <h4>Receitas</h4>
+
+        <body>
+            <table>
+                <tbody>
+                    <ng-container *ngFor="let item of data">
+                        <tr>
+                            <td>
+                                <input type="checkbox" (click)="onAbriEFecha(item)" name="scales"/>
+                                {{item.nome}}
+                            </td>
+                            <td class="td-tittle cell-center">{{item.porcentagem}}</td>
+                            <td class="cell-right">R$ {{item.valor}}</td>
+                        </tr>
+                        <ng-container *ngIf="item.subCategorias.length === 0 && item.aberto">
+                            <tr *ngFor="let subItem of item.saidas" style="color: blue;">
+                                <td class="td-tittle indent-1">{{subItem.nome}}</td>
+                                <td class="cell-center">{{subItem.data}}</td>
+                                <td class="cell-right">R$ {{subItem.valor}}</td>
+                            </tr>
+                        </ng-container>
+
+                        <ng-container *ngIf="item.subCategorias.length !== 0">
+                            <ng-container *ngIf="item.saidas.length !== 0 || item.existeSaida">
+                                <tr>
+                                    <td class="td-tittle indent-1">
+                                        <input type="checkbox" (click)="onAbriEFecha(item)" name="scales"/>
+                                        {{item.nome}}
+                                    </td>
+                                    <td class="cell-center">{{item.data}}</td>
+                                    <td class="cell-right">R$ {{item.valor}}</td>
+                                </tr>
+                            </ng-container>
+
+                            <ng-container *ngIf="item.aberto">
+                                <tr *ngFor="let subItem of item.saidas" style="color: blue;">
+                                    <td class="td-tittle indent-2">{{subItem.nome}}</td>
+                                    <td class="cell-center">{{subItem.data}}</td>
+                                    <td class="cell-right">R$ {{subItem.valor}}</td>
+                                </tr>
+                            </ng-container>
+                        </ng-container>
+
+                        <ng-container *ngIf="item.aberto">
+                            <ng-container *ngFor="let subItem of item.subCategorias">
+                                <tr>
+                                    <td class="td-tittle indent-1">
+                                        <input type="checkbox" (click)="onAbriEFecha(subItem)" name="scales"/>
+                                        {{subItem.nome}}
+                                    </td>
+                                    <td class="cell-center">{{subItem.porcentagem}}</td>
+                                    <td class="cell-right">R$ {{subItem.valor}}</td>
+                                </tr>
+                                <ng-container *ngIf="subItem.aberto">
+                                    <tr *ngFor="let subItemItem of subItem.saidas" style="color: blue;">
+                                        <td class="td-tittle indent-2">{{subItemItem.nome}}</td>
+                                        <td class="cell-center">{{subItemItem.data}}</td>
+                                        <td class="cell-right">R$ {{subItemItem.valor}}</td>
+                                    </tr>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+                    <tr>
+                        <td class="td-tittle">TOTAL</td>
+                        <td class="cell-center">100%</td>
+                        <td class="cell-right">R$ {{total}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </body>
 
     </div>
 </div>

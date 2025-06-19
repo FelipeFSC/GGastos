@@ -23,6 +23,10 @@ export class ReleasesService {
 		return this.httpService.get(this.url + this.appService.transactionUrl);
 	}
 
+	findPaidTransactionsInPeriod() {
+		return this.httpService.get(this.url + this.appService.transactionUrl + `/date-now`);
+	}
+
 	findOneTransaction(id: number) {
 		return this.httpService.get(this.url + this.appService.transactionUrl + `/${id}`);
 	}
@@ -63,6 +67,9 @@ export class ReleasesService {
 		return this.httpService.get(this.url + this.appService.transactionUrl + `/${transactionId}/expired-unpaid`);
 	}
 
+	downloadFileById(fileId: number) {
+		return this.httpService.getFile(this.url + this.appService.fileAttachment + `/download/${fileId}`);
+	}
 
 
 

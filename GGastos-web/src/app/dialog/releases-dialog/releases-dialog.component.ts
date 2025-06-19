@@ -1,6 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { ExtractDataService } from 'src/app/extract-data.service';
+import { ReleasesService } from 'src/app/releases/releases.service';
 import { Utils } from 'src/app/util/utils';
 
 @Component({
@@ -16,9 +18,9 @@ export class ReleasesDialogComponent implements OnInit {
 
     divideType: string = "";
 
-    isRepeatActive:boolean = false;
+    isRepeatActive: boolean = false;
 
-    isChatActive:boolean = false;
+    isChatActive: boolean = false;
 
     isAttachmentActive: boolean = false;
 
@@ -28,11 +30,13 @@ export class ReleasesDialogComponent implements OnInit {
 
     paymentDate: any = {};
 
-    valorParcela: number|null = null;
+    valorParcela: number | null = null;
 
     installmentValue: string = "0.00";
 
     category = "FUNCIONOU";
+
+    observation: string | null = null;
 
     accountAndCreditCards: any[] = [];
 
@@ -46,8 +50,12 @@ export class ReleasesDialogComponent implements OnInit {
 
     categorySelected: any = null;
 
+    selectedFile: File | null = null;
+
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: any,
+        private releasesService: ReleasesService,
+        private extractDataService: ExtractDataService,
         public dialogRef: MatDialogRef<ReleasesDialogComponent>
     ) { }
 
@@ -66,6 +74,16 @@ export class ReleasesDialogComponent implements OnInit {
 
     onLoadData(data: any) {
         this.description = data.description;
+
+        if (data.selectedFile) {
+            this.selectedFile = data.selectedFile;
+            this.isAttachmentActive = !this.isAttachmentActive;
+        }
+
+        if (data.observation) {
+            this.observation = data.observation;
+            this.isChatActive = true;
+        }
 
         if (data.value < 0) {
             data.value = data.value * -1;
@@ -96,7 +114,7 @@ export class ReleasesDialogComponent implements OnInit {
 
         let accountList = this.data.accounts;
         let list = [];
-        let accounts = { name: "Contas", list: [{}]};
+        let accounts = { name: "Contas", list: [{}] };
         accounts.list.pop();
         for (let account of accountList) {
             accounts.list.push(account.account);
@@ -132,7 +150,7 @@ export class ReleasesDialogComponent implements OnInit {
     onLoadAccountsCombo(data: any) {
         let list = [];
 
-        let accounts = { name: "Contas", list: [{}]};
+        let accounts = { name: "Contas", list: [{}] };
         accounts.list.pop();
         for (let account of data) {
             accounts.list.push(account.account);
@@ -160,8 +178,44 @@ export class ReleasesDialogComponent implements OnInit {
         this.isChatActive = !this.isChatActive;
     }
 
-    onAttachment() {
+    downloadFile(): void {
+        let success = (file: any) => {
+            const url = window.URL.createObjectURL(file);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = this.selectedFile!.name;
+
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        this.releasesService.downloadFileById(1)
+            .subscribe(this.extractDataService.extract(success, err));
+    }
+
+    onFileSelected(event: Event) {
+        const file = (event.target as HTMLInputElement).files?.[0];
+        if (file) {
+            this.isAttachmentActive = !this.isAttachmentActive;
+
+            this.selectedFile = file;
+        }
+    }
+
+    removeSelectedFile(): void {
+        this.selectedFile = null;
         this.isAttachmentActive = !this.isAttachmentActive;
+
+        const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+        if (input) {
+            input.value = '';
+        }
     }
 
     valorAlterado() {
@@ -179,10 +233,10 @@ export class ReleasesDialogComponent implements OnInit {
 
     onDelete() {
         if (this.isRepeatActive) {
-            this.dialogRef.close({fixedId: this.data.editData.id});
+            this.dialogRef.close({ fixedId: this.data.editData.id });
 
         } else {
-            this.dialogRef.close({id: this.data.editData.id});
+            this.dialogRef.close({ id: this.data.editData.id });
         }
     }
 
@@ -206,13 +260,19 @@ export class ReleasesDialogComponent implements OnInit {
             accountId = this.accountSelected.id;
         }
 
+        let observation = this.observation;
+        if (!this.isChatActive) {
+            observation = null;
+        }
+
         let releaseData = {
             value: moneyValue,
             description: this.description,
             transactionType: "",
             paidDate: "",
             transactionDate: this.paymentDate,
-            observation: "",
+            observation: observation,
+            selectedFile: this.selectedFile,
             recurrenceType: {},
             account: {
                 id: accountId
@@ -229,7 +289,7 @@ export class ReleasesDialogComponent implements OnInit {
         }
 
         if (this.isRepeatActive) {
-            releaseData.recurrenceType = {id: this.paymentRangeSelected.id};
+            releaseData.recurrenceType = { id: this.paymentRangeSelected.id };
         }
 
         this.dialogRef.close(releaseData);

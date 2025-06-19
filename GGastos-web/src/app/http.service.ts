@@ -11,7 +11,7 @@ export class HttpService {
 	}
 
 	getFile(url: string) {
-		return this.http.get(url);
+		return this.http.get(url, { responseType: 'blob' });
 	}
 
 	getFileNotAuth(url: string) {

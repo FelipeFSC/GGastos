@@ -37,7 +37,7 @@ public class FixedTransactionController {
             @PathVariable("transactionId") long transactionId) throws Exception {
         fixedTransactionService.update(transaction, transactionId);
     }
-    
+
     @DeleteMapping("/{transactionId}")
     public void delete(@PathVariable("transactionId") long transactionId) throws Exception {
         fixedTransactionService.delete(transactionId);

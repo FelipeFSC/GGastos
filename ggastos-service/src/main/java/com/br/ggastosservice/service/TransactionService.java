@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.br.ggastosservice.dto.MonthlyTotalDto;
 import com.br.ggastosservice.dto.TesteDto;
@@ -21,6 +22,7 @@ import com.br.ggastosservice.dto.TransactionUploadDto;
 import com.br.ggastosservice.model.Account;
 import com.br.ggastosservice.model.Category;
 import com.br.ggastosservice.model.CreditCard;
+import com.br.ggastosservice.model.FileAttachment;
 import com.br.ggastosservice.model.FixedTransaction;
 import com.br.ggastosservice.model.RecurrenceType;
 import com.br.ggastosservice.model.SubCategory;
@@ -45,10 +47,13 @@ public class TransactionService {
 
     private FixedTransactionService fixedTransactionService;
 
+    private FileService fileService;
+
     public TransactionService(TransactionRepository transactionRepository,
             SubCategoryService subCategoryService, CategoryService categoryService,
             AccountService accountService, CreditCardService creditCardService,
-            TransactionTypeService transactionTypeService, FixedTransactionService fixedTransactionService) {
+            TransactionTypeService transactionTypeService, FixedTransactionService fixedTransactionService,
+            FileService fileService) {
         this.transactionRepository = transactionRepository;
         this.subCategoryService = subCategoryService;
         this.categoryService = categoryService;
@@ -56,6 +61,7 @@ public class TransactionService {
         this.creditCardService = creditCardService;
         this.transactionTypeService = transactionTypeService;
         this.fixedTransactionService = fixedTransactionService;
+        this.fileService = fileService;
     }
 
     public Transaction findOne(long id) throws Exception  {
@@ -68,6 +74,12 @@ public class TransactionService {
 
     public List<Transaction> findAll() {
         return transactionRepository.findByPaidDateNotNullOrderByCategoryIdAscSubCategoryAscPaidDateAsc();
+    }
+
+    public List<Transaction> findPaidTransactionsInPeriod() {
+        LocalDateTime start = LocalDate.now().withDayOfMonth(1).atStartOfDay();
+        LocalDateTime end = start.plusMonths(1).minusSeconds(1);
+        return transactionRepository.findPaidTransactionsInPeriod(start, end);
     }
 
     public List<Transaction> findByTransactionTypeId(long transactionTypeId) {
@@ -156,8 +168,14 @@ public class TransactionService {
         return list;
     }
 
-    public void create(Transaction transaction) throws Exception {
+    public void create(Transaction transaction, MultipartFile multipartFile) throws Exception {
         verifyTransaction(transaction);
+
+        FileAttachment file = fileService.verifyAndSaveFile(multipartFile);
+        if (file != null) {
+            transaction.setSelectedFile(file);
+        }
+
         if (transaction.getFixedTransactionId() != null) {
             transaction.setPaidDate(LocalDateTime.now());
         }
