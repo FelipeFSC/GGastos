@@ -74,7 +74,7 @@ export class CategoryReportComponent implements OnInit {
 
     organizarTransacoes(transacoes: any[]) {
         const categoriasMap = new Map<number, any>();
-    
+
         let total = 0;
         // Primeiro, processa as transações para organizar as categorias e subcategorias
         transacoes.forEach(tx => {

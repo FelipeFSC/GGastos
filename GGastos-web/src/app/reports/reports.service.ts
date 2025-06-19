@@ -19,4 +19,7 @@ export class ReportsService {
 		return this.httpService.get(this.url + this.appService.reportsUrl + `/category-report/${categoryTypeId}`);
 	}
 
+	findMonthlyTotalsByYear(year: number) {
+		return this.httpService.get(this.url + this.appService.reportsUrl + `/inputs-outputs/${year}`);
+	}
 }

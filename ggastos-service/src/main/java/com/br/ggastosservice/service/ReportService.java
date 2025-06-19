@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.br.ggastosservice.dto.CategotyDataReportDto;
 import com.br.ggastosservice.dto.CateogoryReportDto;
+import com.br.ggastosservice.dto.MonthlyTotalDto;
 import com.br.ggastosservice.model.Transaction;
 
 @Service
@@ -86,4 +87,8 @@ public class ReportService {
         return cateogoryReportDto;
     }
 
+    public List<MonthlyTotalDto> findMonthlyTotalsByYear(int year) {
+        List<MonthlyTotalDto> result = transactionService.findMonthlyTotalsByYear(year);
+        return result;
+    }
 }

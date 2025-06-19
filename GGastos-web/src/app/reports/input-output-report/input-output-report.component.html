@@ -28,16 +28,14 @@
             <th style="text-align: left;">período</th>
             <th>entradas</th>
             <th>saídas</th>
-            <th>resultado</th>
             <th>saldo</th>
         </thead>
         <tbody>
             <tr *ngFor="let item of data">
-                <td style="text-align: left;"> {{item.date}} </td>
-                <td> R$ {{item.entrada}} </td>
-                <td> R$ {{item.saida}} </td>
-                <td> R$ {{item.resultado}} </td>
-                <td> R$ {{item.saldo}} </td>
+                <td style="text-align: left;"> {{item.period}} </td>
+                <td> R$ {{item.input}} </td>
+                <td> R$ {{item.output}} </td>
+                <td> R$ {{item.balance}} </td>
             </tr>
         </tbody>
     </table>

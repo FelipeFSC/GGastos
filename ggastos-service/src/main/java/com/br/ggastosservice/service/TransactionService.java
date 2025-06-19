@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.br.ggastosservice.dto.MonthlyTotalDto;
 import com.br.ggastosservice.dto.TesteDto;
 import com.br.ggastosservice.dto.TransactionUploadDto;
 import com.br.ggastosservice.model.Account;
@@ -31,7 +32,7 @@ import com.br.ggastosservice.repository.TransactionRepository;
 public class TransactionService {
 
     private TransactionRepository transactionRepository;
-    
+
     private SubCategoryService subCategoryService;
 
     private CategoryService categoryService;
@@ -257,6 +258,11 @@ public class TransactionService {
         }
 
         transactionRepository.saveAll(transactionsList);
+    }
+
+    public List<MonthlyTotalDto> findMonthlyTotalsByYear(int year) {
+        List<MonthlyTotalDto> result = transactionRepository.findMonthlyTotalsByYear(year);
+        return result;
     }
 
 }

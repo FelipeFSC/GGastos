@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.br.ggastosservice.dto.MonthlyTotalDto;
 import com.br.ggastosservice.model.Transaction;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
@@ -41,5 +42,17 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
         " INNER JOIN account ON transaction.account_id = account.id"+
         " where transaction_type_id = :transactionTypeId AND paid_date IS NOT NULL AND account.not_in_total IS FALSE", nativeQuery = true)
     BigDecimal findTotalValues(long transactionTypeId);
+
+    @Query(value = "SELECT " +
+            " FORMATDATETIME(t.transaction_date, 'yyyy-MM') AS month, " +
+            " tt.name AS type, " +
+            " SUM(t.value) AS total " +
+            "FROM transaction t " +
+            "INNER JOIN transaction_type tt ON t.transaction_type_id = tt.id " +
+            "WHERE tt.name IN ('entrada', 'saida') " +
+            "AND YEAR(t.transaction_date) = :ano " +
+            "GROUP BY FORMATDATETIME(t.transaction_date, 'yyyy-MM'), tt.name " +
+            "ORDER BY month, type", nativeQuery = true)
+    List<MonthlyTotalDto> findMonthlyTotalsByYear(@Param("ano") int ano);
 
 }
