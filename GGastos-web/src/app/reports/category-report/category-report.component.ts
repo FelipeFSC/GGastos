@@ -20,7 +20,8 @@ export class CategoryReportComponent implements OnInit {
 
     total: number = 0;
 
-    data: any = []
+    data: any = [];
+    data2: any = [];
 
     constructor(
         private extractDataService: ExtractDataService,
@@ -54,14 +55,18 @@ export class CategoryReportComponent implements OnInit {
     getData2() {
         let success = (data: any) => {
             let list: any = [];
+            let listEntrada: any = [];
 
             for (let item of data) {
                 if (item.value < 0) {
                     list.push(item);
+                } else {
+                    listEntrada.push(item);
                 }
             }
 
             this.data = this.organizarTransacoes(list);
+            this.data2 = this.organizarTransacoes(listEntrada);
         }
 
         let error = (error: any) => {

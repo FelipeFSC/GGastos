@@ -64,9 +64,8 @@ public class TransactionController {
     }
 
     @PostMapping()
-    public void create(@RequestParam("file") MultipartFile file, @RequestParam("data") String data) throws Exception {
+    public void create(@RequestParam(value = "file", required = false) MultipartFile file, @RequestParam("data") String data) throws Exception {
         Transaction transaction = objectMapper.readValue(data, Transaction.class);
-
         transactionService.create(transaction, file);
     }
 

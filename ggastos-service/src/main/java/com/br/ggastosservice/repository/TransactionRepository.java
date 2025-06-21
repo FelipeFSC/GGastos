@@ -35,7 +35,11 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
         @Param("end") LocalDateTime end
     );
 
-    List<Transaction> findByTransactionTypeIdAndPaidDateNotNullOrderByCategoryIdAscSubCategoryCategoryIdAsc(long transactionTypeId);
+    List<Transaction> findByTransactionTypeIdAndPaidDateNotNullAndTransactionDateBetweenOrderByCategoryIdAscSubCategoryCategoryIdAsc(
+        long transactionTypeId,
+        LocalDateTime startOfMonth,
+        LocalDateTime endOfMonth
+    );
 
     @Query(value = "SELECT * FROM transaction"
         + " WHERE transaction_date < CURRENT_DATE() AND paid_date IS NULL"
@@ -53,15 +57,13 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     BigDecimal findTotalValues(long transactionTypeId);
 
     @Query(value = "SELECT " +
-            " FORMATDATETIME(t.transaction_date, 'yyyy-MM') AS month, " +
-            " tt.name AS type, " +
-            " SUM(t.value) AS total " +
-            "FROM transaction t " +
-            "INNER JOIN transaction_type tt ON t.transaction_type_id = tt.id " +
-            "WHERE tt.name IN ('entrada', 'saida') " +
-            "AND YEAR(t.transaction_date) = :ano " +
-            "GROUP BY FORMATDATETIME(t.transaction_date, 'yyyy-MM'), tt.name " +
-            "ORDER BY month, type", nativeQuery = true)
+            " FORMATDATETIME(t.transaction_date, 'yyyy-MM') AS month,"+
+            " tt.name AS type, SUM(t.value) AS total FROM transaction t"+
+            "   INNER JOIN transaction_type tt ON t.transaction_type_id = tt.id" +
+            " WHERE tt.name IN ('entrada', 'saida')" +
+            " AND YEAR(t.transaction_date) = :ano AND t.paid_date IS NOT NULL" +
+            "   GROUP BY FORMATDATETIME(t.transaction_date, 'yyyy-MM'), tt.name" +
+            " ORDER BY month, type", nativeQuery = true)
     List<MonthlyTotalDto> findMonthlyTotalsByYear(@Param("ano") int ano);
 
 }

@@ -13,14 +13,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.br.ggastosservice.model.FileAttachment;
-import com.br.ggastosservice.repository.FileRepository;
+import com.br.ggastosservice.repository.FileAttachmentRepository;
 
 @Service
-public class FileService {
+public class FileAttachmentService {
 
-    private FileRepository fileRepository;
+    private FileAttachmentRepository fileRepository;
 
-    public FileService(FileRepository fileRepository) {
+    public FileAttachmentService(FileAttachmentRepository fileRepository) {
         this.fileRepository = fileRepository;
     }
 
@@ -33,7 +33,7 @@ public class FileService {
     }
 
     public FileAttachment verifyAndSaveFile(MultipartFile multipartFile) throws Exception {
-        if (multipartFile.isEmpty()) {
+        if (multipartFile == null || multipartFile.isEmpty()) {
             return null;
         }
 
@@ -61,6 +61,17 @@ public class FileService {
 
         this.fileRepository.save(file);
         return file;
+    }
+
+    public void deleteFile(long fileId) throws Exception {
+        FileAttachment fileAttachment = findOne(fileId);
+
+        Path filePath = Paths.get(fileAttachment.getPath());
+        try {
+            Files.deleteIfExists(filePath);
+        } catch (Exception e) {
+            throw new Exception("Erro ao deletar o arquivo físico: ");
+        }
     }
 
     public File download(long fileId) throws Exception {

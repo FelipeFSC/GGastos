@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.br.ggastosservice.service.FileService;
+import com.br.ggastosservice.service.FileAttachmentService;
 
 @RestController
 @RequestMapping("/file-attachment")
 public class FileController {
 
-    private FileService fileService;
+    private FileAttachmentService fileService;
 
-    public FileController(FileService fileService) {
+    public FileController(FileAttachmentService fileService) {
         this.fileService = fileService;
     }
 

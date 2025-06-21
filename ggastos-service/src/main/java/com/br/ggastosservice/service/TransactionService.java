@@ -47,13 +47,13 @@ public class TransactionService {
 
     private FixedTransactionService fixedTransactionService;
 
-    private FileService fileService;
+    private FileAttachmentService fileAttachmentService;
 
     public TransactionService(TransactionRepository transactionRepository,
             SubCategoryService subCategoryService, CategoryService categoryService,
             AccountService accountService, CreditCardService creditCardService,
             TransactionTypeService transactionTypeService, FixedTransactionService fixedTransactionService,
-            FileService fileService) {
+            FileAttachmentService fileAttachmentService) {
         this.transactionRepository = transactionRepository;
         this.subCategoryService = subCategoryService;
         this.categoryService = categoryService;
@@ -61,7 +61,7 @@ public class TransactionService {
         this.creditCardService = creditCardService;
         this.transactionTypeService = transactionTypeService;
         this.fixedTransactionService = fixedTransactionService;
-        this.fileService = fileService;
+        this.fileAttachmentService = fileAttachmentService;
     }
 
     public Transaction findOne(long id) throws Exception  {
@@ -83,7 +83,9 @@ public class TransactionService {
     }
 
     public List<Transaction> findByTransactionTypeId(long transactionTypeId) {
-        return transactionRepository.findByTransactionTypeIdAndPaidDateNotNullOrderByCategoryIdAscSubCategoryCategoryIdAsc(transactionTypeId);
+        LocalDateTime start = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime end = start.plusMonths(1).minusNanos(1);
+        return transactionRepository.findByTransactionTypeIdAndPaidDateNotNullAndTransactionDateBetweenOrderByCategoryIdAscSubCategoryCategoryIdAsc(transactionTypeId, start, end);
     }
 
     public List<Transaction> findExpiredUnpaid(long transactionId) {
@@ -171,7 +173,7 @@ public class TransactionService {
     public void create(Transaction transaction, MultipartFile multipartFile) throws Exception {
         verifyTransaction(transaction);
 
-        FileAttachment file = fileService.verifyAndSaveFile(multipartFile);
+        FileAttachment file = fileAttachmentService.verifyAndSaveFile(multipartFile);
         if (file != null) {
             transaction.setSelectedFile(file);
         }
@@ -191,6 +193,10 @@ public class TransactionService {
 
         transaction.setId(transactionId);
 
+        if (transaction.getSelectedFile() == null) {
+            fileAttachmentService.deleteFile(transactionId);
+        }
+
         if (transaction.getFixedTransactionId() != null) {
             transaction.setPaidDate(LocalDateTime.now());
         }
@@ -202,6 +208,7 @@ public class TransactionService {
 
     public void delete(long transactionId) throws Exception {
         Transaction transaction = findOne(transactionId);
+        fileAttachmentService.deleteFile(transactionId);
         transactionRepository.delete(transaction);
 
         accountService.updateBalance(transaction.getAccount().getId());

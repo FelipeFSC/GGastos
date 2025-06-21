@@ -451,7 +451,11 @@ export class ReleasesComponent implements OnInit {
             this.releasesService.isPaid(transaction.id)
                 .subscribe(this.extractDataService.extract(success, err));
         } else {
-            this.releasesService.create(transaction)
+            const formData = new FormData();
+            formData.append('file', "");
+            formData.append('data', JSON.stringify(transaction));
+
+            this.releasesService.create(formData)
                 .subscribe(this.extractDataService.extract(success, err));
         }
     }
