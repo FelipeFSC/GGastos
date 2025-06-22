@@ -19,6 +19,7 @@ export class CategoryReportComponent implements OnInit {
     incomeData: any = {};
 
     total: number = 0;
+    total2: number = 0;
 
     data: any = [];
     data2: any = [];
@@ -67,6 +68,17 @@ export class CategoryReportComponent implements OnInit {
 
             this.data = this.organizarTransacoes(list);
             this.data2 = this.organizarTransacoes(listEntrada);
+
+            let total = 0;
+            for (let item of this.data) {
+                total += item.valor;
+            }
+            this.total = total;
+            total = 0;
+            for (let item of this.data2) {
+                total += item.valor;
+            }
+            this.total2 = total;
         }
 
         let error = (error: any) => {
@@ -80,10 +92,8 @@ export class CategoryReportComponent implements OnInit {
     organizarTransacoes(transacoes: any[]) {
         const categoriasMap = new Map<number, any>();
 
-        let total = 0;
         // Primeiro, processa as transações para organizar as categorias e subcategorias
         transacoes.forEach(tx => {
-            total += Math.abs(tx.value);
 
             const categoria = tx.category || tx.subCategory?.category;
             const subCategoria = tx.subCategory;
@@ -228,14 +238,6 @@ export class CategoryReportComponent implements OnInit {
             delete cat.saidasDiretas;
             cat.subCategorias = Array.from(cat.subCategorias.values());
 
-            // Verifica se categoriaTotal é um número válido
-            if (isNaN(categoriaTotal) || categoriaTotal === 0) {
-                cat.porcentagem = '0%';
-            } else {
-                cat.porcentagem = ((cat.valor / total) * 100).toFixed(2) + "%";
-            }
-
-            this.total = total;
             return cat;
         });
     }

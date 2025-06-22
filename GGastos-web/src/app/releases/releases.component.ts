@@ -244,14 +244,17 @@ export class ReleasesComponent implements OnInit {
             if (!result) {
                 return;
             }
+            const formData = new FormData();
+            formData.append('file', result.selectedFile);
 
             result.value = result.value * -1;
             result.transactionType = {id: 2};
+            formData.append('data', JSON.stringify(result));
 
             if (result.recurrenceType.id) {
                 this.onCreateFixed(result);
             } else {
-                this.onCreate(result);
+                this.onCreate(formData);
             }
         });
     }
