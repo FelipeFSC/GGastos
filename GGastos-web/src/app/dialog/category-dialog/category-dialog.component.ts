@@ -27,6 +27,25 @@ export class CategoryDialogComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        if (this.data.load === "despesa") {
+            this.category = {
+                id: 0,
+                icon: "home",
+                color: "#949bff",
+                name: "Casa",
+                categoryType: "despesa"
+            }
+        } else {
+            this.category = {
+                id: 0,
+                icon: "star",
+                color: "#35D03A",
+                name: "Salário",
+                categoryType: "receita"
+            }
+        }
+        this.styleColor = {'background-color':this.category.color};
+
         if (this.data.edit) {
             this.isDelete = true;
             this.onLoad(this.data.edit);

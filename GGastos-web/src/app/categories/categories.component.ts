@@ -12,9 +12,15 @@ import { SubCategoryDialogComponent } from '../dialog/sub-category-dialog/sub-ca
 })
 export class CategoriesComponent implements OnInit {
 
-    categories: any = [];
-
     subCategories: any = [];
+
+    expenses: any = [];
+
+    revenues: any = [];
+
+    dataSource: any = [];
+
+    listType: string = "despesa";
 
     constructor(
         private dialog: MatDialog,
@@ -28,16 +34,26 @@ export class CategoriesComponent implements OnInit {
 
     list() {
         let success = (res: any) => {
-            let list: any[] = [];
+            let expenseList: any[] = [];
+            let revenueList: any[] = [];
+
             for (let item of res) {
                 let category = {
                     category: item.category,
                     subCategory: item.subCategory,
                     isAddSubCategory: false
                 }
-                list.push(category);
+
+                if (item.category.type === "despesa") {
+                    expenseList.push(category);
+                } else {
+                    revenueList.push(category);
+                }
             }
-            this.categories = list;
+            this.expenses = expenseList;
+            this.revenues = revenueList;
+
+            this.dataSource = expenseList;
         }
 
         let err = (error: any) => {
@@ -48,16 +64,16 @@ export class CategoriesComponent implements OnInit {
             .subscribe(this.extractDataService.extract(success, err));
     }
 
-    onAddCategory(category?: any|undefined) {
+    onAddCategory(category?: any | undefined) {
         let dialogRef = this.dialog.open(CategoryDialogComponent, {
             width: '400px',
-            data: { edit: ((category ? category : null))}
+            data: { edit: ((category ? category : null)), load: this.listType }
         });
 
         dialogRef.afterClosed().subscribe((result: any) => {
             if (result && result.name != null) {
                 if (result.id) {
-                    this.categories.forEach((item: any) => {
+                    this.dataSource.forEach((item: any) => {
                         if (item.id === result.id) {
                             item.icone = result.icone;
                             item.color = result.color;
@@ -89,6 +105,24 @@ export class CategoriesComponent implements OnInit {
                 }
             }
         });
+    }
+
+    onTabChanged(index: number) {
+        if (index === 0) {
+            this.onListExpenses();
+        } else if (index === 1) {
+            this.onListRevenues();
+        }
+    }
+
+    onListExpenses() {
+        this.listType = "despesa";
+        this.dataSource = this.expenses;
+    }
+
+    onListRevenues() {
+        this.listType = "receita";
+        this.dataSource = this.revenues;
     }
 
     onUpdateCategory(categoryId: number, category: any) {
@@ -140,7 +174,7 @@ export class CategoriesComponent implements OnInit {
     }
 
     onVerifyBeforeSaveSubCategory(categoryId: number): any {
-        let input = document.getElementById('subCategoryInput'+categoryId) as HTMLInputElement;
+        let input = document.getElementById('subCategoryInput' + categoryId) as HTMLInputElement;
 
         if (!input.value || input.value.trim() === "") {
             input.value = "";
@@ -160,7 +194,7 @@ export class CategoriesComponent implements OnInit {
     onEditSubCategory(subCategory: any, category: any) {
         let dialogRef = this.dialog.open(SubCategoryDialogComponent, {
             width: '400px',
-            data: { categories: this.categories, edit: subCategory, category: category}
+            data: { categories: this.dataSource, edit: subCategory, category: category }
         });
 
         dialogRef.afterClosed().subscribe((result: any) => {
@@ -176,7 +210,7 @@ export class CategoriesComponent implements OnInit {
                 }
             }
 
-            this.onSaveSubCategory(subCategory); 
+            this.onSaveSubCategory(subCategory);
         });
     }
 

@@ -10,22 +10,29 @@
         </button>
     </div>
 
-    <div style="padding: 0px 45px 45px 45px;">
+    <mat-tab-group mat-align-tabs="center" (selectedIndexChange)="onTabChanged($event)">
+        <mat-tab label="Despesas"></mat-tab>
+        <mat-tab label="Receitas"></mat-tab>
+    </mat-tab-group>
+
+    <div style="padding: 25px 45px 25px 45px;">
         <ul>
-            <li *ngFor="let item of categories; let i = index">
+            <li *ngFor="let item of dataSource; let i = index">
                 <div class="category-box item-style">
-                    <div (click)="onAddCategory(item.category)"class="cursor-pointer category-icon-text-box">
-                        <div class="category-icon-circle"
-                            [ngStyle]="{'background-color': item.category.color }">
+                    <div (click)="onAddCategory(item.category)" class="cursor-pointer category-icon-text-box">
+                        <div class="category-icon-circle" [ngStyle]="{'background-color': item.category.color }">
                             <mat-icon class="icon">
                                 {{item.category.icon}}
                             </mat-icon>
                         </div>
-                        <span class="category-name" style="margin-left: 15px;">{{item.category.name}}</span> <mat-icon class="edit-icon">edit</mat-icon>
+                        <span class="category-name" style="margin-left: 15px;">{{item.category.name}}</span> <mat-icon
+                            class="edit-icon">edit</mat-icon>
                     </div>
                     <div>
-                        <span class="cursor-pointer" (click)="onDeleteCategory(item.category.id)" style="margin-right: 25px; color: #d72638;">deletar</span>
-                        <span class="cursor-pointer" (click)="onAddSubCategory(item.category)"  style="color: #129e3f;">+ sub-categoria</span>
+                        <span class="cursor-pointer" (click)="onDeleteCategory(item.category.id)"
+                            style="margin-right: 25px; color: #d72638;">deletar</span>
+                        <span class="cursor-pointer" (click)="onAddSubCategory(item.category)" style="color: #129e3f;">+
+                            sub-categoria</span>
                     </div>
                 </div>
 
@@ -35,9 +42,10 @@
                     <button (click)="onVerifyBeforeSaveSubCategory(item.category.id)" mat-flat-button color="primary">
                         Adicionar
                     </button>
-                    <span class="cursor-pointer" (click)="onCancelSubCategory(item.category)" style="margin-left: 15px; color: #d72638;">cancelar</span>
+                    <span class="cursor-pointer" (click)="onCancelSubCategory(item.category)"
+                        style="margin-left: 15px; color: #d72638;">cancelar</span>
                 </div>
-                <hr class="simple-horizontal-line">
+                <hr *ngIf="i < dataSource.length-1" class="simple-horizontal-line">
 
                 <ul *ngIf="item.subCategory.length > 0">
                     <ng-container *ngFor="let subCategory of item.subCategory; let i = index">
@@ -45,8 +53,10 @@
                             <i [ngStyle]="{'color': item.category.color }" class="mark-circle">&#xf111;</i>
                             <span style="color: #a0a0a0; margin-left: 26px;"> {{subCategory.name}} </span>
                             <div class="options-sub-category-box">
-                                <span class="cursor-pointer" (click)="onDeleteSubCategory(subCategory.id)" style="margin-right: 15px; color: #d72638;">deletar</span>
-                                <span class="cursor-pointer" (click)="onEditSubCategory(subCategory, item.category)" style="color: #129e3f;">editar</span> 
+                                <span class="cursor-pointer" (click)="onDeleteSubCategory(subCategory.id)"
+                                    style="margin-right: 15px; color: #d72638;">deletar</span>
+                                <span class="cursor-pointer" (click)="onEditSubCategory(subCategory, item.category)"
+                                    style="color: #129e3f;">editar</span>
                             </div>
                         </li>
 

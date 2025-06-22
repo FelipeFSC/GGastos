@@ -118,3 +118,10 @@ button {
 .category-icon-text-box:hover .edit-icon {
     opacity: 1;
 }
+
+.tab-container {
+    display: flex;
+    justify-content: center;
+    /* Centraliza horizontalmente */
+    margin-top: 20px;
+}
