@@ -184,11 +184,11 @@ export class ReleasesComponent implements OnInit {
                 let gasto = {
                     id: item.id,
                     isFixo: item.fixedTransactionId != null,
+                    isAnotacao: null,
+                    isAnexo: null,
                     icone: category.icon,
                     cor: category.color,
-                    isAnotacao: null,
                     paidDate: item.paidDate,
-                    isAnexo: null,
                     nameCategoria: item.description,
                     tipoConta: item.account.name,
                     valor: item.value.toFixed(2),

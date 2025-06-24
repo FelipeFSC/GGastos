@@ -67,10 +67,10 @@
 
             <div class="card card-left content-card">
                 <span class="title-text">
-                    Contas a pagar
+                    Contas a receber
                 </span>
 
-                <mat-list *ngFor="let item of delayedTransactions; let i = index">
+                <mat-list *ngFor="let item of payments; let i = index">
                     <mat-list-item>
                         <span [ngStyle]="{'background-color': item.color }" class="dot"></span>
 
@@ -90,7 +90,36 @@
                                 (click)="onCheck(item.obj)">thumb_up</mat-icon>
                         </div>
                     </mat-list-item>
-                    <mat-divider *ngIf="i != (delayedTransactions.length-1)"></mat-divider>
+                    <mat-divider *ngIf="i != (payments.length-1)"></mat-divider>
+                </mat-list>
+            </div>
+
+            <div class="card card-left content-card">
+                <span class="title-text">
+                    Contas a pagar
+                </span>
+
+                <mat-list *ngFor="let item of expenses; let i = index">
+                    <mat-list-item>
+                        <span [ngStyle]="{'background-color': item.color }" class="dot"></span>
+
+                        <div style="width: 70%;">
+                            <span [ngStyle]="{'color': item.color }" class="category-text">{{item.account}} </span>
+                            <span class="subcategory-text sub-text-color">
+                                {{item.description}}
+                            </span>
+                            <br>
+                            <span class="expense-date sub-text-color">{{item.date}}</span>
+                        </div>
+
+                        <div
+                            style="width: 30%; text-align: right; display: flex; flex-direction: row; justify-content: flex-end; align-items: center;">
+                            <span class="expense-value sub-text-color">R$ {{item.value}}</span>
+                            <mat-icon style="color: #ff7d77; width: 10px; margin-left: 8px; font-size: 19px; cursor: pointer;"
+                                (click)="onCheck(item.obj)">thumb_up</mat-icon>
+                        </div>
+                    </mat-list-item>
+                    <mat-divider *ngIf="i != (expenses.length-1)"></mat-divider>
                 </mat-list>
             </div>
         </div>

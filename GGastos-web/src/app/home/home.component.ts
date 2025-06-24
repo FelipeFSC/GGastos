@@ -93,7 +93,8 @@ export class HomeComponent implements OnInit {
 
     accounts: any = [];
 
-    delayedTransactions: any = [];
+    expenses: any = [];
+    payments: any = [];
 
     spendingLimits: any = [];
 
@@ -195,8 +196,10 @@ export class HomeComponent implements OnInit {
     }
 
     getDelayedTransactions(result: any) {
-        let list = [];
+        let expenses = [];
+        let payments = [];
 
+        console.log(result);
         for (let item of result) {
             if (item.paidDate != null) {
                 continue;
@@ -214,9 +217,14 @@ export class HomeComponent implements OnInit {
                 value: this.formatValue(item.value),
                 obj: item
             }
-            list.push(data);
+            if (item.transactionType.id === 1) {
+                payments.push(data);
+            } else {
+                expenses.push(data);
+            }
         }
-        this.delayedTransactions = list;
+        this.expenses = expenses;
+        this.payments = payments;
     }
 
     getSpendingLimits(result: any) {

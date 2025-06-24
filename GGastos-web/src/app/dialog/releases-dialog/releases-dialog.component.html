@@ -138,8 +138,20 @@
             </div>
         </div>
 
+        <div class="repeat-box" *ngIf="!isFixed">
+            <p style="color: red;margin-bottom: 10px;">Este lançamento se repete.</p>
+
+            <section class="example-section">
+                <mat-radio-group  style="display: flex; flex-direction: column;">
+                    <mat-radio-button class="example-margin" value="1">Atualizar apenas este lançamento</mat-radio-button>
+                    <mat-radio-button class="example-margin" value="2">Atualizar este e os próximos</mat-radio-button>
+                    <mat-radio-button class="example-margin" value="3">Atualizar todos os lançamentos</mat-radio-button>
+                </mat-radio-group>
+            </section>
+        </div>
+
         <div class="options-container">
-            <div class="container-button">
+            <div class="container-button" *ngIf="isFixed">
                 <div class="button-options" [ngClass]="{'button-active': isRepeatActive}" (click)="onRepeat()">
                     <mat-icon class="icon-options" [ngClass]="{'icon-active': isRepeatActive}">
                         cached

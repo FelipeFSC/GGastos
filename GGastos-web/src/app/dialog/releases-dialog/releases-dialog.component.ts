@@ -50,6 +50,8 @@ export class ReleasesDialogComponent implements OnInit {
 
     categorySelected: any = null;
 
+    isFixed: boolean = false;
+
     selectedFile: File | null = null;
 
     constructor(
@@ -74,6 +76,8 @@ export class ReleasesDialogComponent implements OnInit {
 
     onLoadData(data: any) {
         this.description = data.description;
+
+        this.isFixed = data.fixedTransactionId == null;
 
         if (data.selectedFile) {
             this.selectedFile = data.selectedFile;
@@ -135,14 +139,8 @@ export class ReleasesDialogComponent implements OnInit {
         this.accountAndCreditCards = list;
 
         if (data.recurrenceType) {
-            this.isRepeatActive = true;
             this.divideType = "fixed"
-
-            this.paymentRange.forEach((item) => {
-                if (data.recurrenceType.id === item.id) {
-                    this.paymentRangeSelected = item;
-                }
-            });
+            this.isFixed = false;
         }
 
     }
