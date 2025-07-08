@@ -194,9 +194,6 @@ export class ReleasesComponent implements OnInit {
                     valor: item.value.toFixed(2),
                     obj: item
                 };
-                /*
-                  isAnexo {id: 12, nome: "nome"}
-                */
 
                 if (day != beforeDay && beforeDay) {
                     list.push({
@@ -334,13 +331,15 @@ export class ReleasesComponent implements OnInit {
                     recurrencesTypes: this.recurrencesTypes,
                     accounts: this.accounts,
                     categories: categories,
-                    editData: data
+                    editData: data,
+                    currentDate: item.transactionDate
                 }
             });
             dialogRef.afterClosed().subscribe((result: any) => {
                 if (!result) {
                     return;
                 }
+
                 if (data.transactionType.id == 1) {
                     result.transactionType = {id: 1};
                 } else {
@@ -349,21 +348,28 @@ export class ReleasesComponent implements OnInit {
                 }
 
                 if (data.fixedTransactionId) {
+                    result.id = data.id;
                     result.fixedTransactionId = data.fixedTransactionId;
+                } else {
+                    data.fixedTransactionId = data.id;
                 }
 
                 if (isNaN(result.value)) {
-                    if (result.fixedId) {
-                        this.onDeleteFixed(result.fixedId);
-                    } else {
-                        this.onDelete(result.id);
+                    console.log("DELETE");
+                    switch(result.updateType) {
+                        case "1":
+                            console.log("Apenas o atual");
+                            break;
+                        case "2":
+                            console.log("O Fixo e o atual");
+                            break;
+                        case "3":
+                            console.log("TODOS");
+                            break;
                     }
+
                 } else {
-                    if (result.recurrenceType.id) {
-                        this.onUpdateFixed(result, data.id);
-                    } else {
-                        this.onUpdate(result, data.id);
-                    }
+                    this.onUpdate(result, data.fixedTransactionId, result.updateType, item);
                 }
             });
         }
@@ -381,7 +387,7 @@ export class ReleasesComponent implements OnInit {
         }
     }
 
-    onUpdate(data: any, id: number) {
+    onUpdate(data: any, fixedId: number, updateType: string, transaction: any) {
         let success = () => {
             this.filtrarPorMesAno(this.mesAnoSelecionado);
         }
@@ -390,8 +396,37 @@ export class ReleasesComponent implements OnInit {
             console.log(error);
         }
 
-        this.releasesService.update(data, id)
-            .subscribe(this.extractDataService.extract(success, err));
+        switch(updateType) {
+            case "1":
+                if (transaction.id) {
+                    this.releasesService.update(data, transaction.id)
+                        .subscribe(this.extractDataService.extract(success, err));
+                } else {
+                    const formData = new FormData();
+
+                    data.fixedTransactionId = fixedId;
+                    formData.append('file', "");
+                    formData.append('data', JSON.stringify(data));
+
+                    this.releasesService.create(formData)
+                        .subscribe(this.extractDataService.extract(success, err));
+                }
+                break;
+            case "2":
+                if (!transaction.id) {
+                    transaction.id = 0;
+                }
+                this.releasesService.updateCurrentOthers(data, transaction.id, fixedId)
+                    .subscribe(this.extractDataService.extract(success, err));
+                break;
+            case "3":
+                if (!transaction.id) {
+                    transaction.id = 0;
+                }
+                this.releasesService.updateAllItens(data, transaction.id, fixedId)
+                    .subscribe(this.extractDataService.extract(success, err));
+                break;
+        }
     }
 
     onDelete(id: number) {
@@ -407,7 +442,7 @@ export class ReleasesComponent implements OnInit {
             .subscribe(this.extractDataService.extract(success, err));
     }
 
-    onUpdateFixed(data: any, id: number) {
+    onUpdateFixed(data: any, id: number, updateTypeId: string) {
         let success = () => {
             this.filtrarPorMesAno(this.mesAnoSelecionado);
         }
@@ -416,7 +451,7 @@ export class ReleasesComponent implements OnInit {
             console.log(error);
         }
 
-        this.releasesService.updateFixed(data, id)
+        this.releasesService.updateFixed(data, id, updateTypeId)
             .subscribe(this.extractDataService.extract(success, err));
     }
 

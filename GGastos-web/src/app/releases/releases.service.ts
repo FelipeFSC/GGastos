@@ -43,6 +43,14 @@ export class ReleasesService {
 		return this.httpService.put(this.url + this.appService.transactionUrl + `/${transactionId}`, transaction);
 	}
 
+	updateCurrentOthers(transaction: any, transactionId: number, fixedId: number) {
+		return this.httpService.put(this.url + this.appService.transactionUrl + `/${transactionId}/fixed/${fixedId}`, transaction);
+	}
+
+	updateAllItens(transaction: any, transactionId: number, fixedId: number) {
+		return this.httpService.put(this.url + this.appService.transactionUrl + `/${transactionId}/fixed/${fixedId}/all`, transaction);
+	}
+
 	delete(transactionId: number) {
 		return this.httpService.delete(this.url + this.appService.transactionUrl + `/${transactionId}`);
 	}
@@ -51,8 +59,8 @@ export class ReleasesService {
 		return this.httpService.post(this.url + this.appService.fixedTransactionUrl, transaction);
 	}
 
-	updateFixed(transaction: any, transactionId: number) {
-		return this.httpService.put(this.url + this.appService.fixedTransactionUrl + `/${transactionId}`, transaction);
+	updateFixed(transaction: any, transactionId: number, updateType: string) {
+		return this.httpService.put(this.url + this.appService.fixedTransactionUrl + `/${transactionId}/update-type/${updateType}`, transaction);
 	}
 
 	deleteFixed(transactionId: number) {

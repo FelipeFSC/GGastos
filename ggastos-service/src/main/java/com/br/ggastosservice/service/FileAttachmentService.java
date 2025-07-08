@@ -64,7 +64,12 @@ public class FileAttachmentService {
     }
 
     public void deleteFile(long fileId) throws Exception {
-        FileAttachment fileAttachment = findOne(fileId);
+        FileAttachment fileAttachment = null;
+        try {
+            fileAttachment = findOne(fileId);
+        } catch (Exception e) {
+            return;
+        }
 
         Path filePath = Paths.get(fileAttachment.getPath());
         try {

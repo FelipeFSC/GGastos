@@ -54,6 +54,8 @@ export class ReleasesDialogComponent implements OnInit {
 
     selectedFile: File | null = null;
 
+    updateType: string = "1";
+
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: any,
         private releasesService: ReleasesService,
@@ -77,7 +79,7 @@ export class ReleasesDialogComponent implements OnInit {
     onLoadData(data: any) {
         this.description = data.description;
 
-        this.isFixed = data.fixedTransactionId == null;
+        this.isFixed = data.fixedTransactionId != null;
 
         if (data.selectedFile) {
             this.selectedFile = data.selectedFile;
@@ -93,7 +95,7 @@ export class ReleasesDialogComponent implements OnInit {
             data.value = data.value * -1;
         }
         this.paymentValue = "R$ " + data.value.toFixed(2).replace('.', ',');
-        this.paymentDate = data.transactionDate;
+        this.paymentDate = this.data.currentDate;
 
         for (let category of this.categorySubCategoryList) {
             if (data.subCategory && category.subCategory.length > 0) {
@@ -140,7 +142,7 @@ export class ReleasesDialogComponent implements OnInit {
 
         if (data.recurrenceType) {
             this.divideType = "fixed"
-            this.isFixed = false;
+            this.isFixed = true;
         }
 
     }
@@ -230,12 +232,11 @@ export class ReleasesDialogComponent implements OnInit {
     }
 
     onDelete() {
-        if (this.isRepeatActive) {
-            this.dialogRef.close({ fixedId: this.data.editData.id });
-
-        } else {
-            this.dialogRef.close({ id: this.data.editData.id });
+        let editData = {
+            id: this.data.editData.id,
+            updateType: this.updateType
         }
+        this.dialogRef.close(editData);
     }
 
     onSave(form: NgForm) {
@@ -264,6 +265,7 @@ export class ReleasesDialogComponent implements OnInit {
         }
 
         let releaseData = {
+            updateType: this.updateType,
             value: moneyValue,
             description: this.description,
             transactionType: "",

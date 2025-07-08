@@ -206,6 +206,41 @@ public class TransactionService {
         accountService.updateBalance(transaction.getAccount().getId());
     }
 
+    public void updateCurrentOthers(Transaction transaction, long transactionId, long fixedId) throws Exception {
+        fixedTransactionService.updateByTransaction(transaction, fixedId);
+
+        verifyTransaction(transaction);
+        if (transactionId == 0) {
+            transaction.setFixedTransactionId(fixedId);
+            create(transaction, null);
+        } else {
+            update(transaction, transactionId);
+        }
+    }
+
+    public void updateAllItens(Transaction transaction, long transactionId, long fixedId) throws Exception {
+        fixedTransactionService.updateByTransaction(transaction, fixedId);
+
+        verifyTransaction(transaction);
+
+        List<Transaction> transactions = transactionRepository.findByFixedTransactionId(fixedId);
+        List<Transaction> newTransactions = new ArrayList<Transaction>();
+        for (Transaction item : transactions) {
+            Transaction newTransaction = transaction.copy();
+            newTransaction.setId(item.getId());
+            newTransaction.setFixedTransactionId(fixedId);
+            newTransaction.setTransactionDate(item.getTransactionDate());
+            newTransaction.setPaidDate(item.getPaidDate());
+            newTransactions.add(newTransaction);
+        }
+        transactionRepository.saveAll(newTransactions);
+
+        if (transactionId == 0) {
+            transaction.setFixedTransactionId(fixedId);
+            create(transaction, null);
+        }
+    }
+
     public void delete(long transactionId) throws Exception {
         Transaction transaction = findOne(transactionId);
         fileAttachmentService.deleteFile(transactionId);

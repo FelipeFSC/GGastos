@@ -66,4 +66,23 @@ public class Transaction {
     @JoinColumn(name = "file_id")
     private FileAttachment selectedFile;
 
+    public Transaction copy() {
+        Transaction copy = new Transaction();
+        copy.setFixedTransactionId(this.fixedTransactionId);
+        copy.setValue(this.value);
+        copy.setTransactionType(this.transactionType);
+        copy.setDescription(this.description);
+        copy.setObservation(this.observation);
+        copy.setPaidDate(this.paidDate);
+        copy.setTransactionDate(this.transactionDate);
+        copy.setCreateDate(this.createDate);
+        copy.setUpdateDate(this.updateDate);
+        copy.setAccount(this.account);
+        copy.setCreditCard(this.creditCard);
+        copy.setCategory(this.category);
+        copy.setSubCategory(this.subCategory);
+        copy.setSelectedFile(this.selectedFile);
+        return copy;
+    }
+
 }

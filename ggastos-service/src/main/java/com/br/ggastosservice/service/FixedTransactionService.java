@@ -1,5 +1,6 @@
 package com.br.ggastosservice.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,12 +12,13 @@ import com.br.ggastosservice.model.CreditCard;
 import com.br.ggastosservice.model.FixedTransaction;
 import com.br.ggastosservice.model.RecurrenceType;
 import com.br.ggastosservice.model.SubCategory;
+import com.br.ggastosservice.model.Transaction;
 import com.br.ggastosservice.model.TransactionType;
 import com.br.ggastosservice.repository.FixedTransactionRepository;
 
 @Service
 public class FixedTransactionService {
-    
+
     private FixedTransactionRepository fixedTransactionRepository;
 
     private SubCategoryService subCategoryService;
@@ -58,14 +60,14 @@ public class FixedTransactionService {
 
     public void create(FixedTransaction fixedTransaction) throws Exception {
         verifyFixedTransaction(fixedTransaction);
- 
+
         fixedTransactionRepository.save(fixedTransaction);
     }
 
     public void update(FixedTransaction fixedTransaction, long fixedTransactionId) throws Exception {
         findOne(fixedTransactionId);
         verifyFixedTransaction(fixedTransaction);
-        
+
         fixedTransaction.setId(fixedTransactionId);
         fixedTransactionRepository.save(fixedTransaction);
     }
@@ -73,6 +75,21 @@ public class FixedTransactionService {
     public void delete(long fixedTransactionId) throws Exception {
         FixedTransaction fixedTransaction = findOne(fixedTransactionId);
         fixedTransactionRepository.delete(fixedTransaction);
+    }
+
+    public void updateByTransaction(Transaction transaction, long fixedTransactionId) throws Exception {
+        FixedTransaction fixedTransaction = findOne(fixedTransactionId);
+        fixedTransaction.setDescription(transaction.getDescription());
+        fixedTransaction.setTransactionDate(transaction.getTransactionDate());
+        fixedTransaction.setUpdateDate(LocalDateTime.now());
+        fixedTransaction.setTransactionType(transaction.getTransactionType());
+        fixedTransaction.setAccount(transaction.getAccount());
+        fixedTransaction.setCreditCard(transaction.getCreditCard());
+        fixedTransaction.setCategory(transaction.getCategory());
+        fixedTransaction.setSubCategory(transaction.getSubCategory());
+        verifyFixedTransaction(fixedTransaction);
+        fixedTransaction.setId(fixedTransactionId);
+        fixedTransactionRepository.save(fixedTransaction);
     }
 
     private void verifyFixedTransaction(FixedTransaction fixedTransaction) throws Exception {

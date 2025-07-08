@@ -75,6 +75,20 @@ public class TransactionController {
         transactionService.update(transaction, transactionId);
     }
 
+    @PutMapping("/{transactionId}/fixed/{fixedId}")
+    public void updateCurrentOthers(@RequestBody Transaction transaction,
+            @PathVariable("transactionId") long transactionId,
+            @PathVariable("fixedId") long fixedId) throws Exception {
+        transactionService.updateCurrentOthers(transaction, transactionId, fixedId);
+    }
+
+    @PutMapping("/{transactionId}/fixed/{fixedId}/all")
+    public void updateAllItens(@RequestBody Transaction transaction,
+            @PathVariable("transactionId") long transactionId,
+            @PathVariable("fixedId") long fixedId) throws Exception {
+        transactionService.updateAllItens(transaction, transactionId, fixedId);
+    }
+
     @DeleteMapping("/{transactionId}")
     public void delete(@PathVariable("transactionId") long transactionId) throws Exception {
         transactionService.delete(transactionId);

@@ -22,6 +22,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
         @Param("dataInicio") LocalDateTime dataInicio,
         @Param("dataFim") LocalDateTime dataFim);
 
+    List<Transaction> findByFixedTransactionId(Long fixedTransactionId);
+
     List<Transaction> findAllByTransactionDateBetweenOrderByTransactionDate(LocalDateTime ano, LocalDateTime mes);
 
     List<Transaction> findByPaidDateNotNullOrderByCategoryIdAscSubCategoryAscPaidDateAsc();
@@ -65,5 +67,9 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             "   GROUP BY FORMATDATETIME(t.transaction_date, 'yyyy-MM'), tt.name" +
             " ORDER BY month, type", nativeQuery = true)
     List<MonthlyTotalDto> findMonthlyTotalsByYear(@Param("ano") int ano);
+
+    List<Transaction> findByFixedTransactionIdAndTransactionDateGreaterThanEqual(
+        Long fixedTransactionId, LocalDateTime transactionDate
+    );
 
 }

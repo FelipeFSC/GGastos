@@ -10,4 +10,7 @@ public class GgastosServiceApplication {
 		SpringApplication.run(GgastosServiceApplication.class, args);
 	}
 
+	//         System.exit(0);  ----> Para fechar o sistema via comando
+	//         Verificar o Electron para fazer um app com tela normal ao invez do navegador
+
 }
