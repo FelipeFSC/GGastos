@@ -1,5 +1,5 @@
 <p>
-  <h1 align="center">💰 GGastos - Gerenciador Financeiro Pessoal</h1>
+  <h1 align="center">💰 GGastos - Gerenciador de Gastos </h1>
 </p>
 
 > ⚠️ **Aviso:** Não pretendo vender nem cobrar pelo projeto. <br>
