@@ -249,6 +249,15 @@ public class TransactionService {
         accountService.updateBalance(transaction.getAccount().getId());
     }
 
+    public void deleteCurrentOthers(long transactionId, long fixedId) {
+        try {
+            delete(transactionId);
+            fixedTransactionService.delete(fixedId);
+        } catch (Exception e) {
+            System.out.println("Tem que codar");
+        }
+    }
+
     private void verifyTransaction(Transaction transaction) throws Exception {
         TransactionType transactionType = transactionTypeService.findOne(transaction.getTransactionType().getId());
         transaction.setTransactionType(transactionType);

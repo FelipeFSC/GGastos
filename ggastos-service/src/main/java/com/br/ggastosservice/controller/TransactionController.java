@@ -94,13 +94,17 @@ public class TransactionController {
         transactionService.delete(transactionId);
     }
 
+    @DeleteMapping("/{transactionId}/fixed/{fixedId}")
+    public void deleteCurrentOthers(@PathVariable("transactionId") long transactionId,
+            @PathVariable("fixedId") long fixedId) throws Exception {
+        transactionService.deleteCurrentOthers(transactionId, fixedId);
+    }
+
     @PatchMapping("/{transactionId}/is-paid")
     public void isPaid(@PathVariable("transactionId") long transactionId) throws Exception {
         transactionService.paidTransaction(transactionId);
         spendingLimitService.updateSpendLimitBalanceByCategory(transactionId);
     }
-
-
 
 
     @PostMapping("/teste")

@@ -55,6 +55,10 @@ export class ReleasesService {
 		return this.httpService.delete(this.url + this.appService.transactionUrl + `/${transactionId}`);
 	}
 
+	deleteCurrentOthers(transactionId: number, fixedId: number) {
+		return this.httpService.delete(this.url + this.appService.transactionUrl + `/${transactionId}/fixed/${fixedId}`);
+	}
+
 	createFixed(transaction: any) {
 		return this.httpService.post(this.url + this.appService.fixedTransactionUrl, transaction);
 	}

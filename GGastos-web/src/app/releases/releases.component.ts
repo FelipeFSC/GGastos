@@ -316,6 +316,7 @@ export class ReleasesComponent implements OnInit {
     }
 
     onEditItem(item: any) {
+        console.log(item);
         let success = (data: any) => {
             let categories = [];
 
@@ -355,18 +356,7 @@ export class ReleasesComponent implements OnInit {
                 }
 
                 if (isNaN(result.value)) {
-                    console.log("DELETE");
-                    switch(result.updateType) {
-                        case "1":
-                            console.log("Apenas o atual");
-                            break;
-                        case "2":
-                            console.log("O Fixo e o atual");
-                            break;
-                        case "3":
-                            console.log("TODOS");
-                            break;
-                    }
+                    this.onDelete(result, data.fixedTransactionId, result.updateType, item);
 
                 } else {
                     this.onUpdate(result, data.fixedTransactionId, result.updateType, item);
@@ -384,6 +374,30 @@ export class ReleasesComponent implements OnInit {
         } else {
             this.releasesService.findOneFixeTransaction(item.fixedTransactionId)
                 .subscribe(this.extractDataService.extract(success, err));
+        }
+    }
+
+    onDelete(data: any, fixedId: number, updateType: string, transaction: any) {
+        let success = () => {
+            this.filtrarPorMesAno(this.mesAnoSelecionado);
+        }
+
+        let err = (error: any) => {
+            console.log(error);
+        }
+
+        switch(updateType) {
+            case "1":
+                this.releasesService.delete(transaction.id)
+                    .subscribe(this.extractDataService.extract(success, err));
+                break;
+            case "2":
+                this.releasesService.deleteCurrentOthers(transaction.id, fixedId)
+                    .subscribe(this.extractDataService.extract(success, err));
+                break;
+            case "3":
+                console.log("TODOS");
+                break;
         }
     }
 
@@ -429,6 +443,7 @@ export class ReleasesComponent implements OnInit {
         }
     }
 
+    /*
     onDelete(id: number) {
         let success = () => {
             this.filtrarPorMesAno(this.mesAnoSelecionado);
@@ -441,6 +456,7 @@ export class ReleasesComponent implements OnInit {
         this.releasesService.delete(id)
             .subscribe(this.extractDataService.extract(success, err));
     }
+    */
 
     onUpdateFixed(data: any, id: number, updateTypeId: string) {
         let success = () => {

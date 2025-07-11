@@ -53,7 +53,7 @@
 
             <div class="box-content-itens">
                 <div class="box-item" *ngFor="let item of geral.gastos" (click)="onEditItem(item.obj)">
-                    <div class="box-category-options">
+                    <div class="box-category-options" [ngStyle]="{'opacity': !(item.obj.id == null && item.obj.fixedTransactionId) ? '1' : '0.2'}">
                         <div class="category">
                             <span class="category-icon-circle" [ngStyle]="{'background-color': item.cor }">
                                 <mat-icon class="icon"> {{item.icone}} </mat-icon>
