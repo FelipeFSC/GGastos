@@ -396,7 +396,8 @@ export class ReleasesComponent implements OnInit {
                     .subscribe(this.extractDataService.extract(success, err));
                 break;
             case "3":
-                console.log("TODOS");
+                this.releasesService.deleteAllItens(transaction.id, fixedId)
+                    .subscribe(this.extractDataService.extract(success, err));
                 break;
         }
     }

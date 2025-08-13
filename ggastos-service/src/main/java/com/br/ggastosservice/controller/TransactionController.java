@@ -100,6 +100,12 @@ public class TransactionController {
         transactionService.deleteCurrentOthers(transactionId, fixedId);
     }
 
+    @DeleteMapping("/{transactionId}/fixed/{fixedId}/all")
+    public void deleteAllItens(@PathVariable("transactionId") long transactionId,
+            @PathVariable("fixedId") long fixedId) throws Exception {
+        transactionService.deleteAllItens(transactionId, fixedId);
+    }
+
     @PatchMapping("/{transactionId}/is-paid")
     public void isPaid(@PathVariable("transactionId") long transactionId) throws Exception {
         transactionService.paidTransaction(transactionId);

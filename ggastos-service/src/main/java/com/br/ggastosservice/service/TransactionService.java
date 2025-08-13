@@ -258,6 +258,12 @@ public class TransactionService {
         }
     }
 
+    public void deleteAllItens(long transactionId, long fixedId) throws Exception {
+        List<Transaction> transactions = transactionRepository.findByFixedTransactionId(fixedId);
+        transactionRepository.deleteAll(transactions);
+        delete(transactionId);
+    }
+
     private void verifyTransaction(Transaction transaction) throws Exception {
         TransactionType transactionType = transactionTypeService.findOne(transaction.getTransactionType().getId());
         transaction.setTransactionType(transactionType);
