@@ -151,9 +151,6 @@ export class InvestmentsComponent implements OnInit {
     option: any = {};
 
     generateGraft() {
-        console.log(this.valor);
-        console.log(this.yield);
-
         const valoresNumericos = this.valor.map((v: any) =>
             parseFloat(parseFloat(v.replace('R$', '').replace(',', '.')).toFixed(2))
         );

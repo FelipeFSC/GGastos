@@ -81,9 +81,6 @@ export class InputOutputReportComponent implements OnInit {
             const entradas = this.data.map((item: any) => item.input);
             const saidas = this.data.map((item: any) => Math.abs(item.output));
 
-            console.log(entradas);
-            console.log(saidas);
-
             this.option = {
                 tooltip: {
                     trigger: 'axis',

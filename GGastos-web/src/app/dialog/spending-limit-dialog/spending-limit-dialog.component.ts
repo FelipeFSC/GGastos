@@ -26,7 +26,6 @@ export class SpendingLimitDialogComponent implements OnInit {
     ngOnInit(): void {
         this.categorySubCategoryList = this.data.categories;
         if (this.data.editData) {
-            console.log("edit mode");
             this.onLoadData(this.data.editData);
         }
     }

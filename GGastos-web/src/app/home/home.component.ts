@@ -199,7 +199,6 @@ export class HomeComponent implements OnInit {
         let expenses = [];
         let payments = [];
 
-        console.log(result);
         for (let item of result) {
             if (item.paidDate != null) {
                 continue;

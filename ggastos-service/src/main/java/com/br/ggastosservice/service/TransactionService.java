@@ -251,8 +251,12 @@ public class TransactionService {
 
     public void deleteCurrentOthers(long transactionId, long fixedId) {
         try {
-            delete(transactionId);
+            Transaction transaction = findOne(transactionId);
+
+            List<Transaction> transactions = transactionRepository.findCurrentAndNextByFixedId(transactionId, fixedId);
+            transactionRepository.deleteAll(transactions);
             fixedTransactionService.delete(fixedId);
+            accountService.updateBalance(transaction.getAccount().getId());
         } catch (Exception e) {
             System.out.println("Tem que codar");
         }

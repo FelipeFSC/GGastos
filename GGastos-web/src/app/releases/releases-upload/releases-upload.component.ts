@@ -214,8 +214,6 @@ export class ReleasesUploadComponent implements OnInit {
             const dataB = new Date(b.ano, b.mes);
             return dataB.getTime() - dataA.getTime();
         });
-
-        console.log('Filtros gerados:', this.filtros);
     }
 
     salvar() {
