@@ -44,6 +44,10 @@ export class AccountsService {
 		return this.httpService.put(this.url + this.appService.accountUrl + `/${accountId}/update-balance`, "");
 	}
 
+	updateCreditCardBalance(creditCardId: number) {
+		return this.httpService.put(this.url + this.appService.cardUrl + `/${creditCardId}/update-balance`, "");
+	}
+
 	getGeneralBalance() {
 		return this.httpService.get(this.url + this.appService.accountUrl + `/balance`);
 	}

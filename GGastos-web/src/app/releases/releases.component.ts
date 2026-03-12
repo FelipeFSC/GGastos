@@ -25,6 +25,9 @@ export class ReleasesComponent implements OnInit {
 
     mesAnoSelecionado: string = this.pegarMesAtual();
 
+    // optional filter: 'card' or 'account'
+    paymentMethodFilter: string | null = null;
+
     recurrencesTypes: any = [];
     accounts: any = [];
 
@@ -186,6 +189,9 @@ export class ReleasesComponent implements OnInit {
                 parcelaLabel = `${item.installmentNumber}/${item.installmentTotal}`;
             }
 
+            // determine if transaction came from a credit card
+            const isCredit = item.creditCard && item.creditCard.id;
+
             let gasto = {
                     id: item.id,
                     // mark as repeat if fixed or parcel group
@@ -193,8 +199,8 @@ export class ReleasesComponent implements OnInit {
                     icone: category.icon,
                     cor: category.color,
                     paidDate: item.paidDate,
-                    nameCategoria: item.description + (parcelaLabel ? ` (${parcelaLabel})` : ""),
-                    tipoConta: item.account.name,
+                    nameCategoria: item.description + (parcelaLabel ? ` (${parcelaLabel})` : "") + (isCredit ? " [Cartão]" : ""),
+                    tipoConta: isCredit ? item.creditCard.name : item.account.name,
                     valor: item.value.toFixed(2),
                     obj: item
                 };
@@ -227,7 +233,7 @@ export class ReleasesComponent implements OnInit {
             console.log(error);
         }
 
-        this.releasesService.findByDate(date)
+        this.releasesService.findByDate(date, this.paymentMethodFilter)
             .subscribe(this.extractDataService.extract(success, err));
     }
 
@@ -357,10 +363,16 @@ export class ReleasesComponent implements OnInit {
                     result.transactionType = {id: 2};
                 }
 
-// determine group id used for repeat operations: parcel group takes precedence, else fixed, else self
-            let groupId = data.installmentGroupId || data.fixedTransactionId || data.id;
+// determine group id used for repeat operations: parcel group takes precedence, else fixed
+            // only send fixedTransactionId when the transaction truly belongs to a group
+            let groupId = data.installmentGroupId || data.fixedTransactionId;
             result.id = data.id;
-            result.fixedTransactionId = groupId;
+            if (groupId) {
+                result.fixedTransactionId = groupId;
+            } else {
+                // ensure we don't accidentally mark a standalone record
+                delete result.fixedTransactionId;
+            }
 
                 if (isNaN(result.value)) {
                     this.onDelete(result, groupId, result.updateType, item);

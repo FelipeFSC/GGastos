@@ -129,7 +129,8 @@ export class ReleasesDialogComponent implements OnInit {
         for (let account of accountList) {
             accounts.list.push(account.account);
 
-            if (data.account.id === account.account.id) {
+            // prefer explicit account match when available
+            if (data.account && data.account.id === account.account.id) {
                 this.accountSelected = account.account;
             }
         }
@@ -139,6 +140,11 @@ export class ReleasesDialogComponent implements OnInit {
         for (let account of accountList) {
             for (let creditCard of account.creditCards) {
                 creditCards.list.push(creditCard);
+
+                // also set selected when editing a credit-card transaction
+                if (data.creditCard && data.creditCard.id === creditCard.id) {
+                    this.accountSelected = creditCard;
+                }
             }
         }
         list.push(creditCards);

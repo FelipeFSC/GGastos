@@ -49,4 +49,10 @@ public class CreditCardController {
         creditCardService.disable(creditCardId);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/{creditCardId}/update-balance", method = RequestMethod.PUT)
+    public void updateBalance(@PathVariable("creditCardId") long creditCardId) throws Exception {
+        creditCardService.updateBalance(creditCardId);
+    }
+
 }

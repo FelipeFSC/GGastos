@@ -39,8 +39,9 @@ public class TransactionController {
     }
 
     @GetMapping("/date/{date}")
-    public List<Transaction> findByDate(@PathVariable("date") String date) throws Exception {
-        return transactionService.findByDate(date);
+    public List<Transaction> findByDate(@PathVariable("date") String date,
+                                        @RequestParam(value = "method", required = false) String method) throws Exception {
+        return transactionService.findByDate(date, method);
     }
 
     @GetMapping("")

@@ -7,7 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.br.ggastosservice.model.Account;
 import com.br.ggastosservice.model.CreditCard;
+import java.math.BigDecimal;
+
 import com.br.ggastosservice.repository.CreditCardRepository;
+import com.br.ggastosservice.repository.TransactionRepository;
 
 @Service
 public class CreditCardService {
@@ -16,10 +19,14 @@ public class CreditCardService {
 
     private CreditCardRepository creditCardRepository;
 
+    private TransactionRepository transactionRepository;
+
     public CreditCardService(CreditCardRepository creditCardRepository,
-            AccountService accountService) {
+            AccountService accountService,
+            TransactionRepository transactionRepository) {
         this.creditCardRepository = creditCardRepository;
         this.accountService = accountService;
+        this.transactionRepository = transactionRepository;
     }
 
     public List<CreditCard> findByEnabled(boolean enabled) {
@@ -57,6 +64,21 @@ public class CreditCardService {
     public void disable(long creditCardId) throws Exception {
         CreditCard creditCard = findOne(creditCardId);
         creditCard.setEnabled(false);
+        creditCardRepository.save(creditCard);
+    }
+
+    public void updateBalance(long creditCardId) throws Exception {
+        BigDecimal totalIncome = transactionRepository.findTotalValuesByTransactionTypeAndCreditCard(1, creditCardId);
+        BigDecimal totalExpense = transactionRepository.findTotalValuesByTransactionTypeAndCreditCard(2, creditCardId);
+
+        totalIncome = totalIncome == null ? BigDecimal.ZERO : totalIncome;
+        totalExpense = totalExpense == null ? BigDecimal.ZERO : totalExpense;
+
+        BigDecimal result = BigDecimal.ZERO;
+        result = totalIncome.add(totalExpense);
+
+        CreditCard creditCard = findOne(creditCardId);
+        creditCard.setBalance(result);
         creditCardRepository.save(creditCard);
     }
 

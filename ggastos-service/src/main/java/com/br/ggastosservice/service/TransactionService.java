@@ -105,7 +105,7 @@ public class TransactionService {
         return transactionRepository.searchTransactionsByCategoryAndDate(categoryId, date, fim);
     }
 
-    public List<Transaction> findByDate(String date) {
+    public List<Transaction> findByDate(String date, String paymentMethod) {
         int ano = Integer.parseInt(date.split("-")[0]);
         int mes = Integer.parseInt(date.split("-")[1]);
 
@@ -115,7 +115,14 @@ public class TransactionService {
             .with(TemporalAdjusters.lastDayOfMonth())
             .with(LocalTime.MAX);
 
-        List<Transaction> list = transactionRepository.findAllByTransactionDateBetweenOrderByTransactionDate(inicio, fim);
+        List<Transaction> list;
+        if ("card".equalsIgnoreCase(paymentMethod)) {
+            list = transactionRepository.findAllByTransactionDateBetweenAndCreditCardIdIsNotNullOrderByTransactionDate(inicio, fim);
+        } else if ("account".equalsIgnoreCase(paymentMethod)) {
+            list = transactionRepository.findAllByTransactionDateBetweenAndCreditCardIdIsNullOrderByTransactionDate(inicio, fim);
+        } else {
+            list = transactionRepository.findAllByTransactionDateBetweenOrderByTransactionDate(inicio, fim);
+        }
 
         List<Transaction> generatedTransactions = new ArrayList<>();
 
@@ -225,7 +232,12 @@ public class TransactionService {
                 transactionRepository.saveAll(others);
             }
 
-            accountService.updateBalance(transaction.getAccount().getId());
+            if (transaction.getAccount() != null) {
+                accountService.updateBalance(transaction.getAccount().getId());
+            }
+            if (transaction.getCreditCard() != null) {
+                creditCardService.updateBalance(transaction.getCreditCard().getId());
+            }
             return;
         }
 
@@ -237,7 +249,12 @@ public class TransactionService {
 
         transactionRepository.save(transaction);
 
-        accountService.updateBalance(transaction.getAccount().getId());
+        if (transaction.getAccount() != null) {
+            accountService.updateBalance(transaction.getAccount().getId());
+        }
+        if (transaction.getCreditCard() != null) {
+            creditCardService.updateBalance(transaction.getCreditCard().getId());
+        }
     }
 
     // helper used when splitting installment dates
@@ -272,7 +289,12 @@ public class TransactionService {
 
         transactionRepository.save(transaction);
 
-        accountService.updateBalance(transaction.getAccount().getId());
+        if (transaction.getAccount() != null) {
+            accountService.updateBalance(transaction.getAccount().getId());
+        }
+        if (transaction.getCreditCard() != null) {
+            creditCardService.updateBalance(transaction.getCreditCard().getId());
+        }
     }
 
     public void updateCurrentOthers(Transaction transaction, long transactionId, long groupId) throws Exception {
@@ -365,6 +387,14 @@ public class TransactionService {
             transaction.setInstallmentGroupId(groupId);
             create(transaction, null);
         }
+
+        // recalc balances for affected payment method
+        if (transaction.getAccount() != null) {
+            accountService.updateBalance(transaction.getAccount().getId());
+        }
+        if (transaction.getCreditCard() != null) {
+            creditCardService.updateBalance(transaction.getCreditCard().getId());
+        }
     }
 
     public void delete(long transactionId) throws Exception {
@@ -372,7 +402,12 @@ public class TransactionService {
         fileAttachmentService.deleteFile(transactionId);
         transactionRepository.delete(transaction);
 
-        accountService.updateBalance(transaction.getAccount().getId());
+        if (transaction.getAccount() != null) {
+            accountService.updateBalance(transaction.getAccount().getId());
+        }
+        if (transaction.getCreditCard() != null) {
+            creditCardService.updateBalance(transaction.getCreditCard().getId());
+        }
     }
 
     public void deleteCurrentOthers(long transactionId, long groupId) {
@@ -383,13 +418,23 @@ public class TransactionService {
             if (!fixedList.isEmpty()) {
                 transactionRepository.deleteAll(fixedList);
                 fixedTransactionService.delete(groupId);
-                accountService.updateBalance(transaction.getAccount().getId());
+                if (transaction.getAccount() != null) {
+                    accountService.updateBalance(transaction.getAccount().getId());
+                }
+                if (transaction.getCreditCard() != null) {
+                    creditCardService.updateBalance(transaction.getCreditCard().getId());
+                }
                 return;
             }
 
             List<Transaction> installmentList = transactionRepository.findCurrentAndNextByInstallmentGroup(transactionId, groupId);
             transactionRepository.deleteAll(installmentList);
-            accountService.updateBalance(transaction.getAccount().getId());
+            if (transaction.getAccount() != null) {
+                accountService.updateBalance(transaction.getAccount().getId());
+            }
+            if (transaction.getCreditCard() != null) {
+                creditCardService.updateBalance(transaction.getCreditCard().getId());
+            }
         } catch (Exception e) {
             System.out.println("Tem que codar");
         }
@@ -446,7 +491,12 @@ public class TransactionService {
         }
         transactionRepository.save(transaction);
 
-        accountService.updateBalance(transaction.getAccount().getId());
+        if (transaction.getAccount() != null) {
+            accountService.updateBalance(transaction.getAccount().getId());
+        }
+        if (transaction.getCreditCard() != null) {
+            creditCardService.updateBalance(transaction.getCreditCard().getId());
+        }
     }
 
 

@@ -29,6 +29,10 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     List<Transaction> findAllByTransactionDateBetweenOrderByTransactionDate(LocalDateTime ano, LocalDateTime mes);
 
+    // filter helpers for payment method
+    List<Transaction> findAllByTransactionDateBetweenAndCreditCardIdIsNullOrderByTransactionDate(LocalDateTime ano, LocalDateTime mes);
+    List<Transaction> findAllByTransactionDateBetweenAndCreditCardIdIsNotNullOrderByTransactionDate(LocalDateTime ano, LocalDateTime mes);
+
     List<Transaction> findByPaidDateNotNullOrderByCategoryIdAscSubCategoryAscPaidDateAsc();
 
     @Query("SELECT t FROM Transaction t " +
@@ -52,6 +56,11 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     @Query(value = "SELECT SUM(value) AS total_value FROM transaction" +
             " where transaction_type_id = :transactionTypeId AND paid_date IS NOT NULL AND account_id = :accountId", nativeQuery = true)
     BigDecimal findTotalValuesByTransactionType(long transactionTypeId, long accountId);
+
+    // similar totals for credit cards
+    @Query(value = "SELECT SUM(value) AS total_value FROM transaction" +
+            " where transaction_type_id = :transactionTypeId AND paid_date IS NOT NULL AND credit_card_id = :creditCardId", nativeQuery = true)
+    BigDecimal findTotalValuesByTransactionTypeAndCreditCard(long transactionTypeId, long creditCardId);
 
     @Query(value = "SELECT SUM(value) AS total_value FROM transaction" +
             " INNER JOIN account ON transaction.account_id = account.id" +
