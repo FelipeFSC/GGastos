@@ -56,6 +56,10 @@ export class ReleasesDialogComponent implements OnInit {
 
     updateType: string = "1";
 
+    // when user is editing an existing parcelled transaction we don't want to change
+    // the number of installments or frequency
+    isEditingParcel: boolean = false;
+
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: any,
         private releasesService: ReleasesService,
@@ -140,9 +144,20 @@ export class ReleasesDialogComponent implements OnInit {
         list.push(creditCards);
         this.accountAndCreditCards = list;
 
-        if (data.recurrenceType) {
-            this.divideType = "fixed"
+        // detect parcelled or fixed transaction when editing
+        if (data.installmentTotal && data.installmentTotal > 1) {
+            // editing a parcel group – show parcel info but disable editing
+            this.divideType = 'divided';
+            this.isRepeatActive = true;
+            this.isEditingParcel = true;
+            this.isFixed = true; // show options for update/delete like fixed transactions
+            this.valorParcela = data.installmentTotal;
+            this.valorAlterado();
+        } else if (data.recurrenceType) {
+            // editing fixed transaction
+            this.divideType = "fixed";
             this.isFixed = true;
+            this.paymentRangeSelected = data.recurrenceType;
         }
 
     }
@@ -264,7 +279,7 @@ export class ReleasesDialogComponent implements OnInit {
             observation = null;
         }
 
-        let releaseData = {
+        let releaseData: any = {
             updateType: this.updateType,
             value: moneyValue,
             description: this.description,
@@ -288,8 +303,20 @@ export class ReleasesDialogComponent implements OnInit {
             }
         }
 
-        if (this.isRepeatActive) {
-            releaseData.recurrenceType = { id: this.paymentRangeSelected.id };
+        // if user is editing an existing parcel we don't change the recurrence/parcel info
+        if (!this.isEditingParcel && this.isRepeatActive) {
+            // only set recurrence for fixed or installment when selection exists
+            if (this.divideType === 'fixed') {
+                if (this.paymentRangeSelected) {
+                    releaseData.recurrenceType = { id: this.paymentRangeSelected.id };
+                }
+            } else if (this.divideType === 'divided') {
+                // for parcelado we send the number of installments and use recurrenceType as frequency
+                if (this.valorParcela && this.paymentRangeSelected) {
+                    releaseData.installmentTotal = this.valorParcela;
+                    releaseData.recurrenceType = { id: this.paymentRangeSelected.id };
+                }
+            }
         }
 
         this.dialogRef.close(releaseData);

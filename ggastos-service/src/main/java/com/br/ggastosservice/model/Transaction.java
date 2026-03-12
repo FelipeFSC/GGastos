@@ -24,6 +24,23 @@ public class Transaction {
 
     private Long fixedTransactionId;
 
+    // recurrence/frequency used by the client when creating a fixed or parcel transaction
+    // not persisted to the database
+    @Transient
+    private RecurrenceType recurrenceType;
+
+    // group identifier for parcels/installments; same for all items of a split transaction
+    @Column(name = "installment_group_id")
+    private Long installmentGroupId;
+
+    // position number of this installment (1-based)
+    @Column(name = "installment_number")
+    private Integer installmentNumber;
+
+    // total number of installments in the group
+    @Column(name = "installment_total")
+    private Integer installmentTotal;
+
     private BigDecimal value;
 
     @ManyToOne
@@ -82,6 +99,9 @@ public class Transaction {
         copy.setCategory(this.category);
         copy.setSubCategory(this.subCategory);
         copy.setSelectedFile(this.selectedFile);
+        copy.setInstallmentGroupId(this.installmentGroupId);
+        copy.setInstallmentNumber(this.installmentNumber);
+        copy.setInstallmentTotal(this.installmentTotal);
         return copy;
     }
 

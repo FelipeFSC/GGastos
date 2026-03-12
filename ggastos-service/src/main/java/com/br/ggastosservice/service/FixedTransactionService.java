@@ -77,6 +77,10 @@ public class FixedTransactionService {
         fixedTransactionRepository.delete(fixedTransaction);
     }
 
+    public boolean exists(long fixedTransactionId) {
+        return fixedTransactionRepository.existsById(fixedTransactionId);
+    }
+
     public void updateByTransaction(Transaction transaction, long fixedTransactionId) throws Exception {
         FixedTransaction fixedTransaction = findOne(fixedTransactionId);
         fixedTransaction.setDescription(transaction.getDescription());

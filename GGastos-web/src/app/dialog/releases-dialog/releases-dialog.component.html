@@ -111,16 +111,16 @@
 
             <div *ngIf="divideType === 'divided'" class="select-box">
                 <div class="form-group">
-                    <mat-form-field class="example-half-width" appearance="outline">
-                        <mat-label>Valor</mat-label>
+                            <mat-form-field class="example-half-width" appearance="outline">
+                        <mat-label>Número de parcelas</mat-label>
                         <input required [(ngModel)]="valorParcela" name="valorParcela" (input)="valorAlterado()"
-                            type="number" matInput>
+                            type="number" min="1" matInput [disabled]="isEditingParcel">
                     </mat-form-field>
 
                     <mat-form-field class="example-half-width" appearance="outline">
-                        <mat-label>Select</mat-label>
-                        <mat-select>
-                            <mat-option *ngFor="let item of paymentRange" value="item.name">
+                        <mat-label>Frequência</mat-label>
+                        <mat-select required [(ngModel)]="paymentRangeSelected" name="paymentRangeSelected" [disabled]="isEditingParcel">
+                            <mat-option *ngFor="let item of paymentRange" [value]="item">
                                 {{item.name}}
                             </mat-option>
                         </mat-select>

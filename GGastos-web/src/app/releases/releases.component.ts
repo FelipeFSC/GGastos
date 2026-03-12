@@ -181,15 +181,19 @@ export class ReleasesComponent implements OnInit {
                     category = item.subCategory.category;
                 }
 
-                let gasto = {
+                let parcelaLabel = "";
+            if (item.installmentTotal && item.installmentNumber) {
+                parcelaLabel = `${item.installmentNumber}/${item.installmentTotal}`;
+            }
+
+            let gasto = {
                     id: item.id,
-                    isFixo: item.fixedTransactionId != null,
-                    isAnotacao: null,
-                    isAnexo: null,
+                    // mark as repeat if fixed or parcel group
+                    isFixo: item.fixedTransactionId != null || item.installmentGroupId != null,
                     icone: category.icon,
                     cor: category.color,
                     paidDate: item.paidDate,
-                    nameCategoria: item.description,
+                    nameCategoria: item.description + (parcelaLabel ? ` (${parcelaLabel})` : ""),
                     tipoConta: item.account.name,
                     valor: item.value.toFixed(2),
                     obj: item
@@ -248,7 +252,10 @@ export class ReleasesComponent implements OnInit {
             result.transactionType = {id: 2};
             formData.append('data', JSON.stringify(result));
 
-            if (result.recurrenceType.id) {
+            // differentiate parcel vs fixed repeat
+            if (result.installmentTotal && result.installmentTotal > 1) {
+                this.onCreate(formData);
+            } else if (result.recurrenceType && result.recurrenceType.id) {
                 this.onCreateFixed(result);
             } else {
                 this.onCreate(formData);
@@ -277,7 +284,9 @@ export class ReleasesComponent implements OnInit {
             result.selectedFile = null;
             formData.append('data', JSON.stringify(result));
 
-            if (result.recurrenceType.id) {
+            if (result.installmentTotal && result.installmentTotal > 1) {
+                this.onCreate(formData);
+            } else if (result.recurrenceType && result.recurrenceType.id) {
                 this.onCreateFixed(result);
             } else {
                 this.onCreate(formData);
@@ -348,18 +357,16 @@ export class ReleasesComponent implements OnInit {
                     result.transactionType = {id: 2};
                 }
 
-                if (data.fixedTransactionId) {
-                    result.id = data.id;
-                    result.fixedTransactionId = data.fixedTransactionId;
-                } else {
-                    data.fixedTransactionId = data.id;
-                }
+// determine group id used for repeat operations: parcel group takes precedence, else fixed, else self
+            let groupId = data.installmentGroupId || data.fixedTransactionId || data.id;
+            result.id = data.id;
+            result.fixedTransactionId = groupId;
 
                 if (isNaN(result.value)) {
-                    this.onDelete(result, data.fixedTransactionId, result.updateType, item);
+                    this.onDelete(result, groupId, result.updateType, item);
 
                 } else {
-                    this.onUpdate(result, data.fixedTransactionId, result.updateType, item);
+                    this.onUpdate(result, groupId, result.updateType, item);
                 }
             });
         }

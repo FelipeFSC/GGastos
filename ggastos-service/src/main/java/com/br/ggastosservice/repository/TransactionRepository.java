@@ -24,6 +24,9 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     List<Transaction> findByFixedTransactionId(Long fixedTransactionId);
 
+    // installment group operations (parcelado)
+    List<Transaction> findByInstallmentGroupId(Long installmentGroupId);
+
     List<Transaction> findAllByTransactionDateBetweenOrderByTransactionDate(LocalDateTime ano, LocalDateTime mes);
 
     List<Transaction> findByPaidDateNotNullOrderByCategoryIdAscSubCategoryAscPaidDateAsc();
@@ -68,6 +71,9 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     List<Transaction> findByFixedTransactionIdAndTransactionDateGreaterThanEqual(
             Long fixedTransactionId, LocalDateTime transactionDate);
 
+    List<Transaction> findByInstallmentGroupIdAndTransactionDateGreaterThanEqual(
+            Long installmentGroupId, LocalDateTime transactionDate);
+
     @Query(value = "SELECT t.*"
                 + " FROM transaction t"
                 + " WHERE t.fixed_transaction_id = :fixedId"
@@ -80,5 +86,18 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     List<Transaction> findCurrentAndNextByFixedId(
             @Param("transactionId") Long transactionId,
             @Param("fixedId") Long fixedId);
+
+    @Query(value = "SELECT t.*"
+                + " FROM transaction t"
+                + " WHERE t.installment_group_id = :groupId"
+                + "  AND t.transaction_date >= ("
+                + "      SELECT t2.transaction_date"
+                + "      FROM transaction t2"
+                + "      WHERE t2.id = :transactionId"
+                + "  )"
+                + " ORDER BY t.transaction_date", nativeQuery = true)
+    List<Transaction> findCurrentAndNextByInstallmentGroup(
+            @Param("transactionId") Long transactionId,
+            @Param("groupId") Long groupId);
 
 }

@@ -49,11 +49,15 @@ public class TransactionService {
 
     private FileAttachmentService fileAttachmentService;
 
+    // needed to load full RecurrenceType when creating parcels
+    private RecurrenceTypeService recurrenceTypeService;
+
     public TransactionService(TransactionRepository transactionRepository,
             SubCategoryService subCategoryService, CategoryService categoryService,
             AccountService accountService, CreditCardService creditCardService,
             TransactionTypeService transactionTypeService, FixedTransactionService fixedTransactionService,
-            FileAttachmentService fileAttachmentService) {
+            FileAttachmentService fileAttachmentService,
+            RecurrenceTypeService recurrenceTypeService) {
         this.transactionRepository = transactionRepository;
         this.subCategoryService = subCategoryService;
         this.categoryService = categoryService;
@@ -62,6 +66,7 @@ public class TransactionService {
         this.transactionTypeService = transactionTypeService;
         this.fixedTransactionService = fixedTransactionService;
         this.fileAttachmentService = fileAttachmentService;
+        this.recurrenceTypeService = recurrenceTypeService;
     }
 
     public Transaction findOne(long id) throws Exception  {
@@ -178,13 +183,76 @@ public class TransactionService {
             transaction.setSelectedFile(file);
         }
 
-        if (transaction.getFixedTransactionId() != null) {
+        // if we are creating a parcelado (installment) transaction, break it into multiple records
+        if (transaction.getInstallmentTotal() != null && transaction.getInstallmentTotal() > 1) {
+            int total = transaction.getInstallmentTotal();
+
+            // look up the full recurrence type so we know how to increment dates
+            RecurrenceType freq = null;
+            if (transaction.getRecurrenceType() != null && transaction.getRecurrenceType().getId() != null) {
+                freq = recurrenceTypeService.findOne(transaction.getRecurrenceType().getId());
+            }
+
+            // first record: save and use its generated id as group id
+            transaction.setPaidDate(null); // installments are created unpaid initially
+            Transaction first = transactionRepository.save(transaction);
+            Long groupId = first.getId();
+            // mark as part of a parcel group for UI and logic
+            first.setInstallmentGroupId(groupId);
+            first.setInstallmentNumber(1);
+            first.setInstallmentTotal(total);
+            transactionRepository.save(first);
+
+            // create the remaining installments by copying the first
+            List<Transaction> others = new ArrayList<>();
+            LocalDateTime currentDate = first.getTransactionDate();
+            for (int i = 2; i <= total; i++) {
+                Transaction t = first.copy();
+                t.setId(null);
+                // file attachment only on first installment
+                t.setSelectedFile(null);
+                t.setInstallmentGroupId(groupId);
+                t.setInstallmentNumber(i);
+                t.setPaidDate(null);
+
+                // advance the date according to the chosen recurrence type (default to monthly if none)
+                currentDate = incrementDate(currentDate, freq);
+                t.setTransactionDate(currentDate);
+
+                others.add(t);
+            }
+            if (!others.isEmpty()) {
+                transactionRepository.saveAll(others);
+            }
+
+            accountService.updateBalance(transaction.getAccount().getId());
+            return;
+        }
+
+        // mark paid only when the id refers to an actual fixed transaction
+        if (transaction.getFixedTransactionId() != null
+                && fixedTransactionService.exists(transaction.getFixedTransactionId())) {
             transaction.setPaidDate(LocalDateTime.now());
         }
 
         transactionRepository.save(transaction);
 
         accountService.updateBalance(transaction.getAccount().getId());
+    }
+
+    // helper used when splitting installment dates
+    private LocalDateTime incrementDate(LocalDateTime date, RecurrenceType type) {
+        if (type == null) {
+            return date.plusMonths(1);
+        }
+        if (type.getDay() != 0) {
+            return date.plusDays(type.getDay());
+        } else if (type.getMonth() != 0) {
+            return date.plusMonths(type.getMonth());
+        } else if (type.getYear() != 0) {
+            return date.plusYears(type.getYear());
+        }
+        return date;
     }
 
     public void update(Transaction transaction, long transactionId) throws Exception {
@@ -197,7 +265,8 @@ public class TransactionService {
             fileAttachmentService.deleteFile(transactionId);
         }
 
-        if (transaction.getFixedTransactionId() != null) {
+        if (transaction.getFixedTransactionId() != null
+                && fixedTransactionService.exists(transaction.getFixedTransactionId())) {
             transaction.setPaidDate(LocalDateTime.now());
         }
 
@@ -206,29 +275,86 @@ public class TransactionService {
         accountService.updateBalance(transaction.getAccount().getId());
     }
 
-    public void updateCurrentOthers(Transaction transaction, long transactionId, long fixedId) throws Exception {
-        fixedTransactionService.updateByTransaction(transaction, fixedId);
+    public void updateCurrentOthers(Transaction transaction, long transactionId, long groupId) throws Exception {
+        // determine if this is a fixed group (exists in fixed table) or a parcel group
+        boolean isFixedGroup = !transactionRepository.findByFixedTransactionId(groupId).isEmpty();
 
+        if (isFixedGroup) {
+            // original fixed handling
+            fixedTransactionService.updateByTransaction(transaction, groupId);
+
+            verifyTransaction(transaction);
+            if (transactionId == 0) {
+                transaction.setFixedTransactionId(groupId);
+                create(transaction, null);
+            } else {
+                update(transaction, transactionId);
+            }
+            return;
+        }
+
+        // installment group handling
         verifyTransaction(transaction);
         if (transactionId == 0) {
-            transaction.setFixedTransactionId(fixedId);
+            // creating a new parcel after the others - assign group id for linking
+            transaction.setInstallmentGroupId(groupId);
             create(transaction, null);
-        } else {
-            update(transaction, transactionId);
+            return;
+        }
+
+        // update current installment
+        update(transaction, transactionId);
+
+        // update all following installments (including current, but we already updated it)
+        List<Transaction> others = transactionRepository.findCurrentAndNextByInstallmentGroup(transactionId, groupId);
+        for (Transaction item : others) {
+            if (item.getId().equals(transactionId)) {
+                continue; // already updated
+            }
+            Transaction newTransaction = transaction.copy();
+            newTransaction.setId(item.getId());
+            newTransaction.setInstallmentGroupId(groupId);
+            newTransaction.setTransactionDate(item.getTransactionDate());
+            newTransaction.setPaidDate(item.getPaidDate());
+            transactionRepository.save(newTransaction);
         }
     }
 
-    public void updateAllItens(Transaction transaction, long transactionId, long fixedId) throws Exception {
-        fixedTransactionService.updateByTransaction(transaction, fixedId);
+    public void updateAllItens(Transaction transaction, long transactionId, long groupId) throws Exception {
+        // determine type
+        boolean isFixedGroup = !transactionRepository.findByFixedTransactionId(groupId).isEmpty();
+        if (isFixedGroup) {
+            fixedTransactionService.updateByTransaction(transaction, groupId);
 
+            verifyTransaction(transaction);
+
+            List<Transaction> transactions = transactionRepository.findByFixedTransactionId(groupId);
+            List<Transaction> newTransactions = new ArrayList<Transaction>();
+            for (Transaction item : transactions) {
+                Transaction newTransaction = transaction.copy();
+                newTransaction.setId(item.getId());
+                newTransaction.setFixedTransactionId(groupId);
+                newTransaction.setTransactionDate(item.getTransactionDate());
+                newTransaction.setPaidDate(item.getPaidDate());
+                newTransactions.add(newTransaction);
+            }
+            transactionRepository.saveAll(newTransactions);
+
+            if (transactionId == 0) {
+                transaction.setFixedTransactionId(groupId);
+                create(transaction, null);
+            }
+            return;
+        }
+
+        // installment group: update every transaction in group
         verifyTransaction(transaction);
-
-        List<Transaction> transactions = transactionRepository.findByFixedTransactionId(fixedId);
+        List<Transaction> transactions = transactionRepository.findByInstallmentGroupId(groupId);
         List<Transaction> newTransactions = new ArrayList<Transaction>();
         for (Transaction item : transactions) {
             Transaction newTransaction = transaction.copy();
             newTransaction.setId(item.getId());
-            newTransaction.setFixedTransactionId(fixedId);
+            newTransaction.setInstallmentGroupId(groupId);
             newTransaction.setTransactionDate(item.getTransactionDate());
             newTransaction.setPaidDate(item.getPaidDate());
             newTransactions.add(newTransaction);
@@ -236,7 +362,7 @@ public class TransactionService {
         transactionRepository.saveAll(newTransactions);
 
         if (transactionId == 0) {
-            transaction.setFixedTransactionId(fixedId);
+            transaction.setInstallmentGroupId(groupId);
             create(transaction, null);
         }
     }
@@ -249,22 +375,35 @@ public class TransactionService {
         accountService.updateBalance(transaction.getAccount().getId());
     }
 
-    public void deleteCurrentOthers(long transactionId, long fixedId) {
+    public void deleteCurrentOthers(long transactionId, long groupId) {
         try {
             Transaction transaction = findOne(transactionId);
 
-            List<Transaction> transactions = transactionRepository.findCurrentAndNextByFixedId(transactionId, fixedId);
-            transactionRepository.deleteAll(transactions);
-            fixedTransactionService.delete(fixedId);
+            List<Transaction> fixedList = transactionRepository.findCurrentAndNextByFixedId(transactionId, groupId);
+            if (!fixedList.isEmpty()) {
+                transactionRepository.deleteAll(fixedList);
+                fixedTransactionService.delete(groupId);
+                accountService.updateBalance(transaction.getAccount().getId());
+                return;
+            }
+
+            List<Transaction> installmentList = transactionRepository.findCurrentAndNextByInstallmentGroup(transactionId, groupId);
+            transactionRepository.deleteAll(installmentList);
             accountService.updateBalance(transaction.getAccount().getId());
         } catch (Exception e) {
             System.out.println("Tem que codar");
         }
     }
 
-    public void deleteAllItens(long transactionId, long fixedId) throws Exception {
-        List<Transaction> transactions = transactionRepository.findByFixedTransactionId(fixedId);
-        transactionRepository.deleteAll(transactions);
+    public void deleteAllItens(long transactionId, long groupId) throws Exception {
+        List<Transaction> fixedList = transactionRepository.findByFixedTransactionId(groupId);
+        if (!fixedList.isEmpty()) {
+            transactionRepository.deleteAll(fixedList);
+            delete(transactionId);
+            return;
+        }
+        List<Transaction> installments = transactionRepository.findByInstallmentGroupId(groupId);
+        transactionRepository.deleteAll(installments);
         delete(transactionId);
     }
 
