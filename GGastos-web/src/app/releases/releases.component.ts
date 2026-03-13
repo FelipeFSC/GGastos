@@ -59,7 +59,7 @@ export class ReleasesComponent implements OnInit {
         input.focus();
         input.showPicker?.();
         setTimeout(() => input.style.pointerEvents = 'none', 200);
-      }
+    }
 
     get dataSelecionadaComoDate(): Date {
         if (!this.mesAnoSelecionado) {
@@ -69,7 +69,7 @@ export class ReleasesComponent implements OnInit {
         return new Date(ano, mes - 1);
     }
 
-    findAllAccountsAndCreditCards () {
+    findAllAccountsAndCreditCards() {
         let success = (accountsCreditCards: any) => {
             this.accounts = accountsCreditCards;
         }
@@ -163,7 +163,7 @@ export class ReleasesComponent implements OnInit {
                     this.previsto -= item.value;
                 }
 
-                let category = {icon: "", color: ""};
+                let category = { icon: "", color: "" };
                 if (item.category) {
                     category = item.category;
                 } else {
@@ -171,13 +171,13 @@ export class ReleasesComponent implements OnInit {
                 }
 
                 let parcelaLabel = "";
-            if (item.installmentTotal && item.installmentNumber) {
-                parcelaLabel = `${item.installmentNumber}/${item.installmentTotal}`;
-            }
+                if (item.installmentTotal && item.installmentNumber) {
+                    parcelaLabel = `${item.installmentNumber}/${item.installmentTotal}`;
+                }
 
-            const isCredit = item.creditCard && item.creditCard.id;
+                const isCredit = item.creditCard && item.creditCard.id;
 
-            let gasto = {
+                let gasto = {
                     id: item.id,
                     isFixo: item.fixedTransactionId != null || item.installmentGroupId != null,
                     icone: category.icon,
@@ -239,7 +239,7 @@ export class ReleasesComponent implements OnInit {
             formData.append('file', result.selectedFile);
 
             result.value = result.value * -1;
-            result.transactionType = {id: 2};
+            result.transactionType = { id: 2 };
             formData.append('data', JSON.stringify(result));
 
             // differentiate parcel vs fixed repeat
@@ -270,7 +270,7 @@ export class ReleasesComponent implements OnInit {
             const formData = new FormData();
             formData.append('file', result.selectedFile);
 
-            result.transactionType = {id: 1};
+            result.transactionType = { id: 1 };
             result.selectedFile = null;
             formData.append('data', JSON.stringify(result));
 
@@ -327,7 +327,7 @@ export class ReleasesComponent implements OnInit {
 
             let dialogRef = this.dialog.open(ReleasesDialogComponent, {
                 data: {
-                    title: "Nova receita",
+                    title: "Edição",
                     recurrencesTypes: this.recurrencesTypes,
                     accounts: this.accounts,
                     categories: categories,
@@ -341,38 +341,34 @@ export class ReleasesComponent implements OnInit {
                 }
 
                 if (data.transactionType.id == 1) {
-                    result.transactionType = {id: 1};
+                    result.transactionType = { id: 1 };
                 } else {
                     result.value = result.value * -1;
-                    result.transactionType = {id: 2};
+                    result.transactionType = { id: 2 };
                 }
 
-            // Keep track of group (fixed or installment) for potential multi-update operations
-            let groupId = data.installmentGroupId || data.fixedTransactionId;
-            result.id = data.id;
-            
-            // Only set fixedTransactionId for actual fixed transactions (not parcels)
-            if (data.fixedTransactionId && !data.installmentGroupId) {
-                result.fixedTransactionId = data.fixedTransactionId;
-            } else {
-                delete result.fixedTransactionId;
-            }
-            
-            // For parcels, never send information about it being part of fixed/installment
-            if (data.installmentGroupId) {
-                // Parcels: always simple update/delete, ignore updateType setting
-                result.installmentGroupId = data.installmentGroupId;
-            } else {
-                delete result.installmentGroupId;
-            }
+                let groupId = data.installmentGroupId || data.fixedTransactionId || item.fixedTransactionId;
+
+                groupId = groupId ? groupId : 0;
+                result.id = data.id;
+
+                if (data.fixedTransactionId && !data.installmentGroupId) {
+                    result.fixedTransactionId = data.fixedTransactionId;
+                } else {
+                    delete result.fixedTransactionId;
+                }
+
+                if (data.installmentGroupId) {
+                    result.installmentGroupId = data.installmentGroupId;
+                } else {
+                    delete result.installmentGroupId;
+                }
 
                 if (isNaN(result.value)) {
-                    // parcels always use simple delete (updateType = "1"), ignore user selection
                     const updateType = data.installmentGroupId ? "1" : result.updateType;
                     this.onDelete(result, groupId, updateType, item);
 
                 } else {
-                    // parcels always use simple update (updateType = "1"), ignore user selection
                     const updateType = data.installmentGroupId ? "1" : result.updateType;
                     this.onUpdate(result, groupId, updateType, item);
                 }
@@ -401,19 +397,28 @@ export class ReleasesComponent implements OnInit {
             console.log(error);
         }
 
-        switch(updateType) {
+        transaction.id = transaction.id ? transaction.id : 0;
+        if (transaction.id === 0 && fixedId) {
+            this.releasesService.deleteFixed(fixedId)
+                .subscribe(this.extractDataService.extract(success, err));
+        }
+        switch (updateType) {
             case "1":
                 this.releasesService.delete(transaction.id)
                     .subscribe(this.extractDataService.extract(success, err));
+
                 break;
             case "2":
+
                 this.releasesService.deleteCurrentOthers(transaction.id, fixedId)
                     .subscribe(this.extractDataService.extract(success, err));
+
                 break;
             case "3":
+
                 this.releasesService.deleteAllItens(transaction.id, fixedId)
                     .subscribe(this.extractDataService.extract(success, err));
-                break;
+
         }
     }
 
@@ -426,7 +431,8 @@ export class ReleasesComponent implements OnInit {
             console.log(error);
         }
 
-        switch(updateType) {
+        transaction.id = transaction.id ? transaction.id : 0;
+        switch (updateType) {
             case "1":
                 if (transaction.id) {
                     this.releasesService.update(data, transaction.id)
