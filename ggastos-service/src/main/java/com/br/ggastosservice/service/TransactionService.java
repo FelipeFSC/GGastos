@@ -1,5 +1,6 @@
 package com.br.ggastosservice.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -200,8 +201,15 @@ public class TransactionService {
                 freq = recurrenceTypeService.findOne(transaction.getRecurrenceType().getId());
             }
 
+            // divide the total value by the number of installments
+            BigDecimal totalValue = transaction.getValue();
+            BigDecimal valuePerInstallment = totalValue.divide(new BigDecimal(total), 2, java.math.RoundingMode.DOWN);
+            BigDecimal remainder = totalValue.subtract(valuePerInstallment.multiply(new BigDecimal(total)));
+
             // first record: save and use its generated id as group id
             transaction.setPaidDate(null); // installments are created unpaid initially
+            // add remainder to first installment to ensure total matches
+            transaction.setValue(valuePerInstallment.add(remainder));
             Transaction first = transactionRepository.save(transaction);
             Long groupId = first.getId();
             // mark as part of a parcel group for UI and logic
@@ -221,6 +229,8 @@ public class TransactionService {
                 t.setInstallmentGroupId(groupId);
                 t.setInstallmentNumber(i);
                 t.setPaidDate(null);
+                // use divided value for remaining installments
+                t.setValue(valuePerInstallment);
 
                 // advance the date according to the chosen recurrence type (default to monthly if none)
                 currentDate = incrementDate(currentDate, freq);
@@ -273,7 +283,7 @@ public class TransactionService {
     }
 
     public void update(Transaction transaction, long transactionId) throws Exception {
-        findOne(transactionId);
+        Transaction existing = findOne(transactionId);
         verifyTransaction(transaction);
 
         transaction.setId(transactionId);
@@ -287,7 +297,40 @@ public class TransactionService {
             transaction.setPaidDate(LocalDateTime.now());
         }
 
-        transactionRepository.save(transaction);
+        // Check if this is an installment - if so, update all installments in the group
+        if (existing.getInstallmentGroupId() != null) {
+            Long groupId = existing.getInstallmentGroupId();
+            List<Transaction> installments = transactionRepository.findByInstallmentGroupId(groupId);
+            int total = installments.size();
+            
+            // Divide the total value by the number of installments
+            BigDecimal totalValue = transaction.getValue();
+            BigDecimal valuePerInstallment = totalValue.divide(new BigDecimal(total), 2, java.math.RoundingMode.DOWN);
+            BigDecimal remainder = totalValue.subtract(valuePerInstallment.multiply(new BigDecimal(total)));
+            
+            for (int i = 0; i < installments.size(); i++) {
+                Transaction installment = installments.get(i);
+                Transaction updated = transaction.copy();
+                updated.setId(installment.getId());
+                updated.setInstallmentGroupId(groupId);
+                updated.setInstallmentNumber(installment.getInstallmentNumber());
+                updated.setInstallmentTotal(installment.getInstallmentTotal());
+                updated.setTransactionDate(installment.getTransactionDate());
+                updated.setPaidDate(installment.getPaidDate());
+                
+                // First installment gets the remainder
+                if (i == 0) {
+                    updated.setValue(valuePerInstallment.add(remainder));
+                } else {
+                    updated.setValue(valuePerInstallment);
+                }
+                
+                transactionRepository.save(updated);
+            }
+        } else {
+            // Regular transaction - update only this one
+            transactionRepository.save(transaction);
+        }
 
         if (transaction.getAccount() != null) {
             accountService.updateBalance(transaction.getAccount().getId());
@@ -400,7 +443,16 @@ public class TransactionService {
     public void delete(long transactionId) throws Exception {
         Transaction transaction = findOne(transactionId);
         fileAttachmentService.deleteFile(transactionId);
-        transactionRepository.delete(transaction);
+
+        // Check if this is an installment - if so, delete all installments in the group
+        if (transaction.getInstallmentGroupId() != null) {
+            Long groupId = transaction.getInstallmentGroupId();
+            List<Transaction> installments = transactionRepository.findByInstallmentGroupId(groupId);
+            transactionRepository.deleteAll(installments);
+        } else {
+            // Regular transaction - delete only this one
+            transactionRepository.delete(transaction);
+        }
 
         if (transaction.getAccount() != null) {
             accountService.updateBalance(transaction.getAccount().getId());

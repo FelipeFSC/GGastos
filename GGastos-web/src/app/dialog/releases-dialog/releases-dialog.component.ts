@@ -98,7 +98,15 @@ export class ReleasesDialogComponent implements OnInit {
         if (data.value < 0) {
             data.value = data.value * -1;
         }
-        this.paymentValue = "R$ " + data.value.toFixed(2).replace('.', ',');
+        
+        // detect parcelled or fixed transaction when editing BEFORE setting paymentValue
+        let displayValue = data.value;
+        if (data.installmentTotal && data.installmentTotal > 1) {
+            // For parcels: multiply the individual value by number of installments to show total
+            displayValue = data.value * data.installmentTotal;
+        }
+        
+        this.paymentValue = "R$ " + displayValue.toFixed(2).replace('.', ',');
         this.paymentDate = this.data.currentDate;
 
         for (let category of this.categorySubCategoryList) {
@@ -255,7 +263,7 @@ export class ReleasesDialogComponent implements OnInit {
     onDelete() {
         let editData = {
             id: this.data.editData.id,
-            updateType: this.updateType
+            updateType: this.isEditingParcel ? "1" : this.updateType
         }
         this.dialogRef.close(editData);
     }
@@ -286,7 +294,7 @@ export class ReleasesDialogComponent implements OnInit {
         }
 
         let releaseData: any = {
-            updateType: this.updateType,
+            updateType: this.isEditingParcel ? "1" : this.updateType,
             value: moneyValue,
             description: this.description,
             transactionType: "",
@@ -323,6 +331,11 @@ export class ReleasesDialogComponent implements OnInit {
                     releaseData.recurrenceType = { id: this.paymentRangeSelected.id };
                 }
             }
+        } else if (this.isEditingParcel) {
+            // When editing a parcel, include the installment group ID so backend knows it's part of a group
+            releaseData.installmentGroupId = this.data.editData.installmentGroupId;
+            releaseData.installmentNumber = this.data.editData.installmentNumber;
+            releaseData.installmentTotal = this.data.editData.installmentTotal;
         }
 
         this.dialogRef.close(releaseData);

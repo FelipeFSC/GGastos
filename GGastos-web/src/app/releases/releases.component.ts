@@ -25,7 +25,6 @@ export class ReleasesComponent implements OnInit {
 
     mesAnoSelecionado: string = this.pegarMesAtual();
 
-    // optional filter: 'card' or 'account'
     paymentMethodFilter: string | null = null;
 
     recurrencesTypes: any = [];
@@ -122,19 +121,6 @@ export class ReleasesComponent implements OnInit {
             .subscribe(this.extractDataService.extract(success, err));
     }
 
-    /*
-    updateBalance(accountId: number) {
-        let success = (data: any) => {}
-
-        let err = (error: any) => {
-            console.log(error);
-        }
-
-        this.accountsService.updateBalance(accountId)
-            .subscribe(this.extractDataService.extract(success, err));
-    }
-    */
-
     pegarMesAtual(): string {
         const hoje = new Date();
         const ano = hoje.getFullYear();
@@ -189,12 +175,10 @@ export class ReleasesComponent implements OnInit {
                 parcelaLabel = `${item.installmentNumber}/${item.installmentTotal}`;
             }
 
-            // determine if transaction came from a credit card
             const isCredit = item.creditCard && item.creditCard.id;
 
             let gasto = {
                     id: item.id,
-                    // mark as repeat if fixed or parcel group
                     isFixo: item.fixedTransactionId != null || item.installmentGroupId != null,
                     icone: category.icon,
                     cor: category.color,
@@ -363,22 +347,34 @@ export class ReleasesComponent implements OnInit {
                     result.transactionType = {id: 2};
                 }
 
-// determine group id used for repeat operations: parcel group takes precedence, else fixed
-            // only send fixedTransactionId when the transaction truly belongs to a group
+            // Keep track of group (fixed or installment) for potential multi-update operations
             let groupId = data.installmentGroupId || data.fixedTransactionId;
             result.id = data.id;
-            if (groupId) {
-                result.fixedTransactionId = groupId;
+            
+            // Only set fixedTransactionId for actual fixed transactions (not parcels)
+            if (data.fixedTransactionId && !data.installmentGroupId) {
+                result.fixedTransactionId = data.fixedTransactionId;
             } else {
-                // ensure we don't accidentally mark a standalone record
                 delete result.fixedTransactionId;
+            }
+            
+            // For parcels, never send information about it being part of fixed/installment
+            if (data.installmentGroupId) {
+                // Parcels: always simple update/delete, ignore updateType setting
+                result.installmentGroupId = data.installmentGroupId;
+            } else {
+                delete result.installmentGroupId;
             }
 
                 if (isNaN(result.value)) {
-                    this.onDelete(result, groupId, result.updateType, item);
+                    // parcels always use simple delete (updateType = "1"), ignore user selection
+                    const updateType = data.installmentGroupId ? "1" : result.updateType;
+                    this.onDelete(result, groupId, updateType, item);
 
                 } else {
-                    this.onUpdate(result, groupId, result.updateType, item);
+                    // parcels always use simple update (updateType = "1"), ignore user selection
+                    const updateType = data.installmentGroupId ? "1" : result.updateType;
+                    this.onUpdate(result, groupId, updateType, item);
                 }
             });
         }
@@ -462,21 +458,6 @@ export class ReleasesComponent implements OnInit {
                 break;
         }
     }
-
-    /*
-    onDelete(id: number) {
-        let success = () => {
-            this.filtrarPorMesAno(this.mesAnoSelecionado);
-        }
-
-        let err = (error: any) => {
-            console.log(error);
-        }
-
-        this.releasesService.delete(id)
-            .subscribe(this.extractDataService.extract(success, err));
-    }
-    */
 
     onUpdateFixed(data: any, id: number, updateTypeId: string) {
         let success = () => {

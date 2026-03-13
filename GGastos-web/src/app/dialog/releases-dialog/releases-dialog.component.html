@@ -91,9 +91,15 @@
 
             <section class="example-section">
                 <div class="tittle-text">Repetir</div>
-                <mat-radio-group required [(ngModel)]="divideType" name="divideType" class="radio-group-box">
-                    <mat-radio-button value="fixed">é uma despesa fixa</mat-radio-button>
-                    <mat-radio-button class="mat-radio-button" value="divided">é um lançamento parcelado
+                
+                <div *ngIf="editMode && (isEditingParcel || isFixed)" style="color: #757575; margin-bottom: 15px; font-size: 12px;">
+                    <mat-icon style="font-size: 16px; width: 16px; height: 16px; margin-right: 5px; vertical-align: middle;">info</mat-icon>
+                    Não é possível alterar o tipo de lançamento durante a edição
+                </div>
+
+                <mat-radio-group required [(ngModel)]="divideType" name="divideType" class="radio-group-box" [disabled]="editMode">
+                    <mat-radio-button value="fixed" [disabled]="editMode">é uma despesa fixa</mat-radio-button>
+                    <mat-radio-button class="mat-radio-button" value="divided" [disabled]="editMode">é um lançamento parcelado
                         em</mat-radio-button>
                 </mat-radio-group>
             </section>
@@ -138,7 +144,11 @@
             </div>
         </div>
 
-        <div class="repeat-box" *ngIf="isFixed">
+        <div class="repeat-box" *ngIf="isEditingParcel">
+            <p style="color: red;margin-bottom: 10px;">Esta parcela faz parte de um lançamento parcelado.</p>
+        </div>
+
+        <div class="repeat-box" *ngIf="isFixed && !isEditingParcel">
             <p style="color: red;margin-bottom: 10px;">Este lançamento se repete.</p>
 
             <section class="example-section">
