@@ -242,7 +242,6 @@ export class ReleasesComponent implements OnInit {
             result.transactionType = { id: 2 };
             formData.append('data', JSON.stringify(result));
 
-            // differentiate parcel vs fixed repeat
             if (result.installmentTotal && result.installmentTotal > 1) {
                 this.onCreate(formData);
             } else if (result.recurrenceType && result.recurrenceType.id) {
@@ -314,8 +313,7 @@ export class ReleasesComponent implements OnInit {
 
     }
 
-    onEditItem(item: any) {
-        console.log(item);
+    onEditItem(item: any) { // 
         let success = (data: any) => {
             let categories = [];
 
@@ -364,13 +362,17 @@ export class ReleasesComponent implements OnInit {
                     delete result.installmentGroupId;
                 }
 
+
+                console.log(result.updateType);
                 if (isNaN(result.value)) {
-                    const updateType = data.installmentGroupId ? "1" : result.updateType;
-                    this.onDelete(result, groupId, updateType, item);
+                    this.onDelete(result, groupId, result.updateType, item);
 
                 } else {
-                    const updateType = data.installmentGroupId ? "1" : result.updateType;
-                    this.onUpdate(result, groupId, updateType, item);
+                    console.log("UPDATE");
+                    console.log(result);
+                    console.log(groupId);
+                    console.log(item);
+                    this.onUpdate(result, groupId, result.updateType, item);
                 }
             });
         }
@@ -398,10 +400,8 @@ export class ReleasesComponent implements OnInit {
         }
 
         transaction.id = transaction.id ? transaction.id : 0;
-        if (transaction.id === 0 && fixedId) {
-            this.releasesService.deleteFixed(fixedId)
-                .subscribe(this.extractDataService.extract(success, err));
-        }
+        const transactionDate = (transaction.obj && transaction.obj.transactionDate) ? transaction.obj.transactionDate : transaction.transactionDate;
+       
         switch (updateType) {
             case "1":
                 this.releasesService.delete(transaction.id)
@@ -410,7 +410,7 @@ export class ReleasesComponent implements OnInit {
                 break;
             case "2":
 
-                this.releasesService.deleteCurrentOthers(transaction.id, fixedId)
+                this.releasesService.deleteCurrentOthers(transaction.id, fixedId, transactionDate)
                     .subscribe(this.extractDataService.extract(success, err));
 
                 break;

@@ -80,8 +80,33 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     List<Transaction> findByFixedTransactionIdAndTransactionDateGreaterThanEqual(
             Long fixedTransactionId, LocalDateTime transactionDate);
 
+    List<Transaction> findByIdAndTransactionDateGreaterThanEqual(
+            Long transactionId, LocalDateTime transactionDate);
+
     List<Transaction> findByInstallmentGroupIdAndTransactionDateGreaterThanEqual(
             Long installmentGroupId, LocalDateTime transactionDate);
+
+/*
+    @Query("SELECT t FROM Transaction t " +
+            "WHERE t.transactionDate >= :date " +
+            "  AND t.category.id = :categoryId " +
+            "  AND ((:accountId IS NOT NULL AND t.account.id = :accountId) " +
+            "       OR (:creditCardId IS NOT NULL AND t.creditCard.id = :creditCardId))")
+    List<Transaction> findByCategoryAndAccountOrCardAfterDate(
+            @Param("date") LocalDateTime date,
+            @Param("categoryId") Long categoryId,
+            @Param("accountId") Long accountId,
+            @Param("creditCardId") Long creditCardId);
+
+    @Query("SELECT t FROM Transaction t " +
+            "WHERE t.category.id = :categoryId " +
+            "  AND ((:accountId IS NOT NULL AND t.account.id = :accountId) " +
+            "       OR (:creditCardId IS NOT NULL AND t.creditCard.id = :creditCardId))")
+    List<Transaction> findByCategoryAndAccountOrCard(
+            @Param("categoryId") Long categoryId,
+            @Param("accountId") Long accountId,
+            @Param("creditCardId") Long creditCardId);
+*/
 
     @Query(value = "SELECT t.*"
                 + " FROM transaction t"

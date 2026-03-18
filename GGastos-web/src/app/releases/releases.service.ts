@@ -59,12 +59,20 @@ findByDate(date: string, method?: string | null) {
 		return this.httpService.delete(this.url + this.appService.transactionUrl + `/${transactionId}`);
 	}
 
-	deleteCurrentOthers(transactionId: number, fixedId: number) {
-		return this.httpService.delete(this.url + this.appService.transactionUrl + `/${transactionId}/fixed/${fixedId}`);
+	deleteCurrentOthers(transactionId: number, fixedId: number, transactionDate?: string) {
+		let url = this.url + this.appService.transactionUrl + `/${transactionId}/fixed/${fixedId}`;
+		if (transactionDate) {
+			url += `?date=${encodeURIComponent(transactionDate)}`;
+		}
+		return this.httpService.delete(url);
 	}
 
-	deleteAllItens(transactionId: number, fixedId: number) {
-		return this.httpService.delete(this.url + this.appService.transactionUrl + `/${transactionId}/fixed/${fixedId}/all`);
+	deleteAllItens(transactionId: number, fixedId: number, transactionDate?: string) {
+		let url = this.url + this.appService.transactionUrl + `/${transactionId}/fixed/${fixedId}/all`;
+		if (transactionDate) {
+			url += `?date=${encodeURIComponent(transactionDate)}`;
+		}
+		return this.httpService.delete(url);
 	}
 
 	createFixed(transaction: any) {

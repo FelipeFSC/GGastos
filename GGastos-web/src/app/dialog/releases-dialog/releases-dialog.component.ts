@@ -56,8 +56,8 @@ export class ReleasesDialogComponent implements OnInit {
 
     updateType: string = "1";
 
-    // when user is editing an existing parcelled transaction we don't want to change
-    // the number of installments or frequency
+    onlyUpdateCurrent: boolean = false;
+
     isEditingParcel: boolean = false;
 
     constructor(
@@ -99,10 +99,8 @@ export class ReleasesDialogComponent implements OnInit {
             data.value = data.value * -1;
         }
         
-        // detect parcelled or fixed transaction when editing BEFORE setting paymentValue
         let displayValue = data.value;
         if (data.installmentTotal && data.installmentTotal > 1) {
-            // For parcels: multiply the individual value by number of installments to show total
             displayValue = data.value * data.installmentTotal;
         }
         
@@ -137,7 +135,6 @@ export class ReleasesDialogComponent implements OnInit {
         for (let account of accountList) {
             accounts.list.push(account.account);
 
-            // prefer explicit account match when available
             if (data.account && data.account.id === account.account.id) {
                 this.accountSelected = account.account;
             }
@@ -149,7 +146,6 @@ export class ReleasesDialogComponent implements OnInit {
             for (let creditCard of account.creditCards) {
                 creditCards.list.push(creditCard);
 
-                // also set selected when editing a credit-card transaction
                 if (data.creditCard && data.creditCard.id === creditCard.id) {
                     this.accountSelected = creditCard;
                 }
@@ -158,17 +154,14 @@ export class ReleasesDialogComponent implements OnInit {
         list.push(creditCards);
         this.accountAndCreditCards = list;
 
-        // detect parcelled or fixed transaction when editing
         if (data.installmentTotal && data.installmentTotal > 1) {
-            // editing a parcel group – show parcel info but disable editing
             this.divideType = 'divided';
             this.isRepeatActive = true;
             this.isEditingParcel = true;
-            this.isFixed = true; // show options for update/delete like fixed transactions
+            this.isFixed = true;
             this.valorParcela = data.installmentTotal;
             this.valorAlterado();
         } else if (data.recurrenceType) {
-            // editing fixed transaction
             this.divideType = "fixed";
             this.isFixed = true;
             this.paymentRangeSelected = data.recurrenceType;
@@ -317,22 +310,18 @@ export class ReleasesDialogComponent implements OnInit {
             }
         }
 
-        // if user is editing an existing parcel we don't change the recurrence/parcel info
         if (!this.isEditingParcel && this.isRepeatActive) {
-            // only set recurrence for fixed or installment when selection exists
             if (this.divideType === 'fixed') {
                 if (this.paymentRangeSelected) {
                     releaseData.recurrenceType = { id: this.paymentRangeSelected.id };
                 }
             } else if (this.divideType === 'divided') {
-                // for parcelado we send the number of installments and use recurrenceType as frequency
                 if (this.valorParcela && this.paymentRangeSelected) {
                     releaseData.installmentTotal = this.valorParcela;
                     releaseData.recurrenceType = { id: this.paymentRangeSelected.id };
                 }
             }
         } else if (this.isEditingParcel) {
-            // When editing a parcel, include the installment group ID so backend knows it's part of a group
             releaseData.installmentGroupId = this.data.editData.installmentGroupId;
             releaseData.installmentNumber = this.data.editData.installmentNumber;
             releaseData.installmentTotal = this.data.editData.installmentTotal;

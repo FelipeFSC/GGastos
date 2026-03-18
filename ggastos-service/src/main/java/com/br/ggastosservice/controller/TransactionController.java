@@ -90,6 +90,9 @@ public class TransactionController {
         transactionService.updateAllItens(transaction, transactionId, fixedId);
     }
 
+
+
+    //
     @DeleteMapping("/{transactionId}")
     public void delete(@PathVariable("transactionId") long transactionId) throws Exception {
         transactionService.delete(transactionId);
@@ -97,8 +100,9 @@ public class TransactionController {
 
     @DeleteMapping("/{transactionId}/fixed/{fixedId}")
     public void deleteCurrentOthers(@PathVariable("transactionId") long transactionId,
-            @PathVariable("fixedId") long fixedId) throws Exception {
-        transactionService.deleteCurrentOthers(transactionId, fixedId);
+            @PathVariable("fixedId") long fixedId,
+            @RequestParam(value = "date", required = false) String date) throws Exception {
+        transactionService.deleteCurrentOthers(transactionId, fixedId, date);
     }
 
     @DeleteMapping("/{transactionId}/fixed/{fixedId}/all")
@@ -106,6 +110,9 @@ public class TransactionController {
             @PathVariable("fixedId") long fixedId) throws Exception {
         transactionService.deleteAllItens(transactionId, fixedId);
     }
+    //
+
+
 
     @PatchMapping("/{transactionId}/is-paid")
     public void isPaid(@PathVariable("transactionId") long transactionId) throws Exception {

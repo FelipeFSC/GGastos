@@ -50,7 +50,6 @@ public class TransactionService {
 
     private FileAttachmentService fileAttachmentService;
 
-    // needed to load full RecurrenceType when creating parcels
     private RecurrenceTypeService recurrenceTypeService;
 
     public TransactionService(TransactionRepository transactionRepository,
@@ -441,16 +440,18 @@ public class TransactionService {
     }
 
     public void delete(long transactionId) throws Exception {
+        if (transactionId == 0) {
+            return;
+        }
+
         Transaction transaction = findOne(transactionId);
         fileAttachmentService.deleteFile(transactionId);
 
-        // Check if this is an installment - if so, delete all installments in the group
         if (transaction.getInstallmentGroupId() != null) {
             Long groupId = transaction.getInstallmentGroupId();
             List<Transaction> installments = transactionRepository.findByInstallmentGroupId(groupId);
             transactionRepository.deleteAll(installments);
         } else {
-            // Regular transaction - delete only this one
             transactionRepository.delete(transaction);
         }
 
@@ -462,46 +463,91 @@ public class TransactionService {
         }
     }
 
-    public void deleteCurrentOthers(long transactionId, long groupId) {
+    public void deleteCurrentOthers(long transactionId, long fixedId, String date) throws Exception {
         try {
-            Transaction transaction = findOne(transactionId);
-
-            List<Transaction> fixedList = transactionRepository.findCurrentAndNextByFixedId(transactionId, groupId);
+            FixedTransaction fixedTransaction = fixedTransactionService.findOne(fixedId);
+            LocalDateTime transactionDate = parseDate(date);
+            List<Transaction> fixedList = transactionRepository.findByFixedTransactionIdAndTransactionDateGreaterThanEqual(fixedId, transactionDate);
             if (!fixedList.isEmpty()) {
                 transactionRepository.deleteAll(fixedList);
-                fixedTransactionService.delete(groupId);
+            }    
+            fixedTransactionService.delete(fixedId);
+        
+            if (fixedTransaction.getAccount() != null) {
+                accountService.updateBalance(fixedTransaction.getAccount().getId());
+            }
+            if (fixedTransaction.getCreditCard() != null) {
+                creditCardService.updateBalance(fixedTransaction.getCreditCard().getId());
+            }
+        } catch (Exception e) {
+            if (transactionId > 0) {
+                Transaction transaction = findOne(transactionId);
+
+                LocalDateTime transactionDate = parseDate(date);
+                List<Transaction> installmentList = transactionRepository.findByFixedTransactionIdAndTransactionDateGreaterThanEqual(fixedId, transactionDate);
+                if (!installmentList.isEmpty()) {
+                    transactionRepository.deleteAll(installmentList);
+                }
+
                 if (transaction.getAccount() != null) {
                     accountService.updateBalance(transaction.getAccount().getId());
                 }
                 if (transaction.getCreditCard() != null) {
                     creditCardService.updateBalance(transaction.getCreditCard().getId());
                 }
-                return;
             }
+        }
+    }
 
-            List<Transaction> installmentList = transactionRepository.findCurrentAndNextByInstallmentGroup(transactionId, groupId);
-            transactionRepository.deleteAll(installmentList);
+    public void deleteAllItens(long transactionId, long fixedId) throws Exception {
+        List<Transaction> fixedList = transactionRepository.findByFixedTransactionId(fixedId);
+        Transaction transaction = null;
+        FixedTransaction fixedTransaction = null;
+
+        try {
+            fixedTransaction = fixedTransactionService.findOne(fixedId);
+            fixedTransactionService.delete(fixedId);
+        } catch (Exception e) {
+            fixedId = 0;
+            transaction = findOne(transactionId);
+        }
+    
+        if (!fixedList.isEmpty()) {
+            transactionRepository.deleteAll(fixedList);
+        }
+
+
+         if (fixedId > 0) {
+            if (fixedTransaction.getAccount() != null) {
+                accountService.updateBalance(fixedTransaction.getAccount().getId());
+            }
+            if (fixedTransaction.getCreditCard() != null) {
+                creditCardService.updateBalance(fixedTransaction.getCreditCard().getId());
+            }
+        } else if (transactionId > 0) {
             if (transaction.getAccount() != null) {
                 accountService.updateBalance(transaction.getAccount().getId());
             }
             if (transaction.getCreditCard() != null) {
                 creditCardService.updateBalance(transaction.getCreditCard().getId());
             }
-        } catch (Exception e) {
-            System.out.println("Tem que codar");
         }
     }
 
-    public void deleteAllItens(long transactionId, long groupId) throws Exception {
-        List<Transaction> fixedList = transactionRepository.findByFixedTransactionId(groupId);
-        if (!fixedList.isEmpty()) {
-            transactionRepository.deleteAll(fixedList);
-            delete(transactionId);
-            return;
+    private LocalDateTime parseDate(String date) {
+        if (date == null || date.isBlank()) {
+            return null;
         }
-        List<Transaction> installments = transactionRepository.findByInstallmentGroupId(groupId);
-        transactionRepository.deleteAll(installments);
-        delete(transactionId);
+        try {
+            return LocalDateTime.parse(date);
+        } catch (Exception e) {
+            try {
+                return LocalDate.parse(date).atStartOfDay();
+            } catch (Exception ex) {
+                // ignore invalid format
+            }
+        }
+        return null;
     }
 
     private void verifyTransaction(Transaction transaction) throws Exception {
