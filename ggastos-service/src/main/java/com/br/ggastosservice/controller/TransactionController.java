@@ -70,6 +70,9 @@ public class TransactionController {
         transactionService.create(transaction, file);
     }
 
+
+
+//
     @PutMapping("/{transactionId}")
     public void update(@RequestBody Transaction transaction,
             @PathVariable("transactionId") long transactionId) throws Exception {
@@ -79,20 +82,22 @@ public class TransactionController {
     @PutMapping("/{transactionId}/fixed/{fixedId}")
     public void updateCurrentOthers(@RequestBody Transaction transaction,
             @PathVariable("transactionId") long transactionId,
-            @PathVariable("fixedId") long fixedId) throws Exception {
-        transactionService.updateCurrentOthers(transaction, transactionId, fixedId);
+            @PathVariable("fixedId") long fixedId,
+            @RequestParam(value = "date", required = false) String date) throws Exception {
+        transactionService.updateCurrentOthers(transaction, transactionId, fixedId, date);
     }
 
     @PutMapping("/{transactionId}/fixed/{fixedId}/all")
     public void updateAllItens(@RequestBody Transaction transaction,
             @PathVariable("transactionId") long transactionId,
-            @PathVariable("fixedId") long fixedId) throws Exception {
-        transactionService.updateAllItens(transaction, transactionId, fixedId);
+            @PathVariable("fixedId") long fixedId,
+            @RequestParam(value = "date", required = false) String date) throws Exception {
+        transactionService.updateAllItens(transaction, transactionId, fixedId, date);
     }
+//
 
 
 
-    //
     @DeleteMapping("/{transactionId}")
     public void delete(@PathVariable("transactionId") long transactionId) throws Exception {
         transactionService.delete(transactionId);
@@ -110,16 +115,12 @@ public class TransactionController {
             @PathVariable("fixedId") long fixedId) throws Exception {
         transactionService.deleteAllItens(transactionId, fixedId);
     }
-    //
-
-
 
     @PatchMapping("/{transactionId}/is-paid")
     public void isPaid(@PathVariable("transactionId") long transactionId) throws Exception {
         transactionService.paidTransaction(transactionId);
         spendingLimitService.updateSpendLimitBalanceByCategory(transactionId);
     }
-
 
     @PostMapping("/teste")
     public void teste(@RequestBody TesteDto transactions) throws Exception {

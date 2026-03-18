@@ -83,6 +83,7 @@ public class FixedTransactionService {
 
     public void updateByTransaction(Transaction transaction, long fixedTransactionId) throws Exception {
         FixedTransaction fixedTransaction = findOne(fixedTransactionId);
+        fixedTransaction.setValue(transaction.getValue());
         fixedTransaction.setDescription(transaction.getDescription());
         fixedTransaction.setTransactionDate(transaction.getTransactionDate());
         fixedTransaction.setUpdateDate(LocalDateTime.now());
@@ -103,28 +104,28 @@ public class FixedTransactionService {
         RecurrenceType recurrenceType = recurrenceTypeService.findOne(fixedTransaction.getRecurrenceType().getId());
         fixedTransaction.setRecurrenceType(recurrenceType);
 
-        if (fixedTransaction.getSubCategory().getId() != 0) {
+        try {
             SubCategory subCategory = subCategoryService.findOne(fixedTransaction.getSubCategory().getId());
             fixedTransaction.setSubCategory(subCategory);
-        } else {
+        } catch (Exception e) {
             fixedTransaction.setSubCategory(null);
         }
-        if (fixedTransaction.getCategory().getId() != 0) {
+        try {
             Category category = categoryService.findOne(fixedTransaction.getCategory().getId());
             fixedTransaction.setCategory(category);
-        } else {
+        } catch (Exception e) {
             fixedTransaction.setCategory(null);
         }
-        if (fixedTransaction.getAccount().getId() != 0) {
+        try {
             Account account = accountService.findOne(fixedTransaction.getAccount().getId());
             fixedTransaction.setAccount(account);
-        } else {
+        } catch (Exception e) {
             fixedTransaction.setAccount(null);
         }
-        if (fixedTransaction.getCreditCard().getId() != 0) {
+        try {
             CreditCard creditCard = creditCardService.findOne(fixedTransaction.getCreditCard().getId());
             fixedTransaction.setCreditCard(creditCard);
-        } else {
+        } catch (Exception e) {
             fixedTransaction.setCreditCard(null);
         }
     }

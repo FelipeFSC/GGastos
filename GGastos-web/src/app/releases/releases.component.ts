@@ -313,7 +313,8 @@ export class ReleasesComponent implements OnInit {
 
     }
 
-    onEditItem(item: any) { // 
+    onEditItem(item: any) {
+        console.log(item);
         let success = (data: any) => {
             let categories = [];
 
@@ -368,10 +369,6 @@ export class ReleasesComponent implements OnInit {
                     this.onDelete(result, groupId, result.updateType, item);
 
                 } else {
-                    console.log("UPDATE");
-                    console.log(result);
-                    console.log(groupId);
-                    console.log(item);
                     this.onUpdate(result, groupId, result.updateType, item);
                 }
             });
@@ -432,6 +429,7 @@ export class ReleasesComponent implements OnInit {
         }
 
         transaction.id = transaction.id ? transaction.id : 0;
+        const transactionDate = (transaction.obj && transaction.obj.transactionDate) ? transaction.obj.transactionDate : transaction.transactionDate;
         switch (updateType) {
             case "1":
                 if (transaction.id) {
@@ -452,14 +450,15 @@ export class ReleasesComponent implements OnInit {
                 if (!transaction.id) {
                     transaction.id = 0;
                 }
-                this.releasesService.updateCurrentOthers(data, transaction.id, fixedId)
+                transaction.fixedTransactionId = fixedId;
+                this.releasesService.updateCurrentOthers(data, transaction.id, fixedId, transactionDate)
                     .subscribe(this.extractDataService.extract(success, err));
                 break;
             case "3":
                 if (!transaction.id) {
                     transaction.id = 0;
                 }
-                this.releasesService.updateAllItens(data, transaction.id, fixedId)
+                this.releasesService.updateAllItens(data, transaction.id, fixedId, transactionDate)
                     .subscribe(this.extractDataService.extract(success, err));
                 break;
         }

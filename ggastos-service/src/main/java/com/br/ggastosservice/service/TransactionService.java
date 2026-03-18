@@ -250,7 +250,6 @@ public class TransactionService {
             return;
         }
 
-        // mark paid only when the id refers to an actual fixed transaction
         if (transaction.getFixedTransactionId() != null
                 && fixedTransactionService.exists(transaction.getFixedTransactionId())) {
             transaction.setPaidDate(LocalDateTime.now());
@@ -266,7 +265,6 @@ public class TransactionService {
         }
     }
 
-    // helper used when splitting installment dates
     private LocalDateTime incrementDate(LocalDateTime date, RecurrenceType type) {
         if (type == null) {
             return date.plusMonths(1);
@@ -296,13 +294,11 @@ public class TransactionService {
             transaction.setPaidDate(LocalDateTime.now());
         }
 
-        // Check if this is an installment - if so, update all installments in the group
         if (existing.getInstallmentGroupId() != null) {
             Long groupId = existing.getInstallmentGroupId();
             List<Transaction> installments = transactionRepository.findByInstallmentGroupId(groupId);
             int total = installments.size();
             
-            // Divide the total value by the number of installments
             BigDecimal totalValue = transaction.getValue();
             BigDecimal valuePerInstallment = totalValue.divide(new BigDecimal(total), 2, java.math.RoundingMode.DOWN);
             BigDecimal remainder = totalValue.subtract(valuePerInstallment.multiply(new BigDecimal(total)));
@@ -317,7 +313,6 @@ public class TransactionService {
                 updated.setTransactionDate(installment.getTransactionDate());
                 updated.setPaidDate(installment.getPaidDate());
                 
-                // First installment gets the remainder
                 if (i == 0) {
                     updated.setValue(valuePerInstallment.add(remainder));
                 } else {
@@ -327,7 +322,6 @@ public class TransactionService {
                 transactionRepository.save(updated);
             }
         } else {
-            // Regular transaction - update only this one
             transactionRepository.save(transaction);
         }
 
@@ -339,54 +333,46 @@ public class TransactionService {
         }
     }
 
-    public void updateCurrentOthers(Transaction transaction, long transactionId, long groupId) throws Exception {
-        // determine if this is a fixed group (exists in fixed table) or a parcel group
-        boolean isFixedGroup = !transactionRepository.findByFixedTransactionId(groupId).isEmpty();
+    public void updateCurrentOthers(Transaction transaction, long transactionId, long fixedId, String date) throws Exception {
+        transaction.setId(transactionId);
 
-        if (isFixedGroup) {
-            // original fixed handling
-            fixedTransactionService.updateByTransaction(transaction, groupId);
-
-            verifyTransaction(transaction);
+        verifyTransaction(transaction);
+        if (fixedId > 0) {
             if (transactionId == 0) {
-                transaction.setFixedTransactionId(groupId);
+                transaction.setFixedTransactionId(fixedId);
                 create(transaction, null);
             } else {
                 update(transaction, transactionId);
             }
-            return;
         }
 
-        // installment group handling
-        verifyTransaction(transaction);
-        if (transactionId == 0) {
-            // creating a new parcel after the others - assign group id for linking
-            transaction.setInstallmentGroupId(groupId);
-            create(transaction, null);
-            return;
-        }
-
-        // update current installment
-        update(transaction, transactionId);
-
-        // update all following installments (including current, but we already updated it)
-        List<Transaction> others = transactionRepository.findCurrentAndNextByInstallmentGroup(transactionId, groupId);
+        LocalDateTime transactionDate = parseDate(date);
+        List<Transaction> others = transactionRepository.findByFixedTransactionIdAndTransactionDateGreaterThanEqual(fixedId, transactionDate);
         for (Transaction item : others) {
             if (item.getId().equals(transactionId)) {
-                continue; // already updated
+                continue;
             }
             Transaction newTransaction = transaction.copy();
             newTransaction.setId(item.getId());
-            newTransaction.setInstallmentGroupId(groupId);
+            newTransaction.setFixedTransactionId(fixedId);
             newTransaction.setTransactionDate(item.getTransactionDate());
             newTransaction.setPaidDate(item.getPaidDate());
             transactionRepository.save(newTransaction);
         }
+
+        fixedTransactionService.updateByTransaction(transaction, fixedId);
+
+         if (transaction.getAccount() != null) {
+            accountService.updateBalance(transaction.getAccount().getId());
+        }
+        if (transaction.getCreditCard() != null) {
+            creditCardService.updateBalance(transaction.getCreditCard().getId());
+        }
     }
 
-    public void updateAllItens(Transaction transaction, long transactionId, long groupId) throws Exception {
-        // determine type
+    public void updateAllItens(Transaction transaction, long transactionId, long groupId, String date) throws Exception {
         boolean isFixedGroup = !transactionRepository.findByFixedTransactionId(groupId).isEmpty();
+
         if (isFixedGroup) {
             fixedTransactionService.updateByTransaction(transaction, groupId);
 
@@ -411,7 +397,6 @@ public class TransactionService {
             return;
         }
 
-        // installment group: update every transaction in group
         verifyTransaction(transaction);
         List<Transaction> transactions = transactionRepository.findByInstallmentGroupId(groupId);
         List<Transaction> newTransactions = new ArrayList<Transaction>();
@@ -430,7 +415,6 @@ public class TransactionService {
             create(transaction, null);
         }
 
-        // recalc balances for affected payment method
         if (transaction.getAccount() != null) {
             accountService.updateBalance(transaction.getAccount().getId());
         }
