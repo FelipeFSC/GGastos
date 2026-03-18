@@ -43,8 +43,65 @@
     </div>
 
     <div class="box-filter">
+        <div class="filter-item" [ngClass]="{open: openDropdown === 'type'}" (click)="toggleDropdown('type')">
+            <span>{{ typeLabel }} ▾</span>
+            <div class="dropdown">
+                <ul>
+                    <li (click)="$event.stopPropagation(); selectedType=''; applyFilters();" [class.active]="selectedType===''"><span>✔</span> todos</li>
+                    <li (click)="$event.stopPropagation(); selectedType='single'; applyFilters();" [class.active]="selectedType==='single'">Único</li>
+                    <li (click)="$event.stopPropagation(); selectedType='fixed'; applyFilters();" [class.active]="selectedType==='fixed'">Fixo</li>
+                    <li (click)="$event.stopPropagation(); selectedType='installment'; applyFilters();" [class.active]="selectedType==='installment'">Parcelado</li>
+                </ul>
+            </div>
+        </div>
 
+        <div class="filter-item" [ngClass]="{open: openDropdown === 'accounts'}" (click)="toggleDropdown('accounts')">
+            <span>{{ accountCardLabel }} ▾</span>
+            <div class="dropdown">
+                <ul>
+                    <li (click)="$event.stopPropagation(); selectedAccountCard=''; applyFilters();" [class.active]="selectedAccountCard===''"><span>✔</span> todos</li>
+                    <li class="group-label">Contas</li>
+                    <li *ngFor="let acc of accounts" (click)="$event.stopPropagation(); selectedAccountCard='account-' + acc.account.id; applyFilters();" [class.active]="selectedAccountCard==='account-' + acc.account.id">&nbsp;&nbsp;&nbsp; {{acc.account.name}}</li>
+                    <li class="group-label">Cartões</li>
+                    <ng-container *ngFor="let acc of accounts">
+                        <li *ngFor="let card of acc.creditCards" (click)="$event.stopPropagation(); selectedAccountCard='card-' + card.id; applyFilters();" [class.active]="selectedAccountCard==='card-' + card.id">&nbsp;&nbsp;&nbsp; {{card.name}}</li>
+                    </ng-container>
+                </ul>
+            </div>
+        </div>
+
+        <div class="filter-item" [ngClass]="{open: openDropdown === 'categories'}" (click)="toggleDropdown('categories')">
+            <span>{{ categoryLabel }} ▾</span>
+            <div class="dropdown">
+                <ul>
+                    <li (click)="$event.stopPropagation(); selectedCategoryId=null; applyFilters();" [class.active]="selectedCategoryId===null"><span>✔</span> todos</li>
+
+                    <li class="group-label">Despesas</li>
+                    <ng-container *ngFor="let cat of expenseCategories">
+                        <li (click)="$event.stopPropagation(); selectedCategoryId=cat.category?.id; applyFilters();" [class.active]="selectedCategoryId===cat.category?.id">&nbsp;&nbsp;&nbsp; {{cat.category?.name}}</li>
+                        <ng-container *ngIf="cat.subCategory?.length">
+                            <li *ngFor="let sub of cat.subCategory" class="sub-category" (click)="$event.stopPropagation(); selectedCategoryId=sub.id; applyFilters();" [class.active]="selectedCategoryId===sub.id">{{sub.name}}</li>
+                        </ng-container>
+                    </ng-container>
+
+                    <li class="group-label">Receitas</li>
+                    <ng-container *ngFor="let cat of incomeCategories">
+                        <li (click)="$event.stopPropagation(); selectedCategoryId=cat.category?.id; applyFilters();" [class.active]="selectedCategoryId===cat.category?.id">&nbsp;&nbsp;&nbsp; {{cat.category?.name}}</li>
+                        <ng-container *ngIf="cat.subCategory?.length">
+                            <li *ngFor="let sub of cat.subCategory" class="sub-category" (click)="$event.stopPropagation(); selectedCategoryId=sub.id; applyFilters();" [class.active]="selectedCategoryId===sub.id">{{sub.name}}</li>
+                        </ng-container>
+                    </ng-container>
+
+                    <li *ngIf="!expenseCategories?.length && !incomeCategories?.length" class="no-results">Nenhuma categoria encontrada</li>
+                </ul>
+            </div>
+        </div>
+
+        <!--
+        <mat-icon class="search-icon">search</mat-icon>
+        -->
     </div>
+
 
     <div class="box-content" *ngFor="let geral of modeloDados; let i = index">
 

@@ -19,6 +19,7 @@ export class ReleasesComponent implements OnInit {
     @ViewChild('inputMes') inputMes!: ElementRef;
 
     modeloDados: any = [];
+    rawModeloDados: any = [];
 
     saldo: number = 0;
     previsto: number = 0;
@@ -32,6 +33,12 @@ export class ReleasesComponent implements OnInit {
 
     expenseCategories: any = [];
     incomeCategories: any = [];
+
+    selectedAccountCard: string = "";
+    selectedCategoryId: number | null = null;
+    selectedType: string = "";
+
+    openDropdown: 'type' | 'accounts' | 'categories' | null = null;
 
     constructor(
         private accountsService: AccountsService,
@@ -145,6 +152,79 @@ export class ReleasesComponent implements OnInit {
         this.onList(valor);
     }
 
+    toggleDropdown(name: 'type' | 'accounts' | 'categories') {
+        this.openDropdown = this.openDropdown === name ? null : name;
+    }
+
+    closeDropdowns() {
+        this.openDropdown = null;
+    }
+
+    get typeLabel(): string {
+        switch (this.selectedType) {
+            case 'single':
+                return 'Único';
+            case 'fixed':
+                return 'Fixo';
+            case 'installment':
+                return 'Parcelado';
+            default:
+                return 'Tipo';
+        }
+    }
+
+    get accountCardLabel(): string {
+        if (!this.selectedAccountCard) {
+            return 'Contas & Cartões';
+        }
+
+        const [kind, idStr] = this.selectedAccountCard.split('-');
+        const id = Number(idStr);
+
+        if (kind === 'account') {
+            const acc = this.accounts.find((a: any) => a.account?.id === id);
+            return acc?.account?.name ?? 'Contas & Cartões';
+        }
+
+        if (kind === 'card') {
+            for (const acc of this.accounts) {
+                const card = acc.creditCards?.find((c: any) => c.id === id);
+                if (card) {
+                    return card.name;
+                }
+            }
+        }
+
+        return 'Contas & Cartões';
+    }
+
+    get categoryLabel(): string {
+        if (this.selectedCategoryId === null || this.selectedCategoryId === undefined) {
+            return 'Categorias';
+        }
+
+        const findInList = (list: any[]) => {
+            for (const cat of list || []) {
+                if (cat.category?.id === this.selectedCategoryId) {
+                    return cat.category?.name;
+                }
+                if (cat.subCategory) {
+                    const sub = cat.subCategory.find((s: any) => s.id === this.selectedCategoryId);
+                    if (sub) {
+                        return sub.name;
+                    }
+                }
+            }
+            return null;
+        };
+
+        return (
+            findInList(this.expenseCategories) ||
+            findInList(this.incomeCategories) ||
+            'Categorias'
+        );
+    }
+
     onList(date: string) {
         let success = (res: any) => {
             let list: any = [];
@@ -208,7 +288,8 @@ export class ReleasesComponent implements OnInit {
                 gastos: gastos
             });
 
-            this.modeloDados = list;
+            this.rawModeloDados = list;
+            this.applyFilters();
 
             this.previsto = (this.saldo - this.previsto);
         }
@@ -219,6 +300,83 @@ export class ReleasesComponent implements OnInit {
 
         this.releasesService.findByDate(date, this.paymentMethodFilter)
             .subscribe(this.extractDataService.extract(success, err));
+    }
+
+    applyFilters() {
+        const accountFilter = this.selectedAccountCard;
+        const categoryFilter = this.selectedCategoryId;
+        const typeFilter = this.selectedType;
+
+        const filtered = this.rawModeloDados
+            .map((day: any) => {
+                const gastos = day.gastos.filter((item: any) => {
+                    const obj = item.obj;
+
+                    // account/card filter
+                    if (accountFilter) {
+                        const [kind, idStr] = accountFilter.split('-');
+                        const id = Number(idStr);
+                        if (kind === 'account') {
+                            if (!obj.account || obj.account.id !== id) {
+                                return false;
+                            }
+                        } else if (kind === 'card') {
+                            if (!obj.creditCard || obj.creditCard.id !== id) {
+                                return false;
+                            }
+                        }
+                    }
+
+                    // category filter
+                    if (categoryFilter) {
+                        const matchCategory = obj.category && obj.category.id === categoryFilter;
+                        const matchSub = obj.subCategory && obj.subCategory.id === categoryFilter;
+                        if (!matchCategory && !matchSub) {
+                            return false;
+                        }
+                    }
+
+                    // type filter
+                    if (typeFilter) {
+                        const isFixed = obj.fixedTransactionId != null && obj.installmentGroupId == null;
+                        const isInstallment = obj.installmentGroupId != null;
+                        const isSingle = !isFixed && !isInstallment;
+
+                        if (typeFilter === 'fixed' && !isFixed) {
+                            return false;
+                        }
+                        if (typeFilter === 'installment' && !isInstallment) {
+                            return false;
+                        }
+                        if (typeFilter === 'single' && !isSingle) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                });
+
+                return {
+                    ...day,
+                    gastos
+                };
+            })
+            .filter((day: any) => day.gastos.length > 0);
+
+        // Update the totals based on the currently visible items
+        this.saldo = 0;
+        this.previsto = 0;
+        filtered.forEach((day: any) => {
+            day.gastos.forEach((item: any) => {
+                if (item.obj.paidDate) {
+                    this.saldo += item.obj.value;
+                } else {
+                    this.previsto -= item.obj.value;
+                }
+            });
+        });
+
+        this.modeloDados = filtered;
     }
 
     onExpense() {
