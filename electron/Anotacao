@@ -1,0 +1,10 @@
+Comandos dentro da pasta electron
+
+1) Instalar dependências (restaurar node_modules)
+npm install
+
+2) Rodar em modo dev (recompila e abre o app)
+npm run start
+
+3) Gerar o instalador/distribuição
+npm run dist
