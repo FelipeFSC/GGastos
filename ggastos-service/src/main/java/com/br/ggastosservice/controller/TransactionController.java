@@ -70,9 +70,6 @@ public class TransactionController {
         transactionService.create(transaction, file);
     }
 
-
-
-//
     @PutMapping("/{transactionId}")
     public void update(@RequestBody Transaction transaction,
             @PathVariable("transactionId") long transactionId) throws Exception {
@@ -94,9 +91,6 @@ public class TransactionController {
             @RequestParam(value = "date", required = false) String date) throws Exception {
         transactionService.updateAllItens(transaction, transactionId, fixedId, date);
     }
-//
-
-
 
     @DeleteMapping("/{transactionId}")
     public void delete(@PathVariable("transactionId") long transactionId) throws Exception {

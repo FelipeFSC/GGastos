@@ -17,10 +17,14 @@ public class AccountService {
 
     private TransactionRepository transactionRepository;
 
+    private UserService userService;
+
     public AccountService(AccountRepository accountRepository,
-            TransactionRepository transactionRepository) {
+            TransactionRepository transactionRepository,
+            UserService userService) {
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
+        this.userService = userService;
     }
 
     public Account findOne(long id) throws Exception  {
@@ -36,6 +40,8 @@ public class AccountService {
     }
 
     public Account create(Account account) {
+        account.setUser(userService.getOrCreateDefaultAdmin());
+
         account.setBalance(BigDecimal.ZERO);
         account.setIcon(account.getIcon().trim().toLowerCase());
         account.setEnabled(true);
@@ -45,6 +51,8 @@ public class AccountService {
 
     public void update(Account account, long accountId) throws Exception {
         Account beforeAccout = findOne(accountId);
+
+        account.setUser(userService.getOrCreateDefaultAdmin());
         account.setId(accountId);
         account.setEnabled(true);
 
@@ -67,6 +75,22 @@ public class AccountService {
 
         BigDecimal result = BigDecimal.ZERO;
         result = tatolIncome.add(totalExpense);
+        return result;
+    }
+
+    public BigDecimal getGeneralBalance(long userId) {
+        BigDecimal accountIncome = transactionRepository.findTotalValuesByTransactionTypeAndUser(1, userId);
+        BigDecimal accountExpense = transactionRepository.findTotalValuesByTransactionTypeAndUser(2, userId);
+        BigDecimal cardIncome = transactionRepository.findTotalValuesByTransactionTypeAndUserCreditCards(1, userId);
+        BigDecimal cardExpense = transactionRepository.findTotalValuesByTransactionTypeAndUserCreditCards(2, userId);
+
+        accountIncome = accountIncome == null ? BigDecimal.ZERO : accountIncome;
+        accountExpense = accountExpense == null ? BigDecimal.ZERO : accountExpense;
+        cardIncome = cardIncome == null ? BigDecimal.ZERO : cardIncome;
+        cardExpense = cardExpense == null ? BigDecimal.ZERO : cardExpense;
+
+        BigDecimal result = BigDecimal.ZERO;
+        result = result.add(accountIncome).add(accountExpense).add(cardIncome).add(cardExpense);
         return result;
     }
 

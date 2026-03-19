@@ -190,48 +190,38 @@ public class TransactionService {
             transaction.setSelectedFile(file);
         }
 
-        // if we are creating a parcelado (installment) transaction, break it into multiple records
         if (transaction.getInstallmentTotal() != null && transaction.getInstallmentTotal() > 1) {
             int total = transaction.getInstallmentTotal();
 
-            // look up the full recurrence type so we know how to increment dates
             RecurrenceType freq = null;
             if (transaction.getRecurrenceType() != null && transaction.getRecurrenceType().getId() != null) {
                 freq = recurrenceTypeService.findOne(transaction.getRecurrenceType().getId());
             }
 
-            // divide the total value by the number of installments
             BigDecimal totalValue = transaction.getValue();
             BigDecimal valuePerInstallment = totalValue.divide(new BigDecimal(total), 2, java.math.RoundingMode.DOWN);
             BigDecimal remainder = totalValue.subtract(valuePerInstallment.multiply(new BigDecimal(total)));
 
-            // first record: save and use its generated id as group id
-            transaction.setPaidDate(null); // installments are created unpaid initially
-            // add remainder to first installment to ensure total matches
+            transaction.setPaidDate(null);
             transaction.setValue(valuePerInstallment.add(remainder));
             Transaction first = transactionRepository.save(transaction);
             Long groupId = first.getId();
-            // mark as part of a parcel group for UI and logic
             first.setInstallmentGroupId(groupId);
             first.setInstallmentNumber(1);
             first.setInstallmentTotal(total);
             transactionRepository.save(first);
 
-            // create the remaining installments by copying the first
             List<Transaction> others = new ArrayList<>();
             LocalDateTime currentDate = first.getTransactionDate();
             for (int i = 2; i <= total; i++) {
                 Transaction t = first.copy();
                 t.setId(null);
-                // file attachment only on first installment
                 t.setSelectedFile(null);
                 t.setInstallmentGroupId(groupId);
                 t.setInstallmentNumber(i);
                 t.setPaidDate(null);
-                // use divided value for remaining installments
                 t.setValue(valuePerInstallment);
 
-                // advance the date according to the chosen recurrence type (default to monthly if none)
                 currentDate = incrementDate(currentDate, freq);
                 t.setTransactionDate(currentDate);
 

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.br.ggastosservice.dto.AccountCreditCardsDto;
@@ -62,7 +63,10 @@ public class AccountController {
     }
 
     @GetMapping("/balance")
-    public BigDecimal getGeneralBalance() {
+    public BigDecimal getGeneralBalance(@RequestParam(required = false) Long userId) {
+        if (userId != null) {
+            return accountService.getGeneralBalance(userId);
+        }
         return accountService.getGeneralBalance();
     }
 

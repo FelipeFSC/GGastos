@@ -26,10 +26,22 @@ public class UserService {
     }
 
     public User create(User user) {
+        if (user.getName() == null || user.getName().trim().isEmpty()) {
+            user.setName("Admin");
+        }
         user.setCreateDate(LocalDateTime.now());
-        user.setName("O dono da poha TODA!!!");
         userRepository.save(user);
         return user;
+    }
+
+    public User getOrCreateDefaultAdmin() {
+        try {
+            return findOne(1);
+        } catch (Exception e) {
+            User admin = new User();
+            admin.setName("Admin");
+            return create(admin);
+        }
     }
 
 }

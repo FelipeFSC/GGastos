@@ -16,6 +16,8 @@ export class HomeComponent implements OnInit {
 
     balance: number = 0;
 
+    userId: number | null = null;
+
     option: any = {
         series: [
             {
@@ -117,8 +119,8 @@ export class HomeComponent implements OnInit {
         this.today = `${ano}-${mes}`;
 
         forkJoin({
-            totalBalance: this.accountsService.getGeneralBalance(),
             categoryGraph: this.reportService.getCategoryReportDto(2),
+            totalBalance: this.accountsService.getGeneralBalance(1),
             accounts: this.accountsService.findByEnabled(true),
             delayedTransactions: this.releasesService.findByDate(this.today),
             spendingLimits: this.spendingLimitService.findCurrentMonth(),
@@ -129,6 +131,8 @@ export class HomeComponent implements OnInit {
                 this.getAccounts(res.accounts);
                 this.getDelayedTransactions(res.delayedTransactions);
                 this.getSpendingLimits(res.spendingLimits);
+
+                //this.loadGeneralBalance();
             },
             error: (err) => {
                 console.log(err)
@@ -141,7 +145,20 @@ export class HomeComponent implements OnInit {
             this.balance = val;
         });
     }
-
+/*
+    loadGeneralBalance() {
+        console.log(this.userId);
+        this.accountsService.getGeneralBalance(1)
+            .subscribe({
+                next: (res) => {
+                    this.getGeneralBalance(res);
+                },
+                error: (err) => {
+                    console.log(err);
+                }
+            });
+    }
+*/
     getCategoryGrafData(result: any) {
         this.options = {
             textStyle: {
@@ -179,6 +196,10 @@ export class HomeComponent implements OnInit {
     getAccounts(result: any) {
         let lista = [];
         for (let item of result) {
+            if (!this.userId && item.user && item.user.id) {
+                this.userId = item.user.id;
+            }
+
             let data = {
                 id: item.id,
                 name: item.name,
@@ -349,7 +370,7 @@ export class HomeComponent implements OnInit {
 
     updateHome() {
         forkJoin({
-            totalBalance: this.accountsService.getGeneralBalance(),
+            totalBalance: this.accountsService.getGeneralBalance(1),
             categoryGraph: this.reportService.getCategoryReportDto(2),
             delayedTransactions: this.releasesService.findByDate(this.today),
             accounts: this.accountsService.findByEnabled(true),
