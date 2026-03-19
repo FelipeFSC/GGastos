@@ -1,0 +1,50 @@
+{
+  "name": "ggastos-desktop",
+  "version": "1.1.0",
+  "description": "GGastos desktop application (Angular + Spring Boot bundled with Electron)",
+  "author": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "npm run build:app && electron .",
+    "build:app": "node build.js",
+    "dist": "npm run build:app && electron-builder"
+  },
+  "build": {
+    "appId": "com.ggastos.app",
+    "productName": "GGastos",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "build.js",
+      "frontend/**",
+      "backend/**",
+      "data/**",
+      "package.json"
+    ],
+    "asar": true,
+    "asarUnpack": [
+      "backend/**",
+      "data/**"
+    ],
+    "win": {
+      "target": "nsis",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "electron": "^41.0.3",
+    "electron-builder": "^26.8.1"
+  }
+}
