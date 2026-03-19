@@ -24,9 +24,15 @@
     border-radius: 10px 10px 0px 0px;
 
     display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
     align-items: center;
+    position: relative;
+}
+
+.box-menu > div:first-child {
+    /* keep the title + add button at the start */
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .box-filter {
@@ -194,12 +200,18 @@
 }
 
 .date-select-box {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
     display: flex;
-    align-content: center;
-    justify-content: space-around;
     align-items: center;
-    flex-direction: row;
-    width: 40%;
+    justify-content: center;
+    gap: 12px;
+
+    width: auto;
+    min-width: 220px;
 }
 
 .month-display {

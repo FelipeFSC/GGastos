@@ -25,7 +25,7 @@ export class ReleasesUploadComponent implements OnInit {
     expenseCategories: any = [];
     incomeCategories: any = [];
 
-    transacoes = [];
+    transacoes: any[] = [];
 
     filtros: any[] = [];
     filtroSelecionado: any | null = null;
@@ -91,8 +91,8 @@ export class ReleasesUploadComponent implements OnInit {
             let gasto = {
                 cor: "#cacaca",
                 icone: "image",
-                description: item.descricao,
-                valor: item.valor
+                description: item.raw[1],
+                valor: item.raw[2],
             };
 
             if (day != beforeDay && beforeDay) {
@@ -150,6 +150,90 @@ export class ReleasesUploadComponent implements OnInit {
 
     }
 
+    private parseCsvLine(line: string): string[] {
+        const result: string[] = [];
+        let current = '';
+        let inQuotes = false;
+
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+
+            if (char === '"') {
+                if (inQuotes && line[i + 1] === '"') {
+                    current += '"';
+                    i++; // skip escaped quote
+                } else {
+                    inQuotes = !inQuotes;
+                }
+                continue;
+            }
+
+            if (char === ',' && !inQuotes) {
+                result.push(current);
+                current = '';
+                continue;
+            }
+
+            current += char;
+        }
+
+        result.push(current);
+
+        console.log(result);
+        return result;
+    }
+
+    private parseDateString(value: string): Date {
+        const normalized = value.trim();
+
+        const parts = normalized.split(/[\/\-]/).map(p => p.trim());
+        if (parts.length === 3) {
+            const [p1, p2, p3] = parts;
+
+            if (p1.length === 2 && p2.length === 2 && p3.length === 4) {
+                const dia = parseInt(p1, 10);
+                const mes = parseInt(p2, 10);
+                const ano = parseInt(p3, 10);
+                return new Date(ano, mes - 1, dia);
+            }
+
+            if (p1.length === 4 && p2.length === 2 && p3.length === 2) {
+                const ano = parseInt(p1, 10);
+                const mes = parseInt(p2, 10);
+                const dia = parseInt(p3, 10);
+                return new Date(ano, mes - 1, dia);
+            }
+        }
+
+        const parsed = Date.parse(normalized);
+        return isNaN(parsed) ? new Date() : new Date(parsed);
+    }
+
+    private parseValueString(value: string): number {
+        if (value == null) {
+            return 0;
+        }
+
+        let normalized = value.toString().trim();
+
+        normalized = normalized.replace(/[R$€£]/g, '').trim();
+
+        const hasComma = normalized.indexOf(',') >= 0;
+        const hasDot = normalized.indexOf('.') >= 0;
+        if (hasComma && hasDot) {
+            normalized = normalized.replace(/\./g, '');
+            normalized = normalized.replace(/,/g, '.');
+        } else if (hasComma && !hasDot) {
+            normalized = normalized.replace(/,/g, '.');
+        }
+
+        const isNegative = /^\(.*\)$/.test(normalized);
+        normalized = normalized.replace(/[()]/g, '');
+
+        const parsed = parseFloat(normalized);
+        return isNaN(parsed) ? 0 : (isNegative ? -parsed : parsed);
+    }
+
     handleFileUpload(event: Event) {
         const input = event.target as HTMLInputElement;
 
@@ -160,25 +244,48 @@ export class ReleasesUploadComponent implements OnInit {
 
         reader.onload = () => {
             const text = reader.result as string;
-            const linhas = text.split('\n').filter(l => l.trim() !== '');
+            const linhas = text.split(/\r?\n/).filter(l => l.trim() !== '');
+            if (linhas.length === 0) {
+                return;
+            }
 
-            linhas.shift();
+            const headerLine = linhas.shift()!;
+            const headers = this.parseCsvLine(headerLine).map(h => h.trim());
+
+            const dateIdx = headers.findIndex(h => /data|date|dt|dia/i.test(h));
+            const valueIdx = headers.findIndex(h => /valor|value|amount|total|montante/i.test(h));
+
+            const titleColumns = headers
+                .map((h, idx) => ({ name: h, idx }))
+                .filter(c => c.idx !== dateIdx && c.idx !== valueIdx);
+
+            this.modeloDados = {
+                headers,
+                titleColumns,
+                rows: [] as any[]
+            };
 
             const transacoes: any[] = linhas.map((linha) => {
-                const [dataStr, valorStr, identificador, desc] = linha.split(',').map(s => s.trim());
-                const [dia, mes, ano] = dataStr.split('/').map(n => parseInt(n, 10));
+                const cells = this.parseCsvLine(linha);
 
-                let descricao = desc.split(' - ')[0];
-                if (desc.split(' - ')[1]) {
-                    descricao += " - " + desc.split(' - ')[1];
+                const rawDate = dateIdx >= 0 ? cells[dateIdx] : cells[0] ?? '';
+                const rawValue = valueIdx >= 0 ? cells[valueIdx] : cells[1] ?? '';
+
+                const titles: any = {};
+                for (const col of titleColumns) {
+                    titles[col.name] = (cells[col.idx] ?? '').trim();
                 }
+
                 return {
-                    data: new Date(ano, mes - 1, dia),
-                    valor: parseFloat(valorStr),
-                    identificador,
-                    descricao
+                    data: this.parseDateString(rawDate),
+                    valor: this.parseValueString(rawValue),
+                    titles,
+                    raw: cells
                 };
             });
+
+            (this.modeloDados as any).rows = transacoes;
+            this.transacoes = transacoes;
 
             this.organizarPorMes(transacoes);
         };

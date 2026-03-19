@@ -10,7 +10,9 @@
             <mat-menu #menu="matMenu">
                 <button mat-menu-item (click)="onExpense()" class="btn-release btn-expense">Despesa</button>
                 <button mat-menu-item (click)="onRevenue()" class="btn-release btn-revenue">Receita</button>
+                <!--
                 <button mat-menu-item (click)="onTransfer()" class="btn-release btn-transfer">Transferência</button>
+                -->
             </mat-menu>
         </div>
 
@@ -32,6 +34,7 @@
         </div>
 
         <div>
+            <!--
             <button mat-icon-button color="primary" [matMenuTriggerFor]="uploadMenu">
                 <mat-icon>more_horiz</mat-icon>
             </button>
@@ -39,6 +42,7 @@
             <mat-menu #uploadMenu="matMenu">
                 <button mat-menu-item (click)="onUploads()" style="text-align: center;">Upload - CSV</button>
             </mat-menu>
+            -->
         </div>
     </div>
 

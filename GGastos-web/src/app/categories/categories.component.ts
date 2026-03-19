@@ -53,7 +53,11 @@ export class CategoriesComponent implements OnInit {
             this.expenses = expenseList;
             this.revenues = revenueList;
 
-            this.dataSource = expenseList;
+            if (this.listType === "receita") {
+                this.dataSource = this.revenues;
+            } else {
+                this.dataSource = this.expenses;
+            }
         }
 
         let err = (error: any) => {
