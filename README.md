@@ -49,10 +49,3 @@ Fique à vontade para acompanhar o desenvolvimento! 🚀
 - [ ] Selecionar os icones ao invéz de escrever o nome
 
 ---
-
-### 🔧 Ajustes em andamento
-
-As transações fixas estão sendo aprimoradas para permitir que o usuário escolha:  
-- Alterar ou deletar **apenas o item atual**  
-- Alterar ou deletar **o item atual e os próximos**  
-- Alterar ou deletar **todos os itens**
