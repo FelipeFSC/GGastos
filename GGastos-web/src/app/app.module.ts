@@ -1,5 +1,5 @@
 import { LOCALE_ID, NgModule } from '@angular/core';
-import { registerLocaleData } from '@angular/common';
+import { registerLocaleData, HashLocationStrategy, LocationStrategy } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -29,6 +29,7 @@ registerLocaleData(localePt);
     ],
     providers: [
         { provide: LOCALE_ID, useValue: 'pt-BR' },
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
         AppConfigService,
         HttpService,
     ],
