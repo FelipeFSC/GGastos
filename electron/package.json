@@ -1,6 +1,6 @@
 {
   "name": "ggastos-desktop",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "description": "GGastos desktop application (Angular + Spring Boot bundled with Electron)",
   "author": "",
   "main": "main.js",
@@ -21,12 +21,14 @@
       "frontend/**",
       "backend/**",
       "data/**",
+      "jre/**",
       "package.json"
     ],
     "asar": true,
     "asarUnpack": [
       "backend/**",
-      "data/**"
+      "data/**",
+      "jre/**"
     ],
     "win": {
       "target": "nsis",

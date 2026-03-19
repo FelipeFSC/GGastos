@@ -5,7 +5,31 @@ const net = require('net');
 const { spawn, execSync } = require('child_process');
 
 let mainWindow;
+let splashWindow;
 let backendProcess;
+let isAppQuitting = false;
+
+function createSplash() {
+    splashWindow = new BrowserWindow({
+        width: 420,
+        height: 220,
+        frame: false,
+        transparent: true,
+        alwaysOnTop: true,
+        resizable: false,
+        webPreferences: {
+            contextIsolation: true,
+            nodeIntegration: false,
+        },
+    });
+
+    const splashPath = path.join(__dirname, 'frontend', 'ggastos', 'splash.html');
+    if (fs.existsSync(splashPath)) {
+        splashWindow.loadFile(splashPath);
+    } else {
+        splashWindow.loadURL('data:text/html,<h3>Carregando GGastos...</h3>');
+    }
+}
 
 function runCommand(command, cwd, env = {}) {
     console.log(`
@@ -13,22 +37,94 @@ function runCommand(command, cwd, env = {}) {
     execSync(command, { stdio: 'inherit', cwd, env: { ...process.env, ...env } });
 }
 
-function guessJavaHome() {
-    if (process.env.JAVA_HOME) {
-        return process.env.JAVA_HOME;
+function getBundledJavaHome() {
+    // When the app is packaged with electron-builder, we can ship a JRE under:
+    //  - Windows: resources/app.asar.unpacked/jre
+    //  - Dev: electron/jre
+    const candidate = app.isPackaged
+        ? path.join(process.resourcesPath, 'app.asar.unpacked', 'jre')
+        : path.join(__dirname, 'jre');
+
+    const javaBin = process.platform === 'win32' ? path.join('bin', 'java.exe') : path.join('bin', 'java');
+    const javaPath = path.join(candidate, javaBin);
+
+    return fs.existsSync(javaPath) ? candidate : null;
+}
+
+function resolveJavaExecutable(javaPath) {
+    try {
+        return fs.realpathSync(javaPath);
+    } catch {
+        return javaPath;
+    }
+}
+
+function findJavaExecutableInHome(javaHome) {
+    if (!javaHome) return null;
+    const javaBin = process.platform === 'win32' ? 'java.exe' : 'java';
+    const candidate = path.join(javaHome, 'bin', javaBin);
+    return fs.existsSync(candidate) ? candidate : null;
+}
+
+function guessJavaExecutable() {
+    // 1) Prefer the bundled JRE (if we shipped one in the installer)
+    const bundledHome = getBundledJavaHome();
+    const bundledExec = findJavaExecutableInHome(bundledHome);
+    if (bundledExec) {
+        return bundledExec;
     }
 
+    // 2) Use JAVA_HOME if set
+    if (process.env.JAVA_HOME) {
+        const exec = findJavaExecutableInHome(process.env.JAVA_HOME);
+        if (exec) {
+            return exec;
+        }
+    }
+
+    // 3) Locate `java` via PATH (where/which)
     try {
         const whichCmd = process.platform === 'win32' ? 'where java' : 'which java';
         const javaPath = execSync(whichCmd, { encoding: 'utf8' })
             .split(/\r?\n/)
             .find(Boolean);
 
-        if (!javaPath) return null;
-        return path.dirname(path.dirname(javaPath.trim()));
+        if (javaPath) {
+            const resolved = resolveJavaExecutable(javaPath.trim());
+            if (fs.existsSync(resolved)) {
+                return resolved;
+            }
+
+            // Common case on Windows: PATH points to the "javapath" shim folder.
+            // Try to resolve an actual Java home from the parent directories.
+            const possibleHome = path.dirname(path.dirname(resolved));
+            const candidate = findJavaExecutableInHome(possibleHome);
+            if (candidate) {
+                return candidate;
+            }
+        }
     } catch {
-        return null;
+        // ignore
     }
+
+    // 4) Fallback: scan well-known Java install directories on Windows
+    if (process.platform === 'win32') {
+        const programFiles = [process.env['PROGRAMFILES'], process.env['PROGRAMFILES(X86)']].filter(Boolean);
+        for (const base of programFiles) {
+            const javaDirs = fs.existsSync(base)
+                ? fs.readdirSync(base).filter(d => /^Java/.test(d) || /^jre/.test(d) || /^jdk/.test(d))
+                : [];
+            for (const dir of javaDirs) {
+                const home = path.join(base, dir);
+                const exec = findJavaExecutableInHome(home);
+                if (exec) {
+                    return exec;
+                }
+            }
+        }
+    }
+
+    return null;
 }
 
 function ensureFrontendBuild() {
@@ -155,11 +251,12 @@ function ensureBackendBuild() {
     try {
         const mvnCmd = process.platform === 'win32' ? 'mvnw.cmd' : './mvnw';
         const mvnExecutable = fs.existsSync(path.join(backendRoot, mvnCmd)) ? mvnCmd : 'mvn';
-        const javaHome = guessJavaHome();
-        if (!javaHome) {
+        const javaExe = guessJavaExecutable();
+        if (!javaExe) {
             throw new Error('Java not found (set JAVA_HOME or ensure java is on PATH).');
         }
 
+        const javaHome = path.dirname(path.dirname(javaExe));
         runCommand(`${mvnExecutable} clean package -DskipTests`, backendRoot, { JAVA_HOME: javaHome });
 
         const targetDir = path.join(backendRoot, 'target');
@@ -181,29 +278,54 @@ function ensureBackendBuild() {
     }
 }
 
+function showBackendError(title, message) {
+    console.error(title, message);
+    try {
+        // Only show a dialog when running in a graphical environment
+        if (app && app.isReady()) {
+            dialog.showErrorBox(title, message);
+        }
+    } catch {
+        // ignore
+    }
+}
+
 function startBackend() {
     const jarPath = ensureBackendBuild();
     if (!jarPath) {
-        console.warn('Backend not started (jar missing). The UI will run without backend functionality.');
+        const msg = 'Backend JAR not found; backend will not start. The UI will run without backend functionality.';
+        console.warn(msg);
+        showBackendError('Backend não encontrado', msg);
         return null;
     }
 
-    const javaHome = guessJavaHome();
-    if (!javaHome) {
-        console.warn('Java not found (set JAVA_HOME or ensure java is on PATH). Backend will not start.');
+    console.log('Backend JAR found at:', jarPath);
+
+    const javaExecutable = guessJavaExecutable();
+    if (!javaExecutable) {
+        const msg = 'Java not found (set JAVA_HOME or ensure java is on PATH). Backend will not start.';
+        console.warn(msg);
+        showBackendError('Java não encontrado', msg);
         return null;
+    }
+
+    const javaHome = path.dirname(path.dirname(javaExecutable));
+    console.log('Using Java home:', javaHome);
+
+    const bundledJava = getBundledJavaHome();
+    if (bundledJava) {
+        console.log('Using bundled JRE at:', bundledJava);
     }
 
     // Ensure user data folder is created (and seeded) before starting the backend.
     const userData = getUserDataPath();
     const userDataData = ensureUserDataDataFolder();
 
-    const javaExecutable = process.platform === 'win32'
-        ? path.join(javaHome, 'bin', 'java.exe')
-        : path.join(javaHome, 'bin', 'java');
-
     const dbPath = path.join(userDataData, 'ggastos').replace(/\\/g, '/');
-    const springDatasourceUrl = `jdbc:h2:file:${dbPath};`;
+
+    // Use H2 embedded mode with AUTO_SERVER to allow reopening the database if another
+    // process/previous instance kept it locked (helps avoid "Database may be already in use").
+    const springDatasourceUrl = `jdbc:h2:file:${dbPath};AUTO_SERVER=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=TRUE;`;
 
     backendProcess = spawn(javaExecutable, ['-jar', jarPath], {
         cwd: getAppRootPath(),
@@ -229,6 +351,18 @@ function startBackend() {
         console.error(`BACKEND ERROR: ${data}`);
     });
 
+    backendProcess.on('exit', (code, signal) => {
+        console.log(`Backend process exited (code=${code}, signal=${signal})`);
+        if (isAppQuitting) {
+            console.log('App está saindo; ignorando mensagem de erro de backend encerrado.');
+            return;
+        }
+
+        if (code !== 0) {
+            showBackendError('Backend encerrou inesperadamente', `O processo Java terminou com código ${code} (sinal: ${signal}). Verifique os logs para mais detalhes.`);
+        }
+    });
+
     return backendProcess;
 }
 
@@ -236,6 +370,7 @@ function createWindow() {
     mainWindow = new BrowserWindow({
         width: 1200,
         height: 800,
+        show: false,
         webPreferences: {
             contextIsolation: true,
             nodeIntegration: false,
@@ -259,6 +394,13 @@ function createWindow() {
 
     mainWindow.webContents.on('did-finish-load', () => {
         console.log('Renderer finished loading:', indexPath);
+
+        if (splashWindow && !splashWindow.isDestroyed()) {
+            splashWindow.close();
+            splashWindow = null;
+        }
+
+        mainWindow.show();
 
         // Capture renderer DOM at load time for debugging a blank screen
         mainWindow.webContents.executeJavaScript(`(function() {
@@ -285,6 +427,7 @@ function createWindow() {
 }
 
 app.whenReady().then(async () => {
+    createSplash();
     startBackend();
 
     // Ensure the frontend is built before loading it into the window
@@ -301,12 +444,17 @@ app.whenReady().then(async () => {
         console.log('Backend is reachable at http://localhost:8081');
     } catch (err) {
         console.warn('Backend did not respond within timeout; the UI may show connection errors.', err);
+        showBackendError(
+            'Backend não iniciou',
+            'O backend não respondeu em 20 segundos. Verifique se o Java está instalado corretamente e se não há outro processo usando a porta 8081.'
+        );
     }
 
     createWindow();
 });
 
 app.on('before-quit', () => {
+    isAppQuitting = true;
     if (backendProcess) {
         backendProcess.kill();
     }
