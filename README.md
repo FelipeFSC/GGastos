@@ -35,16 +35,18 @@ Fique à vontade para acompanhar o desenvolvimento! 🚀
 - [x] Cadastro de **categorias** (Despesas e Receitas)  
 - [x] Cadastro de **contas**  
 - [x] Cadastro de **cartão de crédito**
-
+- [x] Transações para o **cartão de crédito**
+ 
 ---
 
 ### 🔜 Funcionalidades pendentes / em desenvolvimento
 
-- [ ] Transações para o **cartão de crédito**  
 - [ ] Visualização detalhada do **cartão de crédito**  
 - [ ] Filtros para os **relatórios**
 - [ ] Transferências entre **contas**
 - [ ] Módulo Cadastro de **diferentes usuários**
+- [ ] Mostrar os cartões de credito cadastrados na Home
+- [ ] Selecionar os icones ao invéz de escrever o nome
 
 ---
 
